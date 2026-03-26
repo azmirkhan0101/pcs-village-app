@@ -1,0 +1,126 @@
+####################################
+# ENV / SECRETS (VERY IMPORTANT)
+####################################
+.env
+.env.*
+*.env
+
+# Local testing / dev-only files
+z_test.dart
+commands.txt
+strings.txt
+text.txt
+lib/tool/
+
+# Keystore & signing files
+*.jks
+*.keystore
+key.properties
+android/key.properties
+
+####################################
+# Flutter / Dart
+####################################
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+coverage/
+
+####################################
+# Generated files
+####################################
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+
+####################################
+# Android
+####################################
+android/.gradle/
+android/local.properties
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/app/build/
+android/captures/
+android/.idea/
+android/*.iml
+
+####################################
+# iOS
+####################################
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/App.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Runner/GeneratedPluginRegistrant.*
+ios/Runner.xcworkspace
+ios/.idea/
+ios/*.iml
+
+####################################
+# macOS
+####################################
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+
+####################################
+# Web
+####################################
+web/.dart_tool/
+web/build/
+
+####################################
+# Windows
+####################################
+windows/flutter/ephemeral/
+windows/build/
+
+####################################
+# Linux
+####################################
+linux/flutter/ephemeral/
+linux/build/
+
+####################################
+# IDE / Editors
+####################################
+.idea/
+.vscode/
+*.iml
+
+####################################
+# OS junk
+####################################
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+####################################
+# Logs
+####################################
+*.log
+
+####################################
+# Temporary / Backup files
+####################################
+*.tmp
+*.bak
+*.swp
+*.old
+
+####################################
+# Crashlytics / Symbols
+####################################
+*.symbols
+*.dSYM

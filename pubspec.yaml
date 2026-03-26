@@ -1,0 +1,66 @@
+name: pcs_village
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  get: ^4.7.3
+  get_storage: ^2.1.1
+  flutter_image_compress: ^2.4.0
+  http: ^1.6.0
+  flutter_screenutil: ^5.9.3
+  flutter_native_splash: ^2.4.7
+  flutter_gen_runner: ^5.13.0+1
+  flutter_svg: ^2.2.4
+  image_picker: ^1.2.1
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  upgrader: ^12.5.0
+  intl: ^0.20.2
+  pin_code_fields: ^8.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  build_runner: ^2.13.1
+
+flutter:
+
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: Inter
+      fonts:
+       - asset: assets/fonts/inter_regular.otf
+
+flutter_gen:
+  output: lib/core/assets_gen
+
+flutter_native_splash:
+  # dart run flutter_native_splash:create
+  color: "#ffffff"  ##========[REQUIRED]==========
+  color_dark: "#ffffff"
+  image: assets/images/app_logo.png
+  image_dark: assets/images/app_logo.png
+  fullscreen: true
+  android_12:
+    color: "#ffffff"
+    color_dark: "#ffffff"
+    image: assets/images/app_logo.png
+    icon_background_color: "#ffffff"
