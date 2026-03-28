@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({super.key});
@@ -86,6 +88,9 @@ class MessageScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = messages[index];
                 return ListTile(
+                  onTap: (){
+                    Get.toNamed(AppRoutes.messageDetails);
+                  },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   leading: Stack(
                     children: [

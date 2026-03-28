@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/routes/app_pages.dart';
+
+import '../../../model/post.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -48,6 +52,9 @@ class HomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 children: [
                   PostCard(
+                    onTap: (){
+                      Get.toNamed(AppRoutes.postDetails);
+                    },
                     post: Post(
                       name: "Sarah M.",
                       role: "Army Spouse",
@@ -61,6 +68,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   PostCard(
+                    onTap: (){
+                      Get.toNamed(AppRoutes.postDetails);
+                    },
                     post: Post(
                       name: "Jennifer K.",
                       role: "Air Force Spouse",
@@ -79,7 +89,9 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Get.toNamed(AppRoutes.createPost);
+        },
         backgroundColor: const Color(0xFF6B8E23), // Olive Green
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -89,57 +101,64 @@ class HomeScreen extends StatelessWidget {
 
 class PostCard extends StatelessWidget {
   final Post post;
-  const PostCard({super.key, required this.post});
+  final VoidCallback onTap;
+
+  const PostCard({super.key, required this.post, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(backgroundImage: NetworkImage(post.avatarUrl)),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        const Icon(Icons.check_circle, size: 14, color: Colors.blue),
-                      ],
-                    ),
-                    Text("${post.role} • ${post.time}", style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on, size: 12, color: Colors.grey),
-                        Text(post.location, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(post.content, style: const TextStyle(fontSize: 14, height: 1.4)),
-            const Divider(height: 32),
-            Row(
-              children: [
-                const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text("${post.likes}", style: const TextStyle(color: Colors.grey)),
-                const SizedBox(width: 24),
-                const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text("${post.comments}", style: const TextStyle(color: Colors.grey)),
-              ],
-            ),
-          ],
+    return GestureDetector(
+      onTap: (){
+        onTap();
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(backgroundImage: NetworkImage(post.avatarUrl)),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                          const Icon(Icons.check_circle, size: 14, color: Colors.blue),
+                        ],
+                      ),
+                      Text("${post.role} • ${post.time}", style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                          Text(post.location, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(post.content, style: const TextStyle(fontSize: 14, height: 1.4)),
+              const Divider(height: 32),
+              Row(
+                children: [
+                  const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text("${post.likes}", style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(width: 24),
+                  const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
+                  const SizedBox(width: 4),
+                  Text("${post.comments}", style: const TextStyle(color: Colors.grey)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

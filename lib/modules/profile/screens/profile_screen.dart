@@ -5,12 +5,15 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryNavy = Color(0xFF1B365D);
+    // Primary Colors from the UI
+    const Color primaryNavy = Color(0xFF1D3557);
+    const Color accentBlue = Color(0xFF457B9D);
+    const Color backgroundGray = Color(0xFFF1F4F8);
 
     return Scaffold(
       backgroundColor: primaryNavy,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: primaryNavy,
         elevation: 0,
         title: const Text('Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         actions: [
@@ -20,117 +23,166 @@ class ProfileScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 20),
-            _buildMainProfileCard(primaryNavy),
-            _buildInfoCard(
-              title: 'Military Information',
-              content: [
-                _infoRow(Icons.location_on_outlined, 'Current Station', 'Fort Liberty, NC'),
-                _infoRow(Icons.location_on_outlined, 'Future Station', 'Joint Base Lewis-McChord, WA'),
-                _infoRow(Icons.calendar_today_outlined, 'PCS Timeline', 'Moving within 6 months'),
-              ],
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+              decoration: const BoxDecoration(
+                color: backgroundGray,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                children: [
+                  // --- Header Card ---
+                  _buildCard(
+                    child: Column(
+                      children: [
+                        const CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.orangeAccent,
+                          backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Replace with actual image
+                        ),
+                        const SizedBox(height: 12),
+                        const Text('Mudari 890', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryNavy)),
+                        const SizedBox(height: 4),
+                        const Text('Army Spouse', style: TextStyle(color: Colors.grey)),
+                        const SizedBox(height: 16),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _StatItem(label: 'Posts', value: '12'),
+                            _StatItem(label: 'Groups', value: '3'),
+                            _StatItem(label: 'Connections', value: '48'),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryNavy,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(Icons.edit_note, color: Colors.white),
+                            label: const Text('Edit Profile', style: TextStyle(color: Colors.white)),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+
+                  // --- Military Information Card ---
+                  _buildCard(
+                    title: 'Military Information',
+                    child: Column(
+                      children: [
+                        _buildInfoRow(Icons.location_on_outlined, 'Current Station', 'Fort Liberty, NC'),
+                        _buildInfoRow(Icons.explore_outlined, 'Future Station', 'Joint Base Lewis-McChord, WA'),
+                        _buildInfoRow(Icons.calendar_today_outlined, 'PCS Timeline', 'Moving within 6 months'),
+                      ],
+                    ),
+                  ),
+
+                  // --- About Card ---
+                  _buildCard(
+                    title: 'About',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const _SectionLabel(label: 'Branch'),
+                        const Text('Army', style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)),
+                        const SizedBox(height: 16),
+                        const _SectionLabel(label: 'Kids Age Range'),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            _buildChip('Preschool (3-5)'),
+                            _buildChip('Elementary school'),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        const _SectionLabel(label: 'Interests'),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: [
+                            _buildChip('Fitness'),
+                            _buildChip('Cooking'),
+                            _buildChip('Reading'),
+                            _buildChip('Travel'),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        const _SectionLabel(label: 'Member Since'),
+                        const Text('January 2026', style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)),
+                      ],
+                    ),
+                  ),
+
+                  // --- Footer Menu ---
+                  _buildCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        _buildListTile(Icons.workspace_premium_outlined, 'Upgrade to Premium', Colors.orange),
+                        const Divider(height: 1),
+                        _buildListTile(Icons.description_outlined, 'Community Guidelines', primaryNavy),
+                        const Divider(height: 1),
+                        _buildListTile(Icons.person_add_alt, 'Invite Friends', primaryNavy),
+                        const Divider(height: 1),
+                        _buildListTile(Icons.logout, 'Sign Out', Colors.red, isLast: true),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-            _buildAboutCard(),
-            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMainProfileCard(Color primaryNavy) {
+  // Helper to build a styled card
+  Widget _buildCard({required Widget child, String? title, EdgeInsets? padding}) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(20),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: padding ?? const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4))],
       ),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.orange,
-            backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Replace with actual image
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Mudari 890', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryNavy)),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(color: Colors.blue.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                child: const Row(
-                  children: [
-                    Icon(Icons.verified_user, size: 14, color: primaryNavy),
-                    SizedBox(width: 4),
-                    Text('Military Spouse', style: TextStyle(fontSize: 10, color: primaryNavy)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Text('Army Spouse', style: TextStyle(color: Colors.grey)),
-          const Divider(height: 32),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _StatItem(label: 'Posts', count: '12'),
-              _StatItem(label: 'Groups', count: '3'),
-              _StatItem(label: 'Connections', count: '48'),
-            ],
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.edit_document, size: 18),
-              label: const Text('Edit Profile'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryNavy,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoCard({required String title, required List<Widget> content}) {
-    return Container(
-      margin: const EdgeInsets.only(left: 16, right: 16, top: 16),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1B365D))),
-          const SizedBox(height: 16),
-          ...content,
+          if (title != null) ...[
+            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
+            const SizedBox(height: 16),
+          ],
+          child,
         ],
       ),
     );
   }
 
-  Widget _infoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.orange, size: 24),
+          Icon(icon, color: Colors.orangeAccent, size: 24),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B365D))),
+              Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+              Text(value, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
             ],
           ),
         ],
@@ -138,46 +190,51 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAboutCard() {
-    return _buildInfoCard(
-      title: 'About',
-      content: [
-        const Text('Branch', style: TextStyle(color: Colors.grey, fontSize: 12)),
-        const Text('Army', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B365D))),
-        const SizedBox(height: 16),
-        const Text('Kids Age Range', style: TextStyle(color: Colors.grey, fontSize: 12)),
-        Wrap(
-          spacing: 8,
-          children: const [
-            Chip(label: Text('Preschool (3-5)')),
-            Chip(label: Text('Elementary school')),
-          ],
-        ),
-        const SizedBox(height: 16),
-        const Text('Interests', style: TextStyle(color: Colors.grey, fontSize: 12)),
-        Wrap(
-          spacing: 8,
-          children: ['Fitness', 'Cooking', 'Reading', 'Travel']
-              .map((tag) => Chip(label: Text(tag)))
-              .toList(),
-        ),
-      ],
+  Widget _buildChip(String label) {
+    return Chip(
+      label: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF457B9D))),
+      backgroundColor: const Color(0xFFF1F4F8),
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    );
+  }
+
+  Widget _buildListTile(IconData icon, String title, Color color, {bool isLast = false}) {
+    return ListTile(
+      leading: Icon(icon, color: color),
+      title: Text(title, style: TextStyle(color: isLast ? Colors.red : const Color(0xFF1D3557), fontWeight: FontWeight.w500)),
+      trailing: const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
+      onTap: () {},
     );
   }
 }
 
+// Small helper widgets to keep things tidy
 class _StatItem extends StatelessWidget {
   final String label;
-  final String count;
-  const _StatItem({required this.label, required this.count});
+  final String value;
+  const _StatItem({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(count, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1B365D))),
+        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
         Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
       ],
+    );
+  }
+}
+
+class _SectionLabel extends StatelessWidget {
+  final String label;
+  const _SectionLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
     );
   }
 }

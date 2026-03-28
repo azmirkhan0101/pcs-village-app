@@ -24,5 +24,8 @@ static const String resetPasswordScreen = "/reset-password-screen";
 
 //========================MAIN NAV===================
 static const String mainNav = "/main-nav";
+static const String postDetails = "/post-details";
+static const String createPost = "/create_post";
+static const String messageDetails = "/message-details";
 
 }

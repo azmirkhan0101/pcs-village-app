@@ -6,7 +6,10 @@ import 'package:pcs_village/modules/auth/screens/signup_one_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_three_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
+import 'package:pcs_village/modules/home/screens/create_post.dart';
+import 'package:pcs_village/modules/home/screens/post_details.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
+import 'package:pcs_village/modules/message/screens/message_details.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/forgot_password_screen.dart';
@@ -95,6 +98,24 @@ class AppPages {
         name: AppRoutes.mainNav,
         page: (){
           return MainNavScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.postDetails,
+        page: (){
+          return PostDetails();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.createPost,
+        page: (){
+          return CreatePostScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.messageDetails,
+        page: (){
+          return ChatScreen();
         }
     ),
   ];
