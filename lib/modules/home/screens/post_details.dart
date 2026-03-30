@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import '../../../core/assets_gen/assets.gen.dart';
 
 class PostDetails extends StatelessWidget {
   const PostDetails({super.key});
@@ -118,7 +121,10 @@ class PostDetails extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           borderSide: BorderSide.none,
                         ),
-                        suffixIcon: const Icon(Icons.send_outlined, color: Colors.blueGrey),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: SvgPicture.asset(Assets.icons.send,),
+                        )
                       ),
                     ),
                   ),

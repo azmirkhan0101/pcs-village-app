@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -17,7 +19,9 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         title: const Text('Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.settings, color: Colors.white)),
+          IconButton(onPressed: () {
+            Get.toNamed(AppRoutes.settingsScreen);
+          }, icon: const Icon(Icons.settings, color: Colors.white)),
         ],
       ),
       body: SingleChildScrollView(
@@ -42,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
                         const CircleAvatar(
                           radius: 50,
                           backgroundColor: Colors.orangeAccent,
-                          backgroundImage: NetworkImage('https://via.placeholder.com/150'), // Replace with actual image
+                          backgroundImage: NetworkImage('https://images.unsplash.com/photo-1488161628813-04466f872be2?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'), // Replace with actual image
                         ),
                         const SizedBox(height: 12),
                         const Text('Mudari 890', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryNavy)),
@@ -66,7 +70,9 @@ class ProfileScreen extends StatelessWidget {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed(AppRoutes.editProfile);
+                            },
                             icon: const Icon(Icons.edit_note, color: Colors.white),
                             label: const Text('Edit Profile', style: TextStyle(color: Colors.white)),
                           ),
@@ -128,13 +134,31 @@ class ProfileScreen extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     child: Column(
                       children: [
-                        _buildListTile(Icons.workspace_premium_outlined, 'Upgrade to Premium', Colors.orange),
+                        _buildListTile(
+                          onTap: (){
+                            Get.toNamed(AppRoutes.upgradePremium);
+                          },
+                            Icons.workspace_premium_outlined, 'Upgrade to Premium', Colors.orange
+                        ),
                         const Divider(height: 1),
-                        _buildListTile(Icons.description_outlined, 'Community Guidelines', primaryNavy),
+                        _buildListTile(
+                          onTap: (){
+                            Get.toNamed(AppRoutes.communityGuidelines);
+                          },
+                            Icons.description_outlined, 'Community Guidelines', primaryNavy),
                         const Divider(height: 1),
-                        _buildListTile(Icons.person_add_alt, 'Invite Friends', primaryNavy),
+                        _buildListTile(
+                          onTap: (){
+                            Get.toNamed(AppRoutes.inviteFriends);
+                          },
+                            Icons.person_add_alt, 'Invite Friends', primaryNavy
+                        ),
                         const Divider(height: 1),
-                        _buildListTile(Icons.logout, 'Sign Out', Colors.red, isLast: true),
+                        _buildListTile(
+                          onTap: (){
+
+                          },
+                            Icons.logout, 'Sign Out', Colors.red, isLast: true),
                       ],
                     ),
                   ),
@@ -199,12 +223,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(IconData icon, String title, Color color, {bool isLast = false}) {
+  Widget _buildListTile(IconData icon, String title, Color color, {bool isLast = false, required VoidCallback onTap}) {
     return ListTile(
       leading: Icon(icon, color: color),
       title: Text(title, style: TextStyle(color: isLast ? Colors.red : const Color(0xFF1D3557), fontWeight: FontWeight.w500)),
       trailing: const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 }

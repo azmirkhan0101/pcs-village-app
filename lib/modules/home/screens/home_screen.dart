@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
+import '../../../core/assets_gen/assets.gen.dart';
 import '../../../model/post.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,7 +24,9 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.filter_list, color: Colors.white)),
+          IconButton(onPressed: () {},
+              icon: SvgPicture.asset(Assets.icons.filter)
+          ),
         ],
       ),
       body: Column(
@@ -45,7 +49,7 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
-                color: Color(0xFFF5F7F9), // Light grey background for feed
+                color: Colors.white, // Light grey background for feed
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
               ),
               child: ListView(
@@ -92,6 +96,7 @@ class HomeScreen extends StatelessWidget {
         onPressed: () {
           Get.toNamed(AppRoutes.createPost);
         },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         backgroundColor: const Color(0xFF6B8E23), // Olive Green
         child: const Icon(Icons.add, color: Colors.white),
       ),
@@ -112,8 +117,9 @@ class PostCard extends StatelessWidget {
         onTap();
       },
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.grey.shade400)),
         elevation: 0,
+        color: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -129,13 +135,14 @@ class PostCard extends StatelessWidget {
                       Row(
                         children: [
                           Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          const Icon(Icons.check_circle, size: 14, color: Colors.blue),
+                          //const Icon(Icons.check_circle, size: 14, color: Colors.blue),
+                          SvgPicture.asset(Assets.icons.verified)
                         ],
                       ),
                       Text("${post.role} • ${post.time}", style: const TextStyle(color: Colors.grey, fontSize: 12)),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, size: 12, color: Colors.grey),
+                          const Icon(Icons.location_pin, size: 12, color: Colors.grey),
                           Text(post.location, style: const TextStyle(color: Colors.grey, fontSize: 12)),
                         ],
                       ),
@@ -148,11 +155,13 @@ class PostCard extends StatelessWidget {
               const Divider(height: 32),
               Row(
                 children: [
-                  const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
+                  SvgPicture.asset(Assets.icons.favouriteOutlined),
+                  //const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
                   const SizedBox(width: 4),
                   Text("${post.likes}", style: const TextStyle(color: Colors.grey)),
                   const SizedBox(width: 24),
-                  const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
+                  //const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
+                  SvgPicture.asset(Assets.icons.chat),
                   const SizedBox(width: 4),
                   Text("${post.comments}", style: const TextStyle(color: Colors.grey)),
                 ],

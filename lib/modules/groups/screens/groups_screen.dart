@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 class GroupsScreen extends StatelessWidget {
   const GroupsScreen({super.key});
@@ -55,24 +57,33 @@ class GroupsScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(15),
-              children: const [
+              children: [
                 GroupCard(
                   title: 'PCS to Fort Liberty - Spring 2026',
                   subtitle: 'For families PCSing to Fort Liberty',
                   members: '124 members',
                   imageUrl: 'https://picsum.photos/id/22/200',
+                  onTap: (){
+                    Get.toNamed(AppRoutes.groupDetails);
+                  },
                 ),
                 GroupCard(
                   title: 'Army Spouses Support Group',
                   subtitle: 'Connecting and supporting Army...',
                   members: '425 members',
                   imageUrl: 'https://picsum.photos/id/64/200',
+                  onTap: (){
+                    Get.toNamed(AppRoutes.groupDetails);
+                  },
                 ),
                 GroupCard(
                   title: 'Fort Liberty Fitness & Wellness',
                   subtitle: 'Connecting and supporting Army...',
                   members: '425 members',
-                  imageUrl: 'https://picsum.photos/id/64/200', // Reusing image as per UI
+                  imageUrl: 'https://picsum.photos/id/64/200',
+                  onTap: (){
+                    Get.toNamed(AppRoutes.groupDetails);
+                  },
                 ),
               ],
             ),
@@ -88,6 +99,7 @@ class GroupCard extends StatelessWidget {
   final String subtitle;
   final String members;
   final String imageUrl;
+  final VoidCallback onTap;
 
   const GroupCard({
     super.key,
@@ -95,72 +107,76 @@ class GroupCard extends StatelessWidget {
     required this.subtitle,
     required this.members,
     required this.imageUrl,
+    required this.onTap
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Group Image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-            child: Image.network(
-              imageUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
-          ),
-          const SizedBox(width: 15),
-          // Text Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Color(0xFF213A5E),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.people_outline, size: 16, color: Colors.grey.shade500),
-                    const SizedBox(width: 5),
-                    Text(
-                      members,
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+          ],
+        ),
+        child: Row(
+          children: [
+            // Group Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.network(
+                imageUrl,
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
+              ),
+            ),
+            const SizedBox(width: 15),
+            // Text Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Color(0xFF213A5E),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.people_outline, size: 16, color: Colors.grey.shade500),
+                      const SizedBox(width: 5),
+                      Text(
+                        members,
+                        style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.chevron_right, color: Colors.grey),
-        ],
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }

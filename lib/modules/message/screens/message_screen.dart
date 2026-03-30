@@ -98,7 +98,8 @@ class MessageScreen extends StatelessWidget {
                         radius: 28,
                         backgroundColor: Colors.grey,
                         // Replace with NetworkImage(url) in a real app
-                        child: Icon(Icons.person, color: Colors.white),
+                        //child: Icon(Icons.person, color: Colors.white),
+                        backgroundImage: NetworkImage("https://images.unsplash.com/photo-1522556189639-b150ed9c4330?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjN8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"),
                       ),
                       if (item['isOnline'])
                         Positioned(

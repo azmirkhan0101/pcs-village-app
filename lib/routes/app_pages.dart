@@ -6,15 +6,25 @@ import 'package:pcs_village/modules/auth/screens/signup_one_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_three_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
+import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
 import 'package:pcs_village/modules/home/screens/create_post.dart';
 import 'package:pcs_village/modules/home/screens/post_details.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
 import 'package:pcs_village/modules/message/screens/message_details.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
+import 'package:pcs_village/modules/profile/screens/change_password_screen.dart';
+import 'package:pcs_village/modules/profile/screens/community_guidelines.dart';
+import 'package:pcs_village/modules/profile/screens/complete_purchase_screen.dart';
+import 'package:pcs_village/modules/profile/screens/edit_profile_screen.dart';
+import 'package:pcs_village/modules/profile/screens/manage_subscription_screen.dart';
+import 'package:pcs_village/modules/profile/screens/settings_screen.dart';
+import 'package:pcs_village/modules/profile/screens/upgrade_premium_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/forgot_password_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/otp_verify_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/reset_password_screen.dart';
+
+import '../modules/profile/screens/invite_friends.dart';
 
 part 'app_routes.dart';
 
@@ -116,6 +126,60 @@ class AppPages {
         name: AppRoutes.messageDetails,
         page: (){
           return ChatScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.groupDetails,
+        page: (){
+          return GroupDetailsScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.editProfile,
+        page: (){
+          return EditProfileScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.settingsScreen,
+        page: (){
+          return SettingsScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.changePassword,
+        page: (){
+          return ChangePasswordScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.inviteFriends,
+        page: (){
+          return InviteFriendsScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.upgradePremium,
+        page: (){
+          return UpgradePremiumScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.completePurchase,
+        page: (){
+          return CompletePurchaseScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.manageSubscription,
+        page: (){
+          return ManageSubscriptionScreen();
+        }
+    ),
+    GetPage(
+        name: AppRoutes.communityGuidelines,
+        page: (){
+          return CommunityGuidelinesScreen();
         }
     ),
   ];

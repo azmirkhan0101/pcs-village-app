@@ -28,4 +28,18 @@ static const String postDetails = "/post-details";
 static const String createPost = "/create_post";
 static const String messageDetails = "/message-details";
 
+static const String groupDetails = "/group-details";
+
+static const String editProfile = "/edit-profile";
+static const String settingsScreen = "/settings_screen";
+static const String changePassword = "/change-password";
+static const String inviteFriends = "/invite-friends";
+static const String upgradePremium = "/upgrade-premium";
+static const String completePurchase = "/complete-purchase";
+static const String manageSubscription = "/manage-subscription";
+static const String communityGuidelines = "/community-guidelines";
+
+
+
+
 }
