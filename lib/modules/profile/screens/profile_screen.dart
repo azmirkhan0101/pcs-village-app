@@ -19,9 +19,12 @@ class ProfileScreen extends StatelessWidget {
         elevation: 0,
         title: const Text('Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         actions: [
-          IconButton(onPressed: () {
+          IconButton(
+              onPressed: () {
             Get.toNamed(AppRoutes.settingsScreen);
-          }, icon: const Icon(Icons.settings, color: Colors.white)),
+          },
+              icon: const Icon(Icons.settings, color: Colors.white)
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -119,7 +122,7 @@ class ProfileScreen extends StatelessWidget {
                             _buildChip('Fitness'),
                             _buildChip('Cooking'),
                             _buildChip('Reading'),
-                            _buildChip('Travel'),
+                            _buildChip('Travel')
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -158,7 +161,8 @@ class ProfileScreen extends StatelessWidget {
                           onTap: (){
 
                           },
-                            Icons.logout, 'Sign Out', Colors.red, isLast: true),
+                            Icons.logout, 'Sign Out', Colors.red, isLast: true
+                        ),
                       ],
                     ),
                   ),

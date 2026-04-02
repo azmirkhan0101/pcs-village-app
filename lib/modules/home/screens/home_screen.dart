@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
-import '../../../model/post.dart';
+import '../../../data/models/post.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

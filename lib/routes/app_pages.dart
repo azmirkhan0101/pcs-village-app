@@ -15,11 +15,11 @@ import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dar
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
 import 'package:pcs_village/modules/profile/screens/change_password_screen.dart';
 import 'package:pcs_village/modules/profile/screens/community_guidelines.dart';
-import 'package:pcs_village/modules/profile/screens/complete_purchase_screen.dart';
+import 'package:pcs_village/modules/subscription/screens/complete_purchase_screen.dart';
 import 'package:pcs_village/modules/profile/screens/edit_profile_screen.dart';
-import 'package:pcs_village/modules/profile/screens/manage_subscription_screen.dart';
+import 'package:pcs_village/modules/subscription/screens/manage_subscription_screen.dart';
 import 'package:pcs_village/modules/profile/screens/settings_screen.dart';
-import 'package:pcs_village/modules/profile/screens/upgrade_premium_screen.dart';
+import 'package:pcs_village/modules/subscription/screens/upgrade_premium_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/forgot_password_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/otp_verify_screen.dart';
 import 'package:pcs_village/modules/recovery/screens/reset_password_screen.dart';
