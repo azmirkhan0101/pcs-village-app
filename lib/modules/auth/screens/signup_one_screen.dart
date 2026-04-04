@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
+import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
@@ -18,7 +20,17 @@ class SignupOneScreen extends StatefulWidget {
 }
 
 class _SignupOneScreenState extends State<SignupOneScreen> {
-  String? selectedBranch;
+
+  final SignupController controller = Get.find<SignupController>();
+  String? affiliationError;
+  String? branchError;
+
+  List<String> affiliations = [
+    Affiliation.activeDutySpouse.displayName,
+    Affiliation.activeDuty.displayName,
+    Affiliation.veteran.displayName,
+    Affiliation.militaryFamily.displayName
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +61,8 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
               child: LinearProgressIndicator(
                 value: 0.2, // 1 of 5
                 backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    AppColors.primaryColor),
                 minHeight: 6,
               ),
             ),
@@ -58,7 +71,8 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
             // Header Text
             CustomText(text: AppStrings.createYourProfile).s24.w700,
             const SizedBox(height: 8),
-            CustomText(text: AppStrings.tellUsABitAboutYou, fontColor: AppColors.subtitleTextColor,).s14,
+            CustomText(text: AppStrings.tellUsABitAboutYou,
+              fontColor: AppColors.subtitleTextColor,).s14,
             const SizedBox(height: 40),
 
             // Profile Picture Picker
@@ -68,7 +82,10 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey[100],
-                    child: SvgPicture.asset(Assets.icons.camera, colorFilter: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn), height: 30,),
+                    child: SvgPicture.asset(Assets.icons.camera,
+                      colorFilter: ColorFilter.mode(
+                          AppColors.primaryColor, BlendMode.srcIn),
+                      height: 30,),
                   ),
                   Positioned(
                     bottom: 0,
@@ -76,7 +93,9 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
                     child: CircleAvatar(
                       radius: 18,
                       backgroundColor: AppColors.primaryColor,
-                      child:SvgPicture.asset(Assets.icons.camera, colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn), height: 20,),
+                      child: SvgPicture.asset(Assets.icons.camera,
+                        colorFilter: ColorFilter.mode(
+                            Colors.white, BlendMode.srcIn), height: 20,),
                     ),
                   ),
                 ],
@@ -87,19 +106,57 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
             // Form Fields
             const SizedBox(height: 20),
             _buildLabel("Military Branch"),
-            _buildDropdownField("Select Branch"),
+            _buildDropdownField(
+                hint: "Select Branch",
+                value: controller.selectedBranch,
+                errorText: branchError,
+                items: controller.branches.map((e){
+                  return e.name;
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    controller.selectedBranch = value;
+                  });
+                }
+            ),
 
             const SizedBox(height: 20),
             _buildLabel("Military Affiliation"),
-            CustomTextField(),
+
+            _buildDropdownField(
+                hint: "Select Affiliation",
+                value: controller.selectedAffiliation,
+                items: affiliations,
+                errorText: affiliationError,
+                onChanged: (String? value) {
+                  setState(() {
+                    controller.selectedAffiliation = value;
+                  });
+                }
+            ),
 
             const SizedBox(height: 40),
 
             // Continue Button
             CustomButton(
-                label: AppStrings.cContinue,
-              onPressed: (){
+              label: AppStrings.cContinue,
+              onPressed: () {
+                branchError = null;
+                affiliationError = null;
+                if (controller.selectedAffiliation != null &&
+                    controller.selectedBranch != null) {
                   Get.toNamed(AppRoutes.signupStepTwoScreen);
+                } else {
+                  if (controller.selectedBranch == null) {
+                    setState(() {
+                      branchError = "Please select a branch";
+                    });
+                  }else{
+                    setState(() {
+                      affiliationError = "Please select an affiliation";
+                    });
+                  }
+                }
               },
             ),
             const SizedBox(height: 20),
@@ -122,29 +179,43 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
     );
   }
 
-  Widget _buildDropdownField(String hint) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          dropdownColor: Colors.white,
-          focusColor: Colors.lightBlueAccent,
-          isExpanded: true,
-          hint: Text(hint, style: TextStyle(color: Colors.grey[400])),
-          value: selectedBranch,
-          items: ["Army", "Navy", "Air Force", "Marines", "Coast Guard", "Space Force"]
-              .map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (val) => setState(() => selectedBranch = val),
+  Widget _buildDropdownField({
+    required String hint,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+    String? errorText,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      items: items.map((String val) {
+        return DropdownMenuItem<String>(
+          value: val,
+          child: Text(val),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      // Styling the dropdown to match your previous design
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey[400]),
+        filled: true,
+        fillColor: Colors.grey[50],
+        errorText: errorText,
+        // The error message shows here
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[200]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.lightBlueAccent),
         ),
       ),
     );

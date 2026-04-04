@@ -5,6 +5,8 @@ import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/app_constants.dart';
+import '../controllers/signup_controller.dart';
 
 class SingupThreeScreen extends StatefulWidget {
   const SingupThreeScreen({super.key});
@@ -14,16 +16,15 @@ class SingupThreeScreen extends StatefulWidget {
 }
 
 class _SingupThreeScreenState extends State<SingupThreeScreen> {
-  // Mock data for the options
+
+  final SignupController controller = Get.find<SignupController>();
+
   final List<String> _options = [
-    'No kids',
-    'Expecting',
-    'Infant (0–1)',
-    'Toddler (1–3)',
-    'Preschool (3–5)',
-    'Elementary school',
-    'Middle school',
-    'High school',
+    KidsAgeRange.infant.displayName,
+    KidsAgeRange.toddler.displayName,
+    KidsAgeRange.preSchool.displayName,
+    KidsAgeRange.schoolAge.displayName,
+    KidsAgeRange.teenager.displayName
   ];
 
   // Set to track selected options
@@ -32,9 +33,13 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
   void _toggleOption(String option) {
     setState(() {
       if (_selectedOptions.contains(option)) {
+        String optionValue = KidsAgeRange.values.firstWhere((element) => element.displayName == option).value;
+        controller.kidsAgeRange.remove(optionValue);
         _selectedOptions.remove(option);
       } else {
         _selectedOptions.add(option);
+        String optionValue = KidsAgeRange.values.firstWhere((element) => element.displayName == option).value;
+        controller.kidsAgeRange.add(optionValue);
       }
     });
   }
@@ -142,7 +147,8 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               children: [
-                CustomButton(label: AppStrings.cContinue,
+                CustomButton(
+                  label: AppStrings.cContinue,
                 onPressed: (){
                   Get.toNamed(AppRoutes.signupStepFourScreen);
                 },

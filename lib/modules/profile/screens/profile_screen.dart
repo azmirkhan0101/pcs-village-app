@@ -159,7 +159,7 @@ class ProfileScreen extends StatelessWidget {
                         const Divider(height: 1),
                         _buildListTile(
                           onTap: (){
-
+                            Get.offAllNamed(AppRoutes.authSelection);
                           },
                             Icons.logout, 'Sign Out', Colors.red, isLast: true
                         ),

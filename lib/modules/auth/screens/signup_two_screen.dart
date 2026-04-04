@@ -4,6 +4,7 @@ import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
+import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
 
 import '../../../routes/app_pages.dart';
 
@@ -15,6 +16,9 @@ class SignupTwoScreen extends StatefulWidget {
 }
 
 class _SignupTwoScreenState extends State<SignupTwoScreen> {
+
+  final SignupController controller = Get.find<SignupController>();
+
   // List of all available interests
   final List<String> _interests = [
     'Fitness', 'Cooking', 'Reading', 'Travel', 'Photography',
@@ -31,6 +35,7 @@ class _SignupTwoScreenState extends State<SignupTwoScreen> {
         _selectedInterests.remove(interest);
       } else {
         _selectedInterests.add(interest);
+        controller.interests.add(interest);
       }
     });
   }

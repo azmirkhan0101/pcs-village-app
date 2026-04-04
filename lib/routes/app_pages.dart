@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:pcs_village/modules/auth/bindings/duty_stations_binding.dart';
+import 'package:pcs_village/modules/auth/bindings/signup_binding.dart';
 import 'package:pcs_village/modules/auth/screens/login_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_five_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_four_screen.dart';
@@ -53,7 +55,8 @@ class AppPages {
         name: AppRoutes.signupScreen,
         page: (){
           return SignupScreen();
-        }
+        },
+      binding: SignupBinding()
     ),
     GetPage(
         name: AppRoutes.signupStepOneScreen,
@@ -77,7 +80,8 @@ class AppPages {
         name: AppRoutes.signupStepFourScreen,
         page: (){
           return SignupFourScreen();
-        }
+        },
+      binding: DutyStationsBinding()
     ),
     GetPage(
         name: AppRoutes.signupStepFiveScreen,

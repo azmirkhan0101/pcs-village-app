@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:mime/mime.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 import '../utils/api_endpoints.dart';
 import '../utils/api_response.dart';
@@ -299,9 +300,9 @@ class ApiService extends GetxService {
 
   Future<void> _forceLogout() async {
     await storage.erase();
-    // if (Get.currentRoute != AppRoutes.onBoardingOne) {
-    //   Get.offAllNamed(AppRoutes.onBoardingOne);
-    // }
+    if (Get.currentRoute != AppRoutes.authSelection) {
+      Get.offAllNamed(AppRoutes.authSelection);
+    }
   }
 
 
