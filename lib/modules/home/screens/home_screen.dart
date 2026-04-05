@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
-import '../../../data/models/post.dart';
+import '../../../data/models/post/post.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF1B365D), // Deep Navy Background
+      backgroundColor: const Color(0xFF1B365D),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/models/notification_item.dart';
+import '../../../data/models/notification/notification_item.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -8,8 +8,8 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Mock data based on your image
-    final List<NotificationItem> notifications = [
-      NotificationItem(
+    final List<NotificationModel> notifications = [
+      NotificationModel(
         name: 'Alex M.',
         action: 'waved at you 👋',
         time: '2m ago',
@@ -17,7 +17,7 @@ class NotificationScreen extends StatelessWidget {
         isUnread: true,
         hasActionButtons: true,
       ),
-      NotificationItem(
+      NotificationModel(
         name: 'Sarah M.',
         action: 'liked your post',
         content: '"Just moved to Fort Liberty!"',
@@ -25,7 +25,7 @@ class NotificationScreen extends StatelessWidget {
         imageUrl: 'https://i.pravatar.cc/150?u=sarah',
         isUnread: true,
       ),
-      NotificationItem(
+      NotificationModel(
         name: 'Jennifer K.',
         action: 'commented on your post',
         content: '"Dr. Smith at Fayetteville"',

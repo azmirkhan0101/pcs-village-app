@@ -7,6 +7,7 @@ import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
+import 'package:pcs_village/core/widgets/photo_edit_widget.dart';
 import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
@@ -75,34 +76,12 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
               fontColor: AppColors.subtitleTextColor,).s14,
             const SizedBox(height: 40),
 
-            // Profile Picture Picker
-            Center(
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.grey[100],
-                    child: SvgPicture.asset(Assets.icons.camera,
-                      colorFilter: ColorFilter.mode(
-                          AppColors.primaryColor, BlendMode.srcIn),
-                      height: 30,),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: CircleAvatar(
-                      radius: 18,
-                      backgroundColor: AppColors.primaryColor,
-                      child: SvgPicture.asset(Assets.icons.camera,
-                        colorFilter: ColorFilter.mode(
-                            Colors.white, BlendMode.srcIn), height: 20,),
-                    ),
-                  ),
-                ],
-              ),
+            PhotoEditWidget(
+              imageUrl: "",
+              onImagePicked: (file){
+                controller.profileImage.value = file;
+              },
             ),
-            const SizedBox(height: 20),
-
             // Form Fields
             const SizedBox(height: 20),
             _buildLabel("Military Branch"),

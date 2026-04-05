@@ -7,19 +7,16 @@ import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
+import 'package:pcs_village/modules/auth/controllers/otp_verify_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/widgets/custom_text_field.dart';
 import '../../../core/widgets/pin_field_widget.dart';
 
-class OtpController extends GetxController{
-  final otpController = TextEditingController();
-  final isTimerCounting = false.obs;
-  final seconds = 0.obs;
-}
+class OtpVerifyScreen extends StatelessWidget {
+  OtpVerifyScreen({super.key});
 
-class OtpVerifyScreen extends GetView<OtpController> {
-  const OtpVerifyScreen({super.key});
+  final OtpVerifyController controller = Get.find<OtpVerifyController>();
 
   @override
   Widget build(BuildContext context) {

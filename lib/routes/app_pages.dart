@@ -1,5 +1,8 @@
 import 'package:get/get.dart';
 import 'package:pcs_village/modules/auth/bindings/duty_stations_binding.dart';
+import 'package:pcs_village/modules/auth/bindings/forgot_password_binding.dart';
+import 'package:pcs_village/modules/auth/bindings/otp_binding.dart';
+import 'package:pcs_village/modules/auth/bindings/reset_password_binding.dart';
 import 'package:pcs_village/modules/auth/bindings/signup_binding.dart';
 import 'package:pcs_village/modules/auth/screens/login_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_five_screen.dart';
@@ -22,10 +25,10 @@ import 'package:pcs_village/modules/profile/screens/edit_profile_screen.dart';
 import 'package:pcs_village/modules/subscription/screens/manage_subscription_screen.dart';
 import 'package:pcs_village/modules/profile/screens/settings_screen.dart';
 import 'package:pcs_village/modules/subscription/screens/upgrade_premium_screen.dart';
-import 'package:pcs_village/modules/recovery/screens/forgot_password_screen.dart';
-import 'package:pcs_village/modules/recovery/screens/otp_verify_screen.dart';
-import 'package:pcs_village/modules/recovery/screens/reset_password_screen.dart';
+import 'package:pcs_village/modules/auth/screens/forgot_password_screen.dart';
+import 'package:pcs_village/modules/auth/screens/otp_verify_screen.dart';
 
+import '../modules/auth/screens/reset_password_screen.dart';
 import '../modules/profile/screens/invite_friends.dart';
 
 part 'app_routes.dart';
@@ -93,19 +96,22 @@ class AppPages {
         name: AppRoutes.forgotPasswordScreen,
         page: (){
           return ForgotPasswordScreen();
-        }
+        },
+      binding: ForgotPasswordBinding()
     ),
     GetPage(
         name: AppRoutes.otpVerificationScreen,
         page: (){
           return OtpVerifyScreen();
-        }
+        },
+      binding: OtpBinding()
     ),
     GetPage(
         name: AppRoutes.resetPasswordScreen,
         page: (){
           return ResetPasswordScreen();
-        }
+        },
+      binding: ResetPasswordBinding()
     ),
     //##################################
     GetPage(

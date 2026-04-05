@@ -7,6 +7,7 @@ import 'package:pcs_village/core/services/api_service.dart';
 import 'package:pcs_village/core/utils/api_response.dart';
 import 'package:pcs_village/data/models/auth/branch_model.dart';
 import 'package:pcs_village/data/models/auth/signup_model.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/api_endpoints.dart';
 
@@ -76,7 +77,7 @@ class SignupController extends GetxController{
 
   Future<void> signup() async {
 
-    Map<String, dynamic> data = {
+    Map<String, dynamic> payLoad = {
       "name": nameController.text.trim(),
       "email": emailController.text.trim(),
       "password": passwordController.text.trim(),
@@ -90,7 +91,22 @@ class SignupController extends GetxController{
       "profile_image": profileImage.value?.path
     };
 
-    print(jsonEncode(data));
+    isSignupLoading.value = true;
+    ApiResponse response = await apiService.multipartRequest(
+        method: "POST",
+        endPoint: ApiEndpoints.signup,
+        isAuthRequired: false,
+        fields: payLoad,
+      image: profileImage.value,
+      imageKey: "image"
+    );
+    isSignupLoading.value = false;
+
+    if( response.statusCode == 200 ){
+      Get.offAllNamed(AppRoutes.otpVerificationScreen);
+    }
+
+    print(jsonEncode(payLoad));
   }
 
   //GET BRANCHES

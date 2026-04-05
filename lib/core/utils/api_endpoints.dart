@@ -10,7 +10,7 @@ class ApiEndpoints {
   //LOGIN/SIGNIN
   static const login = "/auth/login";
   //SIGNUP
-  static const signup = "/auth/register";
+  static const signup = "/auth/sign-up";
   static const getAllBranches = "/branches/all";
   static String getDutyStations({required String search}){
     return "/dutystations/all?searchTerm=$search";
@@ -28,6 +28,12 @@ class ApiEndpoints {
   //REFRESH TOKEN
   static const refreshToken = "/auth/refresh-token";
 
+  //##############################################################
+  //=========================POSTS================================
+  static const getAllPosts = "/community-posts/relevant?sortBy=content&sortOrder=desc&fromDate=2026-04-04T03:43:40.878Z&toDate=2026-04-04T03:43:40.878Z";
+  //##############################################################
+  //==========================GROUPS==============================
+  static const getGroups = "/groups";//TODO: ADD GROUPS API
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE

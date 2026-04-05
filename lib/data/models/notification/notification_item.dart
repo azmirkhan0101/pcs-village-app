@@ -1,4 +1,4 @@
-class NotificationItem {
+class NotificationModel {
   final String name;
   final String action;
   final String time;
@@ -7,7 +7,7 @@ class NotificationItem {
   final bool hasActionButtons;
   String? content;
 
-  NotificationItem({
+  NotificationModel({
     required this.name,
     required this.action,
     required this.time,
@@ -18,8 +18,8 @@ class NotificationItem {
   });
 
   // Optional: Factory constructor for JSON mapping
-  factory NotificationItem.fromJson(Map<String, dynamic> json) {
-    return NotificationItem(
+  factory NotificationModel.fromJson(Map<String, dynamic> json) {
+    return NotificationModel(
       name: json['name'] as String,
       action: json['action'] as String,
       time: json['time'] as String,

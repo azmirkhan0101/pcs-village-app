@@ -73,10 +73,10 @@ class SignupScreen extends StatelessWidget {
                 hintText: "password",
                 isPassword: true,
                 validator: (value){
-                  if( value !=null && isPasswordValid(password: value) ){
-                    return null;
+                  if( value == null || !isPasswordValid(password: value) ){
+                    return "Please enter a valid password";
                   }
-                  return "Please enter a valid password";
+                  return null;
                 },
               ),
               const SizedBox(height: 10,),
@@ -86,10 +86,10 @@ class SignupScreen extends StatelessWidget {
                 hintText: "confirm password",
                 isPassword: true,
                 validator: (value){
-                  if( value !=null && value == controller.passwordController.text.trim() ){
-                    return null;
+                  if( controller.confirmPasswordController.text.trim() != controller.passwordController.text.trim() ){
+                    return "passwords do not match";
                   }
-                  return "passwords do not match";
+                  return null;
                 },
               ),
           
@@ -99,11 +99,10 @@ class SignupScreen extends StatelessWidget {
               CustomButton(
                   label: AppStrings.cContinue,
                 onPressed: (){
-                  Get.toNamed(AppRoutes.signupStepOneScreen);
-                  // controller.markSubmitted();
-                  // if( singupFormKey.currentState!.validate() ){
-                  //   Get.toNamed(AppRoutes.signupStepOneScreen);
-                  // }
+                  controller.markSubmitted();
+                  if( singupFormKey.currentState!.validate() ){
+                    Get.toNamed(AppRoutes.signupStepOneScreen);
+                  }
                 },
               ),
           

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../home/controllers/home_controller.dart';
 import '../controllers/main_nav_controller.dart';
 
 class MainNavBinding extends Bindings{
@@ -8,9 +9,9 @@ class MainNavBinding extends Bindings{
     Get.lazyPut<MainNavController>((){
       return MainNavController();
     }, fenix: true);
-    // Get.lazyPut<HomeController>((){
-    //   return HomeController();
-    // }, fenix: true);
+    Get.lazyPut<HomeController>((){
+      return HomeController();
+    }, fenix: true);
     // Get.lazyPut<NotificationController>((){
     //   return NotificationController();
     // }, fenix: true);
