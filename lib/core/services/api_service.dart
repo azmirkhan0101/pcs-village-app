@@ -97,6 +97,7 @@ class ApiService extends GetxService {
       }
       result = response.body;
       code = response.statusCode;
+      print("🟢 Code: ${response.statusCode}");
       if( response.statusCode == 401 && isAuthRequired ) {
         bool isRefreshed = await refreshTokenOnce();
 
@@ -136,13 +137,10 @@ class ApiService extends GetxService {
     required String method,
     required String endPoint,
     required bool isAuthRequired,
-    required Map<String, dynamic> fields,
+    required Map<String, String> fields,
     File? image,
-    File? pdfFile,
-    List<File>? multiplePdfFiles,
     int timeout = 20,
     String? imageKey,
-    String? pdfKey
   }) async {
     var result;
     try {
@@ -150,7 +148,7 @@ class ApiService extends GetxService {
 
       var request = http.MultipartRequest( method, uri);
 
-      request.fields["body"] = jsonEncode(fields);
+      request.fields.addAll(fields);
       if( isAuthRequired ){
         Map<String, String> headers = {
           "Content-Type": "application/json",
@@ -176,34 +174,11 @@ class ApiService extends GetxService {
         }
       }
 
-      //SINGLE PDF FILE
-      if (pdfFile != null) {
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            pdfKey!,
-            pdfFile.path,
-            contentType: http.MediaType("application", "pdf"),
-          ),
-        );
-      }
-
-      //MULTIPLE PDF FILE
-      if (multiplePdfFiles != null && multiplePdfFiles.isNotEmpty) {
-        for (var file in multiplePdfFiles) {
-          request.files.add(
-            await http.MultipartFile.fromPath(
-              pdfKey!,
-              file.path,
-              contentType: http.MediaType("application", "pdf"),
-            ),
-          );
-        }
-      }
-
       // Send request
       var response = await request.send().timeout(Duration(seconds: timeout));
       var responseBody = await response.stream.bytesToString();
       result = responseBody;
+      print("🟢 Code: ${response.statusCode}");
       if( response.statusCode == 401 && isAuthRequired ) {
         bool isRefreshed = await refreshTokenOnce();
 

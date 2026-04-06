@@ -10,6 +10,5 @@ void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await Get.putAsync(() => ApiService().init());
-  Get.put(MainNavController());
   runApp(MainApp());
 }

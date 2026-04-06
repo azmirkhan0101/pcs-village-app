@@ -46,9 +46,11 @@ class OtpVerifyScreen extends StatelessWidget {
               Obx(() {
                 return Visibility(
                   visible: controller.isTimerCounting.value,
-                  child: Text(
-                    "00:${controller.seconds.value}",
-                    style: const TextStyle(color: Colors.grey),
+                  child: Center(
+                    child: Text(
+                      "00:${controller.seconds.value}",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ),
                 );
               }),
@@ -63,7 +65,7 @@ class OtpVerifyScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       if (!controller.isTimerCounting.value) {
-                        //controller.resendOtp();
+                        controller.resendOtp();
                       }
                     },
                     child: const Text(
@@ -78,12 +80,19 @@ class OtpVerifyScreen extends StatelessWidget {
               ),
               const Spacer(),
               //==============Continue Button================
-              CustomButton(
-                label: AppStrings.cContinue,
-                onPressed: (){
-                  Get.toNamed(AppRoutes.resetPasswordScreen);
-                },
-              ),
+              Obx((){
+                return CustomButton(
+                  label: AppStrings.cContinue,
+                  isLoading: controller.isOtpVerifying.value,
+                  onPressed: (){
+                    if( controller.isSignup ){
+                      controller.verifySignupOtp();
+                    }else{
+                      controller.verifyForgotPasswordOtp();
+                    }
+                  },
+                );
+              }),
               const SizedBox(height: 40),
             ],
           ),

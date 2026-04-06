@@ -16,23 +16,19 @@ class SplashScreen extends StatelessWidget {
   Future<AuthStatus> checkAuthStatus() async {
     await Future.delayed(const Duration(milliseconds: 2500));
 
-    return AuthStatus.loggedOut;
+    //return AuthStatus.loggedOut;
 
     // Read the token and verification status
-    // final String? token = storage.read( accessTokenKey );
-    //
-    // final bool verificationRequired = storage.read( requireVerificationKey ) ?? false;
-    //
-    // // If token is null or empty, the user is logged out (or never logged in)
-    // if ( token == null || token.isEmpty ) {//NO TOKEN -> LOGGED OUT
-    //   if( verificationRequired ){
-    //     return AuthStatus.loggedInNotVerified;
-    //   }else{
-    //     return AuthStatus.loggedOut;
-    //   }
-    // }else{//TOKEN FOUND -> LOGGED IN
-    //   return AuthStatus.loggedInAndVerified;
-    // }
+    final String? token = storage.read( accessTokenKey );
+
+    final bool verificationRequired = storage.read( requireVerificationKey ) ?? false;
+
+    // If token is null or empty, the user is logged out (or never logged in)
+    if ( token == null || token.isEmpty ) {//NO TOKEN -> LOGGED OUT
+      return AuthStatus.loggedOut;
+    }else{//TOKEN FOUND -> LOGGED IN
+      return AuthStatus.loggedInAndVerified;
+    }
   }
 
   @override
@@ -49,9 +45,7 @@ class SplashScreen extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               final AuthStatus status = snapshot.data!;
               if (status == AuthStatus.loggedInAndVerified) {
-                //Get.offNamed(AppRoutes.mainNav);
-              } else if (status == AuthStatus.loggedInNotVerified) {
-                //Get.offNamed(AppRoutes.accountApproval);
+                Get.offNamed(AppRoutes.mainNav);
               } else {
                 Get.offNamed(AppRoutes.authSelection);
               }

@@ -5,9 +5,13 @@ import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../data/models/post/post.dart';
+import '../controllers/home_controller.dart';
+import '../widgets/post_card.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+
+  final HomeController controller = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -52,41 +56,20 @@ class HomeScreen extends StatelessWidget {
                 color: Colors.white, // Light grey background for feed
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
               ),
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  PostCard(
-                    onTap: (){
-                      Get.toNamed(AppRoutes.postDetails);
-                    },
-                    post: Post(
-                      name: "Sarah M.",
-                      role: "Army Spouse",
-                      time: "2h ago",
-                      location: "Fort Liberty, NC",
-                      content: "Just moved to Fort Liberty! Any recommendations for pediatricians in the area? Looking for someone who takes Tricare. Thanks in advance! 🏥",
-                      avatarUrl: "https://i.pravatar.cc/150?u=sarah",
-                      likes: 12,
-                      comments: 8,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  PostCard(
-                    onTap: (){
-                      Get.toNamed(AppRoutes.postDetails);
-                    },
-                    post: Post(
-                      name: "Jennifer K.",
-                      role: "Air Force Spouse",
-                      time: "5h ago",
-                      location: "Fort Liberty, NC",
-                      content: "PSA: There's a wonderful spouse coffee meet-up every Tuesday at 10am at the Spring Lake Community Center. Great way to meet people before your PCS! ☕",
-                      avatarUrl: "https://i.pravatar.cc/150?u=jennifer",
-                      likes: 24,
-                      comments: 15,
-                    ),
-                  ),
-                ],
+              child: ListView.builder(
+                itemCount: controller.posts.length,
+                  controller: controller.scrollController,
+
+                  itemBuilder: (context, index){
+                    final Post post = controller.posts[index];
+
+                    return PostCard(
+                      onTap: (){
+                        Get.toNamed(AppRoutes.postDetails);
+                      },
+                      post: post,
+                    );
+                  }
               ),
             ),
           ),
@@ -97,78 +80,8 @@ class HomeScreen extends StatelessWidget {
           Get.toNamed(AppRoutes.createPost);
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        backgroundColor: const Color(0xFF6B8E23), // Olive Green
+        backgroundColor: const Color(0xFF6B8E23),
         child: const Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-}
-
-class PostCard extends StatelessWidget {
-  final Post post;
-  final VoidCallback onTap;
-
-  const PostCard({super.key, required this.post, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-        onTap();
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16), side: BorderSide(color: Colors.grey.shade400)),
-        elevation: 0,
-        color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(backgroundImage: NetworkImage(post.avatarUrl)),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(post.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          //const Icon(Icons.check_circle, size: 14, color: Colors.blue),
-                          SvgPicture.asset(Assets.icons.verified)
-                        ],
-                      ),
-                      Text("${post.role} • ${post.time}", style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_pin, size: 12, color: Colors.grey),
-                          Text(post.location, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Text(post.content, style: const TextStyle(fontSize: 14, height: 1.4)),
-              const Divider(height: 32),
-              Row(
-                children: [
-                  SvgPicture.asset(Assets.icons.favouriteOutlined),
-                  //const Icon(Icons.favorite_border, size: 20, color: Colors.grey),
-                  const SizedBox(width: 4),
-                  Text("${post.likes}", style: const TextStyle(color: Colors.grey)),
-                  const SizedBox(width: 24),
-                  //const Icon(Icons.chat_bubble_outline, size: 20, color: Colors.grey),
-                  SvgPicture.asset(Assets.icons.chat),
-                  const SizedBox(width: 4),
-                  Text("${post.comments}", style: const TextStyle(color: Colors.grey)),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

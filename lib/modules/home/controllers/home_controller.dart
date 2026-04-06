@@ -46,7 +46,7 @@ Future<void> getPosts({bool refresh = true}) async{
     ApiResponse response = await apiService.networkRequest(
         method: "GET",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.getAllPosts
+        endPoint: ApiEndpoints.getAllPosts(page: currentPage)
     );
 
     if( response.statusCode == 200 ){

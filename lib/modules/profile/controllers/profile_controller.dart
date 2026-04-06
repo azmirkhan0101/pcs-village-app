@@ -11,6 +11,7 @@ import '../../../core/utils/api_response.dart';
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/show_snackbar.dart';
+import '../../../data/models/profile/profile_model.dart';
 
 class ProfileController extends GetxController{
 
@@ -18,7 +19,7 @@ class ProfileController extends GetxController{
   final storage = GetStorage();
 
   //GET PROFILE
-  //Rxn<ProfileModel> profileModel = Rxn<ProfileModel>();
+  Rxn<ProfileModel> profileModel = Rxn<ProfileModel>();
   //PROFILE IMAGE
   RxString profileImageUrl = "".obs;
 
@@ -27,9 +28,8 @@ class ProfileController extends GetxController{
 
     final profile = storage.read( profileModelKey );
     if( profile != null ) {
-      //profileModel.value = ProfileModel.fromJson(profile);
+      profileModel.value = ProfileModel.fromJson(profile);
       //profileImageUrl.value = profileModel.value?.image ?? "";
-      //gender.value = profileModel.value?.gender ?? "select";
       initializeEditProfileControllers();
     }else{
       getProfile();
@@ -69,14 +69,13 @@ class ProfileController extends GetxController{
     );
 
     if( response.statusCode == 200 ) { //FETCHED PROFILE DATA
-      // ProfileModel model = ProfileModel.fromJson(  response.data['data'] );
-      // //SAVE PROFILE DATA IN STORAGE
-      // storage.write( profileModelKey, model.toJson() );
-      // storage.write( userNameKey, model.fullName );
-      // storage.write( userContactKey, model.contact );
-      // profileModel.value = model;
-      // profileImageUrl.value = profileModel.value?.image ?? "";
-      // initializeEditProfileControllers();
+      ProfileModel model = ProfileModel.fromJson(  response.data['data'] );
+      //SAVE PROFILE DATA IN STORAGE
+      storage.write( profileModelKey, model.toJson() );
+      storage.write( userNameKey, model.name );
+      profileModel.value = model;
+      //profileImageUrl.value = profileModel.value?.image ?? "";
+      initializeEditProfileControllers();
     }
   }
 
@@ -88,12 +87,9 @@ class ProfileController extends GetxController{
     }
 
     isEditProfileLoading.value = true;
-    Map<String, dynamic> payLoad = {
+    Map<String, String> payLoad = {
       "firstName": firstNameController.text.trim(),
-      "lastName": lastNameController.text.trim(),
-      "dob": dateOfBirth?.toIso8601String(),
-      "gender": gender.value,
-      "about": aboutMeController.text.trim()
+      "lastName": lastNameController.text.trim()
     };
     ApiResponse response = await apiService.multipartRequest(
         method: "PATCH",

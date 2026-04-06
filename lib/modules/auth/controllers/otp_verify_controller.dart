@@ -88,8 +88,7 @@ class OtpVerifyController extends GetxController {
     if( response.statusCode == 200 ){
       showSnackBar(title: "Otp verified!", message: message ?? "Otp verified successfully.", backgroundColor: AppColors.greenPrimary);
       storage.write( requireVerificationKey, false );
-      saveTokens( response.data );
-      Get.offAllNamed( AppRoutes.mainNav );
+      Get.offAllNamed( AppRoutes.loginScreen );
     }else if( response.statusCode == 400 ){
       showSnackBar(title: "OTP required", message: message ?? "Please enter the otp and try again.", backgroundColor: AppColors.warningYellow);
     }else if( response.statusCode == 401 || response.statusCode == 404 ){
@@ -136,9 +135,15 @@ Future<void> verifyForgotPasswordOtp() async{
 
   if( response.statusCode == 200 ){
     showSnackBar(title: "Otp verified!", message: message ?? "Otp verified successfully.", backgroundColor: AppColors.greenPrimary);
-    Get.offAndToNamed( AppRoutes.resetPasswordScreen, arguments: email );
+    String resetToken = response.data['data']['resetToken'];
+    Get.offAndToNamed(
+        AppRoutes.resetPasswordScreen,
+        arguments: {
+          resetTokenKey : resetToken
+        }
+    );
   }else if( response.statusCode == 400 ){
-    showSnackBar(title: "OTP required", message: message ?? "Please enter the otp and try again.", backgroundColor: AppColors.warningYellow);
+    showSnackBar(title: "Attention!", message: message ?? "Please enter the otp and try again.", backgroundColor: AppColors.warningYellow);
   }else if( response.statusCode == 401 || response.statusCode == 404 ){
     showSnackBar(title: "Invalid otp!", message: message ?? "Try again with your valid otp.", backgroundColor: AppColors.errorRed);
   }else if( response.statusCode == 408 ){
@@ -181,17 +186,5 @@ Future<void> verifyForgotPasswordOtp() async{
     }else{
       errorSnackBar();
     }
-  }
-
-
-
-  //SAVE TOKENS IN STORAGE
-  void saveTokens(Map<String, dynamic> response) {
-
-    final accessToken = response["data"]["accessToken"];
-    final refreshToken = response["data"]["refreshToken"];
-
-    storage.write( accessTokenKey, accessToken);
-    storage.write( refreshTokenKey, refreshToken);
   }
 }

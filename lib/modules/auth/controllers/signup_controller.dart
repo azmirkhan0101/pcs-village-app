@@ -5,11 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/services/api_service.dart';
 import 'package:pcs_village/core/utils/api_response.dart';
+import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/show_snackbar.dart';
 import 'package:pcs_village/data/models/auth/branch_model.dart';
 import 'package:pcs_village/data/models/auth/signup_model.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/api_endpoints.dart';
+import '../../../core/utils/app_constants.dart';
 
 class SignupController extends GetxController{
 
@@ -24,6 +27,7 @@ class SignupController extends GetxController{
 
   //SIGNUP DATA
   String? selectedBranch;
+  String? selectedBranchId;
   String? selectedAffiliation;
   List<String> interests = [];
   List<String> kidsAgeRange = [];
@@ -77,19 +81,23 @@ class SignupController extends GetxController{
 
   Future<void> signup() async {
 
-    Map<String, dynamic> payLoad = {
-      "name": nameController.text.trim(),
-      "email": emailController.text.trim(),
-      "password": passwordController.text.trim(),
-      "current_duty_station": currentStationId,
-      "future_duty_station": futureStationId,
-      "moving_time": movingTime?.toIso8601String(),
-      "interests": interests,
-      "kids_age_range": kidsAgeRange,
-      "branch": selectedBranch,
-      "affiliation": selectedAffiliation,
-      "profile_image": profileImage.value?.path
-    };
+    String affiliationValue = Affiliation.values.firstWhereOrNull((element) => element.displayName == selectedAffiliation)?.value ?? Affiliation.activeDuty.value;
+
+
+    Map<String, String> payLoad = buildSignUpBody(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        branch: selectedBranchId!,
+        interestTags: interests,
+        kidsAgeRanges: kidsAgeRange,
+        currentStation: currentStationId!,
+        futureStation: futureStationId,
+        estimatedPcsDate: movingTime!.toIso8601String(),
+        affiliation: affiliationValue
+    );
+
+    print(jsonEncode(payLoad));
 
     isSignupLoading.value = true;
     ApiResponse response = await apiService.multipartRequest(
@@ -98,12 +106,35 @@ class SignupController extends GetxController{
         isAuthRequired: false,
         fields: payLoad,
       image: profileImage.value,
-      imageKey: "image"
+      imageKey: "profileImage"
     );
     isSignupLoading.value = false;
 
-    if( response.statusCode == 200 ){
-      Get.offAllNamed(AppRoutes.otpVerificationScreen);
+    String? message = response.data?['message'];
+
+    if( response.statusCode == 201 ){//ACCOUNT CREATED
+      Get.offAllNamed(
+          AppRoutes.otpVerificationScreen,
+        arguments: {
+            emailKey : emailController.text.trim(),
+          isSignupKey : true
+        }
+      );
+    }else if( response.statusCode == 409 ){//CONFLICT
+      if( message != null && message.contains("Your account is not verified yet. Please verify your OTP.") ){
+        Get.offAndToNamed(
+            AppRoutes.otpVerificationScreen,
+            arguments: {
+              emailKey : emailController.text.trim(),
+              isSignupKey : true
+            }
+        );
+      }
+      showSnackBar(title: "Not verified", message: message ?? "Verify your account", backgroundColor: AppColors.warningYellow
+      );
+    }else{
+      showSnackBar(title: "Error", message: message ?? "Something went wrong", backgroundColor: AppColors.errorRed
+      );
     }
 
     print(jsonEncode(payLoad));
@@ -141,5 +172,39 @@ Future<void> getBranches() async{
         }).toList();
       }
     }
+  }
+
+  Map<String, String> buildSignUpBody({
+    required String name,
+    required String email,
+    required String password,
+    required String branch,
+    required List<String> interestTags,
+    required List<String> kidsAgeRanges,
+    required String currentStation,
+    required String? futureStation,
+    required String estimatedPcsDate,
+    required String affiliation
+  }) {
+    final Map<String, String> body = {
+      "name": name,
+      "email": email,
+      "password": password,
+      "branch": branch,
+      "currentStation": currentStation,
+      if( futureStation != null ) "futureStation": futureStation,
+      "estimatedPcsDate": estimatedPcsDate,
+      "affiliation": affiliation
+    };
+
+    for (int i = 0; i < interestTags.length; i++) {
+      body["interestTags[$i]"] = interestTags[i];
+    }
+
+    for (int i = 0; i < kidsAgeRanges.length; i++) {
+      body["kidsAgeRanges[$i]"] = kidsAgeRanges[i];
+    }
+
+    return body;
   }
 }

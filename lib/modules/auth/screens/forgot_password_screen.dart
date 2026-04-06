@@ -54,14 +54,17 @@ class ForgotPasswordScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 //==============Get Started Button================
-                CustomButton(
-                  label: AppStrings.cContinue,
-                  onPressed: (){
-                    if( _formKey.currentState!.validate() ){
-                      controller.sendOtp();
-                    }
-                  },
-                ),
+                Obx((){
+                  return CustomButton(
+                    label: AppStrings.cContinue,
+                    isLoading: controller.isForgotPasswordLoading.value,
+                    onPressed: (){
+                      if( _formKey.currentState!.validate() ){
+                        controller.sendOtp();
+                      }
+                    },
+                  );
+                }),
                 const SizedBox(height: 40),
               ],
             ),

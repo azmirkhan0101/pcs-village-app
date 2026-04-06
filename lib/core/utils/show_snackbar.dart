@@ -1,12 +1,13 @@
 //SHOW SNACKBAR
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 
 import 'app_colors.dart';
 
-void showSnackBar({required String title, required String message, required Color backgroundColor, Color textColor = AppColors.white}) {
+void showSnackBar({required String title, required String message, required Color backgroundColor, Color textColor = Colors.white}) {
   Get.snackbar(
       title,
       message,
@@ -39,6 +40,15 @@ void timeOutSnackBar() {
   Get.snackbar(
       "Time out!",
       "Please check your internet connection or try again later.",
+      backgroundColor: AppColors.errorRed,
+      colorText: AppColors.white
+  );
+}
+
+void incorrectCredentialsSnackBar() {
+  Get.snackbar(
+      "Incorrect Credentials!",
+      "Please enter email and password correctly.",
       backgroundColor: AppColors.errorRed,
       colorText: AppColors.white
   );

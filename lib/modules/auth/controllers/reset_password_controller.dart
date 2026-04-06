@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/app_constants.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
@@ -11,13 +12,25 @@ import '../../../routes/app_pages.dart';
 class ResetPasswordController extends GetxController {
 
   final ApiService apiService = Get.find<ApiService>();
-  GlobalKey<FormState>? formKey;
+  GlobalKey<FormState>? _formKey;
+  bool _hasSubmitted = false;
+
   void setFormKey(GlobalKey<FormState> key) {
-    formKey = key;
+    _formKey = key;
   }
 
+  void markSubmitted() {
+    _hasSubmitted = true;
+    _formKey?.currentState?.validate();
+  }
 
-  String email = "";
+  void _onTextChanged(){
+    if( _formKey != null && _hasSubmitted ){
+      _formKey!.currentState!.validate();
+    }
+  }
+
+  String resetToken = "";
 
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
@@ -26,7 +39,10 @@ class ResetPasswordController extends GetxController {
 
   @override
   void onInit() {
-    email = Get.arguments;
+    resetToken = Get.arguments[resetTokenKey];
+
+    passwordController.addListener( _onTextChanged );
+    confirmPasswordController.addListener( _onTextChanged );
     super.onInit();
   }
   
@@ -38,13 +54,12 @@ class ResetPasswordController extends GetxController {
     }
     isPasswordChanging.value = true;
     Map<String, dynamic> payLoad = {
-      "email": email,
       "newPassword": passwordController.text.trim()
     };
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: false,
-        endPoint: ApiEndpoints.resetPassword,
+        endPoint: ApiEndpoints.resetPassword(resetToken: resetToken),
       body: payLoad
     );
     isPasswordChanging.value = false;
@@ -54,8 +69,10 @@ class ResetPasswordController extends GetxController {
     if( response.statusCode == 200 ){
       showSnackBar(title: "Done!", message: message ?? "Password has been reset.", backgroundColor: AppColors.greenPrimary);
       Get.offAndToNamed( AppRoutes.loginScreen );
+    }else if( response.statusCode == 401 ){
+      showSnackBar(title: "Attention!", message: message ?? "Token expired.", backgroundColor: AppColors.warningYellow);
     }else if( response.statusCode == 404 ){
-      showSnackBar(title: "No account found!", message: message ?? "No account found with this email.", backgroundColor: AppColors.warningYellow);
+      showSnackBar(title: "Attention!", message: message ?? "No account found with this email.", backgroundColor: AppColors.warningYellow);
     }else if( response.statusCode == 408 ){
       timeOutSnackBar();
     }else if( response.statusCode == 503 ){
@@ -64,5 +81,12 @@ class ResetPasswordController extends GetxController {
       errorSnackBar();
     }
 
+  }
+
+  @override
+  void onClose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.onClose();
   }
 }

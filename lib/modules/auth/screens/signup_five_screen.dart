@@ -84,15 +84,18 @@ class SignupFiveScreen extends StatelessWidget {
               ),
               const Spacer(),
               // Bottom Action Button
-              CustomButton(
+              Obx((){
+                return CustomButton(
+                  isLoading: controller.isSignupLoading.value,
                   label: AppStrings.completeSetup,
-                onPressed: (){
+                  onPressed: (){
                     if( _formKey.currentState!.validate() ){
                       //Get.toNamed(AppRoutes.mainNav);
                       controller.signup();
                     }
-                },
-              ),
+                  },
+                );
+              }),
               const SizedBox( height: 40,)
             ],
           ),

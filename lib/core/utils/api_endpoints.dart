@@ -16,28 +16,32 @@ class ApiEndpoints {
     return "/dutystations/all?searchTerm=$search";
   }
   //SEND FORGOT PASSWORD OTP
-  static const otpForgotPassword = "/auth/forgotPass";
+  static const otpForgotPassword = "/auth/forgot-password";
   //RESEND OTP
-  static const otpResend = "/auth/resendOtp";
+  static const otpResend = "/auth/resend-signup-otp";
   //VERIFY SIGNUP OTP
-  static const verifySignupOtp = "/auth/regOtpVerify";
+  static const verifySignupOtp = "/auth/verify-signup-otp";
   //VERIFY FORGOT PASSWORD OTP
-  static const otpVerifyForgotPassword = "/auth/verifyOtp";
+  static const otpVerifyForgotPassword = "/auth/verify-otp";
   //RESET PASSWORD - NEW PASSWORD
-  static const resetPassword = "/auth/resetPass";
+  static String resetPassword({required String resetToken}){
+    return "/auth/reset-password?resetToken=$resetToken";
+  }
   //REFRESH TOKEN
   static const refreshToken = "/auth/refresh-token";
 
   //##############################################################
   //=========================POSTS================================
-  static const getAllPosts = "/community-posts/relevant?sortBy=content&sortOrder=desc&fromDate=2026-04-04T03:43:40.878Z&toDate=2026-04-04T03:43:40.878Z";
+  static String getAllPosts({required int page}){
+    return "/community-posts/relevant?limit=10&page=$page&sortBy=content&sortOrder=desc";
+  }
   //##############################################################
   //==========================GROUPS==============================
   static const getGroups = "/groups";//TODO: ADD GROUPS API
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE
-  static const getProfile = "/user/my-profile";
+  static const getProfile = "/auth/me";
   //CHANGE PASSWORD - UPDATE PASSWORD
   static const changePassword = "/auth/changePassword";
   //DELETE ACCOUNT

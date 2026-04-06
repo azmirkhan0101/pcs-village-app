@@ -22,6 +22,9 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    controller.setFormKey( _formKey );
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -45,7 +48,7 @@ class ResetPasswordScreen extends StatelessWidget {
                   controller: controller.passwordController,
                   isPassword: true,
                   validator: (value){
-                    if( value == null || !isEmailValid(email: value) ){
+                    if( value == null || !isPasswordValid(password: controller.passwordController.text.trim()) ){
                       return "enter valid password";
                     }
                     return null;
@@ -66,14 +69,18 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 //==============Continue Button================
-                CustomButton(
-                  label: AppStrings.cContinue,
-                  onPressed: (){
-                    if( _formKey.currentState!.validate() ){
-                      controller.resetPassword();
-                    }
-                  },
-                ),
+                Obx((){
+                  return CustomButton(
+                    label: AppStrings.cContinue,
+                    isLoading: controller.isPasswordChanging.value,
+                    onPressed: (){
+                      controller.markSubmitted();
+                      if( _formKey.currentState!.validate() ){
+                        controller.resetPassword();
+                      }
+                    },
+                  );
+                }),
                 const SizedBox(height: 40),
               ],
             ),

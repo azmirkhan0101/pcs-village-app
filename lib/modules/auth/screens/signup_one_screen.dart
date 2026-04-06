@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
-import 'package:pcs_village/core/widgets/custom_text_field.dart';
 import 'package:pcs_village/core/widgets/photo_edit_widget.dart';
+import 'package:pcs_village/data/models/auth/branch_model.dart';
 import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
-
-import '../../../core/assets_gen/assets.gen.dart';
 
 class SignupOneScreen extends StatefulWidget {
   const SignupOneScreen({super.key});
@@ -32,6 +29,16 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
     Affiliation.veteran.displayName,
     Affiliation.militaryFamily.displayName
   ];
+  
+  @override
+  void initState() {
+    
+    if( controller.branches.isEmpty ){
+      controller.getBranches();
+    }
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,19 +92,23 @@ class _SignupOneScreenState extends State<SignupOneScreen> {
             // Form Fields
             const SizedBox(height: 20),
             _buildLabel("Military Branch"),
-            _buildDropdownField(
-                hint: "Select Branch",
-                value: controller.selectedBranch,
-                errorText: branchError,
-                items: controller.branches.map((e){
-                  return e.name;
-                }).toList(),
-                onChanged: (String? value) {
-                  setState(() {
-                    controller.selectedBranch = value;
-                  });
-                }
-            ),
+            Obx((){
+              return _buildDropdownField(
+                  hint: "Select Branch",
+                  value: controller.selectedBranch,
+                  errorText: branchError,
+                  items: controller.branches.value.map((e){
+                    return e.name;
+                  }).toList(),
+                  onChanged: (String? value) {
+                    setState(() {
+                      BranchModel model = controller.branches[controller.branches.indexOf(controller.branches.firstWhere((element) => element.name == value))];
+                      controller.selectedBranch = value;
+                      controller.selectedBranchId = model.id;
+                    });
+                  }
+              );
+            }),
 
             const SizedBox(height: 20),
             _buildLabel("Military Affiliation"),

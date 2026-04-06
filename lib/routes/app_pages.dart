@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:pcs_village/modules/auth/bindings/duty_stations_binding.dart';
 import 'package:pcs_village/modules/auth/bindings/forgot_password_binding.dart';
+import 'package:pcs_village/modules/auth/bindings/login_binding.dart';
 import 'package:pcs_village/modules/auth/bindings/otp_binding.dart';
 import 'package:pcs_village/modules/auth/bindings/reset_password_binding.dart';
 import 'package:pcs_village/modules/auth/bindings/signup_binding.dart';
@@ -14,6 +15,7 @@ import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
 import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
 import 'package:pcs_village/modules/home/screens/create_post.dart';
 import 'package:pcs_village/modules/home/screens/post_details.dart';
+import 'package:pcs_village/modules/main_nav/bindings/main_nav_binding.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
 import 'package:pcs_village/modules/message/screens/message_details.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
@@ -52,7 +54,8 @@ class AppPages {
         name: AppRoutes.loginScreen,
         page: (){
           return LoginScreen();
-        }
+        },
+      binding: LoginBinding()
     ),
     GetPage(
         name: AppRoutes.signupScreen,
@@ -118,7 +121,8 @@ class AppPages {
         name: AppRoutes.mainNav,
         page: (){
           return MainNavScreen();
-        }
+        },
+      binding: MainNavBinding()
     ),
     GetPage(
         name: AppRoutes.postDetails,

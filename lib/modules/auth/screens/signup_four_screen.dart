@@ -100,13 +100,6 @@ class SignupFourScreen extends StatelessWidget {
                 onChanged: (value){
                   stationsController.searchStation(query: value, isCurrent: false);
                 },
-                validator: (value){
-                if( controller.futureStationId == null ){
-                  return 'Please select future station';
-                }else{
-                  return null;
-                }
-              },
               ),
               const SizedBox( height: 10,),
               Obx((){
