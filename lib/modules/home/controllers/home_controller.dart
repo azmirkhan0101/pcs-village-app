@@ -32,6 +32,11 @@ class HomeController extends GetxController{
 
   //GET POSTS
 Future<void> getPosts({bool refresh = true}) async{
+
+    if( isPostsLoading.value || isPostsMoreLoading.value ){
+      return;
+    }
+
     if( refresh ){
       currentPage = 1;
       hasMorePosts = true;

@@ -13,8 +13,10 @@ import 'package:pcs_village/modules/auth/screens/signup_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_three_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
 import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
-import 'package:pcs_village/modules/home/screens/create_post.dart';
-import 'package:pcs_village/modules/home/screens/post_details.dart';
+import 'package:pcs_village/modules/home/bindings/create_post_binding.dart';
+import 'package:pcs_village/modules/home/bindings/post_details_binding.dart';
+import 'package:pcs_village/modules/home/screens/create_post_screen.dart';
+import 'package:pcs_village/modules/home/screens/post_details_screen.dart';
 import 'package:pcs_village/modules/main_nav/bindings/main_nav_binding.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
 import 'package:pcs_village/modules/message/screens/message_details.dart';
@@ -127,14 +129,16 @@ class AppPages {
     GetPage(
         name: AppRoutes.postDetails,
         page: (){
-          return PostDetails();
-        }
+          return PostDetailsScreen();
+        },
+      binding: PostDetailsBinding()
     ),
     GetPage(
         name: AppRoutes.createPost,
         page: (){
           return CreatePostScreen();
-        }
+        },
+      binding: CreatePostBinding()
     ),
     GetPage(
         name: AppRoutes.messageDetails,

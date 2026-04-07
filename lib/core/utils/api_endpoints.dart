@@ -32,9 +32,17 @@ class ApiEndpoints {
 
   //##############################################################
   //=========================POSTS================================
+  static const createPost = "/community-posts";
   static String getAllPosts({required int page}){
     return "/community-posts/relevant?limit=10&page=$page&sortBy=content&sortOrder=desc";
   }
+  static String getPostComments({required String id}){
+    return "/community-comments/$id/all";
+  }
+  static String likeUnlikePost({required String id}){
+    return "/community-likes/$id";
+  }
+  static const addComment = "/community-comments";
   //##############################################################
   //==========================GROUPS==============================
   static const getGroups = "/groups";//TODO: ADD GROUPS API

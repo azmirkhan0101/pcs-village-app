@@ -1,9 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/widgets/cached_image_widget.dart';
+import 'package:pcs_village/core/widgets/custom_button.dart';
+import 'package:pcs_village/core/widgets/custom_text.dart';
+import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
+import '../../../core/utils/app_colors.dart';
+
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+
+  final ProfileController controller = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +55,27 @@ class ProfileScreen extends StatelessWidget {
                   _buildCard(
                     child: Column(
                       children: [
-                        const CircleAvatar(
-                          radius: 50,
-                          backgroundColor: Colors.orangeAccent,
-                          backgroundImage: NetworkImage('https://images.unsplash.com/photo-1488161628813-04466f872be2?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'), // Replace with actual image
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Container(
+                            height: 85,
+                            width: 85,
+                            color: Colors.grey.shade200,
+                            child: Obx((){
+                              return CachedImageWidget(imageUrl: controller.profileModel.value?.profileImage ?? "",
+                              iconSize: 48,
+                              );
+                            }),
+                          ),
                         ),
                         const SizedBox(height: 12),
-                        const Text('Mudari 890', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryNavy)),
+                        Obx((){
+                          return Text( controller.profileModel.value?.name ?? "", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: primaryNavy));
+                        }),
                         const SizedBox(height: 4),
-                        const Text('Army Spouse', style: TextStyle(color: Colors.grey)),
+                        Obx((){
+                          return Text( controller.profileModel.value?.affiliation ?? "", style: TextStyle(fontSize: 14, color: primaryNavy));
+                        }),
                         const SizedBox(height: 16),
                         const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -172,6 +193,72 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  //SHOW LOGOUT DIALOG
+  Future<void> showLogOutDialog() async{
+    Get.dialog(
+        AlertDialog(
+          backgroundColor: AppColors.greyB2,
+          content: Column(
+            spacing: 5,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: CupertinoColors.destructiveRed,
+                    shape: BoxShape.circle,
+                    //borderRadius: BorderRadius.circular(100)
+                  ),
+                  child: Icon(Icons.exit_to_app, color: AppColors.white, fontWeight: FontWeight.bold, size: 28,),
+                ),
+              ),
+              CustomText(
+                text: "Log out",
+                fontColor: AppColors.primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
+              CustomText(
+                text: "Do you want to log out?",
+                fontColor: AppColors.grey4E,
+                fontSize: 14,
+              )
+            ],
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          actions: [
+            Row(
+              spacing: 4,
+              children: [
+                Expanded(
+                  child: CustomButton(
+                    buttonHeight: 40,
+                    label: "Cancel",
+                    fontSize: 14,
+                    backgroundColor: AppColors.primaryColor,
+                    onPressed: (){
+                      Get.back();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: CustomButton(
+                    buttonHeight: 40,
+                    label: "Log out",
+                    fontSize: 14,
+                    onPressed: (){
+                      controller.logOut();
+                    },
+                  ),
+                ),
+              ],
+            )
+          ],
+        )
     );
   }
 

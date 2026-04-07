@@ -6,6 +6,7 @@ class ProfileModel {
   final String id;
   final String name;
   final String email;
+  final String profileImage;
   final String status;
   final String role;
   final bool isTwoFactorEnabled;
@@ -22,6 +23,7 @@ class ProfileModel {
     required this.id,
     required this.name,
     required this.email,
+    required this.profileImage,
     required this.status,
     required this.role,
     required this.isTwoFactorEnabled,
@@ -40,6 +42,7 @@ class ProfileModel {
       id: json['_id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      profileImage: json['profileImage'] ?? '',
       status: json['status'] ?? '',
       role: json['role'] ?? '',
       isTwoFactorEnabled: json['isTwoFactorEnabled'] ?? false,

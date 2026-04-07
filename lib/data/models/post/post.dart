@@ -18,8 +18,8 @@ class Post {
   final String stationState;
   final String stationCity;
   final String stationType;
-  final int comments;
-  final int likes;
+  final int commentsCount;
+  final int likesCount;
 
   Post({
     required this.id,
@@ -40,8 +40,8 @@ class Post {
     required this.stationState,
     required this.stationCity,
     required this.stationType,
-    required this.comments,
-    required this.likes
+    required this.commentsCount,
+    required this.likesCount
   });
 
   // Factory method to create an instance from JSON
@@ -65,8 +65,8 @@ class Post {
       stationState: json['stationState'] ?? '',
       stationCity: json['stationCity'] ?? '',
       stationType: json['stationType'] ?? '',
-      comments: json['comments'] ?? 0,
-      likes: json['likes'] ?? 0,
+      commentsCount: json['comments'] ?? 0,
+      likesCount: json['likes'] ?? 0,
     );
   }
 
@@ -90,8 +90,8 @@ class Post {
       'stationState': stationState,
       'stationCity': stationCity,
       'stationType': stationType,
-      'comments': comments,
-      'likes': likes
+      'comments': commentsCount,
+      'likes': likesCount
     };
   }
 }

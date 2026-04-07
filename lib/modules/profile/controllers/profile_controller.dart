@@ -12,6 +12,7 @@ import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/app_constants.dart';
 import '../../../core/utils/show_snackbar.dart';
 import '../../../data/models/profile/profile_model.dart';
+import '../../../routes/app_pages.dart';
 
 class ProfileController extends GetxController{
 
@@ -29,7 +30,7 @@ class ProfileController extends GetxController{
     final profile = storage.read( profileModelKey );
     if( profile != null ) {
       profileModel.value = ProfileModel.fromJson(profile);
-      //profileImageUrl.value = profileModel.value?.image ?? "";
+      //profileImageUrl.value = profileModel.value?. ?? "";
       initializeEditProfileControllers();
     }else{
       getProfile();
@@ -121,7 +122,7 @@ class ProfileController extends GetxController{
   Future<void> logOut() async{
     await storage.erase();
     Get.back();
-    //Get.offAllNamed(AppRoutes.roleSelection);
+    Get.offAllNamed(AppRoutes.authSelection);
   }
 
 

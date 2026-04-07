@@ -65,7 +65,7 @@ class ApiService extends GetxService {
         case 'POST':
           {
             response = await http
-                .post(uri, body: jsonEncode(body), headers: headers)
+                .post(uri, body: body == null ? jsonEncode({}) : jsonEncode(body), headers: headers)
                 .timeout(Duration(seconds: timeout));
           }
           break;
@@ -141,6 +141,7 @@ class ApiService extends GetxService {
     File? image,
     int timeout = 20,
     String? imageKey,
+    List<File>? images
   }) async {
     var result;
     try {
@@ -171,6 +172,24 @@ class ApiService extends GetxService {
               contentType: http.MediaType(mimeType[0], mimeType[1]),
             ),
           );
+        }
+      }
+
+      if (images != null && images.isNotEmpty) {
+        for (int i = 0; i < images.length; i++) {
+          final compressedImage = await compressImage(images[i]);
+          if (compressedImage != null) {
+            final mimeType =
+            lookupMimeType(compressedImage.path)?.split('/') ??
+                ['application', 'octet-stream'];
+            request.files.add(
+              await http.MultipartFile.fromPath(
+                imageKey!,
+                compressedImage.path,
+                contentType: http.MediaType(mimeType[0], mimeType[1]),
+              ),
+            );
+          }
         }
       }
 

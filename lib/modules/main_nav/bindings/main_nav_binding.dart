@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../home/controllers/home_controller.dart';
+import '../../profile/controllers/profile_controller.dart';
 import '../controllers/main_nav_controller.dart';
 
 class MainNavBinding extends Bindings{
@@ -18,9 +19,9 @@ class MainNavBinding extends Bindings{
     // Get.lazyPut<SettingsController>((){
     //   return SettingsController();
     // }, fenix: true);
-    // Get.lazyPut<ProfileController>((){
-    //   return ProfileController();
-    // }, fenix: true);
+    Get.lazyPut<ProfileController>((){
+      return ProfileController();
+    }, fenix: true);
   }
 
 }
