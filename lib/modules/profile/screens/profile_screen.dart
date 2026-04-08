@@ -169,7 +169,8 @@ class ProfileScreen extends StatelessWidget {
                           onTap: (){
                             Get.toNamed(AppRoutes.communityGuidelines);
                           },
-                            Icons.description_outlined, 'Community Guidelines', primaryNavy),
+                            Icons.description_outlined, 'Community Guidelines', primaryNavy
+                        ),
                         const Divider(height: 1),
                         _buildListTile(
                           onTap: (){

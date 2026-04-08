@@ -21,6 +21,23 @@ class PostDetailsController extends GetxController {
 
   late Post post;
 
+  final FocusNode commentFocusNode = FocusNode();
+
+  Rxn<Comment> replyingToComment = Rxn<Comment>();
+  void toggleReplies(String id) => expandedCommentIds.contains(id) ? expandedCommentIds.remove(id) : expandedCommentIds.add(id);
+
+  var expandedCommentIds = <String>{}.obs;
+
+  void setReplyingTo(Comment comment) {
+    replyingToComment.value = comment;
+    commentFocusNode.requestFocus();
+  }
+
+  void cancelReply() {
+    replyingToComment.value = null;
+    commentFocusNode.unfocus();
+  }
+
   @override
   void onInit() {
     post = Get.arguments;
@@ -115,4 +132,20 @@ Future<void> addComment({required String comment}) async{
     getPostComments();
     commentController.clear();
 }
+
+//=====================REPLY==================================
+  Future<void> addReply({required String parentCommentId, required String content}) async{
+    ApiResponse response = await apiService.networkRequest(
+        method: "POST",
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.addComment,
+        body: {
+          "content": content,
+          "post": post.id,
+          "parent" : parentCommentId
+        }
+    );
+    getPostComments();
+    commentController.clear();
+  }
 }

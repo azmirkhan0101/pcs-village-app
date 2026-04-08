@@ -54,6 +54,9 @@ Future<void> getPosts({bool refresh = true}) async{
         endPoint: ApiEndpoints.getAllPosts(page: currentPage)
     );
 
+    isPostsLoading.value = false;
+    isPostsMoreLoading.value = false;
+
     if( response.statusCode == 200 ){
       final fetchedPosts = response.data['data'] as List<dynamic>?;
       if( fetchedPosts is List && fetchedPosts.isNotEmpty ){
