@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
@@ -16,6 +18,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     // Primary Colors from the UI
     const Color primaryNavy = Color(0xFF1D3557);
     const Color accentBlue = Color(0xFF457B9D);
@@ -74,7 +77,8 @@ class ProfileScreen extends StatelessWidget {
                         }),
                         const SizedBox(height: 4),
                         Obx((){
-                          return Text( controller.profileModel.value?.affiliation ?? "", style: TextStyle(fontSize: 14, color: primaryNavy));
+                          String affiliation = Affiliation.values.firstWhereOrNull((element) => element.value == controller.profileModel.value?.affiliation)?.displayName ?? Affiliation.activeDuty.displayName;
+                          return Text( affiliation, style: TextStyle(fontSize: 14, color: primaryNavy));
                         }),
                         const SizedBox(height: 16),
                         const Row(
@@ -110,10 +114,32 @@ class ProfileScreen extends StatelessWidget {
                     title: 'Military Information',
                     child: Column(
                       children: [
-                        _buildInfoRow(Icons.location_on_outlined, 'Current Station', 'Fort Liberty, NC'),
-                        _buildInfoRow(Icons.explore_outlined, 'Future Station', 'Joint Base Lewis-McChord, WA'),
-                        _buildInfoRow(Icons.calendar_today_outlined, 'PCS Timeline', 'Moving within 6 months'),
-                      ],
+                        Obx((){
+                          return _buildInfoRow(
+                              Icons.location_on_outlined,
+                              'Current Station',
+                              controller.profileModel.value?.currentStation?.name ?? "Not found"
+                          );
+                        }),
+                        Obx((){
+                          return _buildInfoRow(
+                              Icons.location_on_outlined,
+                              'Future Station',
+                              controller.profileModel.value?.futureStation?.name ?? "Not found"
+                          );
+                        }),
+                        Obx(() {
+                          final pcsDate = controller.profileModel.value?.estimatedPcsDate;
+
+                          return _buildInfoRow(
+                            Icons.date_range_outlined,
+                            'PCS Timeline',
+                            pcsDate != null
+                                ? DateFormat("dd-MM-yyyy").format(pcsDate)
+                                : "No date found",
+                          );
+                        }),
+                        ],
                     ),
                   ),
 
@@ -124,28 +150,42 @@ class ProfileScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const _SectionLabel(label: 'Branch'),
-                        const Text('Army', style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)),
+                        Obx((){
+                          return Text(
+                              controller.profileModel.value?.branch?.name ?? "Not found",
+                              style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy));
+                        }),
                         const SizedBox(height: 16),
                         const _SectionLabel(label: 'Kids Age Range'),
-                        Wrap(
-                          spacing: 8,
-                          children: [
-                            _buildChip('Preschool (3-5)'),
-                            _buildChip('Elementary school'),
-                          ],
-                        ),
+                        Obx(() {
+                          final kidsAgeRanges = controller.profileModel.value?.kidsAgeRanges ?? [];
+
+                          return Wrap(
+                            spacing: 8,
+                            children: kidsAgeRanges.isEmpty
+                                ? [const Text("No age ranges specified")]
+                                : kidsAgeRanges.map((range) {
+                              String rangeName = KidsAgeRange.values
+                                  .firstWhereOrNull((element) => element.value == range)
+                                  ?.displayName ?? "Unidentified";
+                              return _buildChip(rangeName);
+                            }).toList(),
+                          );
+                        }),
                         const SizedBox(height: 16),
                         const _SectionLabel(label: 'Interests'),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: [
-                            _buildChip('Fitness'),
-                            _buildChip('Cooking'),
-                            _buildChip('Reading'),
-                            _buildChip('Travel')
-                          ],
-                        ),
+                        Obx(() {
+                          final interests = controller.profileModel.value?.interestTags ?? [];
+
+                          return Wrap(
+                            spacing: 8,
+                            children: interests.isEmpty
+                                ? [const Text("No age ranges specified")]
+                                : interests.map((range) {
+                              return _buildChip(range);
+                            }).toList(),
+                          );
+                        }),
                         const SizedBox(height: 16),
                         const _SectionLabel(label: 'Member Since'),
                         const Text('January 2026', style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)),
@@ -181,7 +221,7 @@ class ProfileScreen extends StatelessWidget {
                         const Divider(height: 1),
                         _buildListTile(
                           onTap: (){
-                            Get.offAllNamed(AppRoutes.authSelection);
+                            showLogOutDialog();
                           },
                             Icons.logout, 'Sign Out', Colors.red, isLast: true
                         ),
@@ -218,12 +258,12 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               CustomText(
-                text: "Log out",
+                text: "Sign out",
                 fontColor: AppColors.primaryColor,
                 fontWeight: FontWeight.bold,
               ),
               CustomText(
-                text: "Do you want to log out?",
+                text: "Do you want to sign out?",
                 fontColor: AppColors.grey4E,
                 fontSize: 14,
               )
@@ -249,7 +289,7 @@ class ProfileScreen extends StatelessWidget {
                 Expanded(
                   child: CustomButton(
                     buttonHeight: 40,
-                    label: "Log out",
+                    label: "Sign out",
                     fontSize: 14,
                     onPressed: (){
                       controller.logOut();

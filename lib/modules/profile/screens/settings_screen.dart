@@ -6,7 +6,6 @@ import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
-import '../../../core/utils/app_strings.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});

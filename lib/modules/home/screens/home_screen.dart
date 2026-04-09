@@ -28,7 +28,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             Obx((){
               return Text(
-                  profileController.profileModel.value?.currentStation.name ?? "",
+                  profileController.profileModel.value?.currentStation?.name ?? "",
                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)
               );
             }),

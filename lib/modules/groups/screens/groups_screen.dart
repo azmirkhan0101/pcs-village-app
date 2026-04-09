@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/modules/groups/controllers/groups_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 class GroupsScreen extends StatelessWidget {
-  const GroupsScreen({super.key});
+  GroupsScreen({super.key});
+
+  final GroupsController controller = Get.find<GroupsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class GroupsScreen extends StatelessWidget {
             padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 30),
             width: double.infinity,
             decoration: const BoxDecoration(
-              color: Color(0xFF213A5E), // Navy blue header
+              color: Color(0xFF213A5E),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,7 +126,7 @@ class GroupCard extends StatelessWidget {
           border: Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/widgets/custom_button.dart';
+import 'package:pcs_village/core/widgets/custom_text_field.dart';
+import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
+
+import '../../../core/widgets/photo_edit_widget.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -8,6 +15,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+
+  final ProfileController controller = Get.find<ProfileController>();
   // Define colors based on the UI
   final Color primaryNavy = const Color(0xFF1D3557);
   final Color lightGrey = const Color(0xFFF8F9FA);
@@ -23,16 +32,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryNavy,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              child: const Text("Save", style: TextStyle(color: Colors.white)),
-            ),
-          )
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+            child: Obx((){
+              return CustomButton(
+                label: AppStrings.save,
+                buttonRadius: 100,
+                fontSize: 14,
+                isLoading: controller.isEditProfileLoading.value,
+                onPressed: (){
+                  controller.updateProfile();
+                },
+              );
+            }),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -41,28 +53,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Picture with Camera Icon
-            Center(
-              child: Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  const CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage('https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D'), // Replace with actual image
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(color: primaryNavy, shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2)),
-                    child: const Icon(Icons.camera_alt_outlined, color: Colors.white, size: 20),
-                  ),
-                ],
-              ),
-            ),
+            Obx((){
+              return PhotoEditWidget(
+                imageUrl: controller.profileImageUrl.value,
+                onImagePicked: (file){
+                  controller.profileImage.value = file;
+                },
+              );
+            }),
             const SizedBox(height: 30),
-
-            // Form Fields
-            _buildLabel("First Name"),
-            _buildTextField("Your Name"),
-
+            CustomTextField(
+              label: "Name",
+              hintText: "your name",
+              controller: controller.nameController,
+              validator: (value){
+                if( value == null || controller.nameController.text.trim().length < 3 ){
+                  return "Please enter a valid name";
+                }
+                return null;
+              },
+            ),
             _buildLabel("Military Branch"),
             _buildDropdownField(["Army", "Navy", "Air Force", "Marines"]),
 

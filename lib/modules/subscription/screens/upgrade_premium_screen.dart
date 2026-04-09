@@ -11,9 +11,8 @@ class UpgradePremiumScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFDDE2E9), // Light grayish-blue background
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: const Icon(Icons.arrow_back, color: Color(0xFF2E4159)),
+        forceMaterialTransparency: true,
+        leading: const BackButton(),
         title: const Text(
           'Upgrade to Premium',
           style: TextStyle(color: Color(0xFF2E4159), fontWeight: FontWeight.bold),

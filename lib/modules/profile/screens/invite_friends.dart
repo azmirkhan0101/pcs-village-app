@@ -14,7 +14,7 @@ class InviteFriendsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: navyBlue,
-        leading: const Icon(Icons.arrow_back, color: Colors.white),
+        leading: const BackButton(color: Colors.white,),
         title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

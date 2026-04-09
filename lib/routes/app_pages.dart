@@ -22,6 +22,7 @@ import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
 import 'package:pcs_village/modules/message/screens/message_details.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
+import 'package:pcs_village/modules/profile/bindings/settings_binding.dart';
 import 'package:pcs_village/modules/profile/screens/change_password_screen.dart';
 import 'package:pcs_village/modules/profile/screens/community_guidelines.dart';
 import 'package:pcs_village/modules/subscription/screens/complete_purchase_screen.dart';
@@ -162,7 +163,8 @@ class AppPages {
         name: AppRoutes.settingsScreen,
         page: (){
           return SettingsScreen();
-        }
+        },
+      binding: SettingsBinding()
     ),
     GetPage(
         name: AppRoutes.changePassword,

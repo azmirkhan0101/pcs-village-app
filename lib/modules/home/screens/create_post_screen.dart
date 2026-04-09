@@ -92,7 +92,7 @@ class CreatePostScreen extends StatelessWidget {
                         Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
                         Obx((){
                           return Text(
-                            ' ${profileController.profileModel.value?.currentStation.name ?? ""}',
+                            ' ${profileController.profileModel.value?.currentStation?.name ?? ""}',
                             style: TextStyle(color: Colors.grey, fontSize: 13),
                           );
                         }),

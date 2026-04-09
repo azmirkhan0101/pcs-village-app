@@ -45,17 +45,17 @@ class ApiEndpoints {
   static const addComment = "/community-comments";
   //##############################################################
   //==========================GROUPS==============================
-  static const getGroups = "/groups";//TODO: ADD GROUPS API
+  static const getGroups = "/group/all?tab=ACTIVE&page=1&limit=10&sortOrder=desc&sortBy=stationName";
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE
   static const getProfile = "/auth/me";
   //CHANGE PASSWORD - UPDATE PASSWORD
-  static const changePassword = "/auth/changePassword";
+  static const changePassword = "/auth/changed-password";
   //DELETE ACCOUNT
   static const deleteAccount = "/user/delete-profile";
   //UPDATE PROFILE
-  static const updateProfile = "/user/edit-profile";
+  static const updateProfile = "/auth/update-profile";
 
   //=====================NOTIFICATION=============================
   static String getNotifications({required int page}){

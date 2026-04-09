@@ -15,10 +15,7 @@ class CommunityGuidelinesScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: navyBlue,
         elevation: 0,
-        leading: const IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: null, // Add navigation logic here
-        ),
+        leading: const BackButton(color: Colors.white,),
         titleSpacing: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

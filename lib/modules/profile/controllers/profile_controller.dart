@@ -45,19 +45,11 @@ class ProfileController extends GetxController{
   //EDIT PROFILE
   RxBool isEditProfileLoading = false.obs;
   final Rx<File?> profileImage = Rx<File?>(null);
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController aboutMeController = TextEditingController();
-  DateTime? dateOfBirth;
-  RxString gender = 'select'.obs;
+  final TextEditingController nameController = TextEditingController();
 
   //INITIALIZE EDIT PROFILE CONTROLLERS
   void initializeEditProfileControllers(){
-    // firstNameController.text = profileModel.value?.firstName ?? "";
-    // lastNameController.text = profileModel.value?.lastName ?? "";
-    // dateOfBirth = profileModel.value?.dob;
-    // gender.value = profileModel.value?.gender ?? "select";
-    // aboutMeController.text = profileModel.value?.about ?? "";
+    nameController.text = profileModel.value?.name ?? "";
   }
 
   //GET PROFILE
@@ -75,7 +67,7 @@ class ProfileController extends GetxController{
       storage.write( profileModelKey, model.toJson() );
       storage.write( userNameKey, model.name );
       profileModel.value = model;
-      //profileImageUrl.value = profileModel.value?.image ?? "";
+      profileImageUrl.value = profileModel.value?.profileImage ?? "";
       initializeEditProfileControllers();
     }
   }
@@ -89,15 +81,14 @@ class ProfileController extends GetxController{
 
     isEditProfileLoading.value = true;
     Map<String, String> payLoad = {
-      "firstName": firstNameController.text.trim(),
-      "lastName": lastNameController.text.trim()
+      "firstName": nameController.text.trim(),
     };
     ApiResponse response = await apiService.multipartRequest(
         method: "PATCH",
         endPoint: ApiEndpoints.updateProfile,
         isAuthRequired: true,
-        fields: payLoad,
-        imageKey: "image",
+        fields: {},
+        imageKey: "profileImage",
       image: profileImage.value
     );
     isEditProfileLoading.value = false;
@@ -129,9 +120,7 @@ class ProfileController extends GetxController{
   @override
   void onClose() {
 
-    firstNameController.dispose();
-    lastNameController.dispose();
-    aboutMeController.dispose();
+    nameController.dispose();
 
     super.onClose();
   }
