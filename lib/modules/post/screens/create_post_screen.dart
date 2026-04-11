@@ -4,7 +4,7 @@ import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
-import 'package:pcs_village/modules/home/controllers/create_post_controller.dart';
+import 'package:pcs_village/modules/post/controllers/create_post_controller.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 
 class CreatePostScreen extends StatelessWidget {

@@ -10,6 +10,7 @@ import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/show_snackbar.dart';
 
 class CreatePostController extends GetxController {
+
   final ApiService apiService = Get.find<ApiService>();
 
   RxBool isPostUploading = false.obs;
@@ -19,6 +20,22 @@ class CreatePostController extends GetxController {
   final TextEditingController contentController = TextEditingController();
 
   final ImagePicker _picker = ImagePicker();
+
+  //GROUP POST OR COMMUNITY POST
+  late bool isGroup;
+  late String groupId;
+
+  @override
+  void onInit() {
+
+    isGroup = Get.arguments['isGroup'] as bool;
+
+    if( isGroup ){
+      groupId = Get.arguments['groupId'] as String;
+    }
+
+    super.onInit();
+  }
 
   // Pick multiple images from gallery
   Future<void> pickImages() async {
@@ -43,13 +60,14 @@ class CreatePostController extends GetxController {
     isPostUploading.value = true;
 
     Map<String, String> payLoad = {
-      "content" : contentController.text.trim()
+      "content" : contentController.text.trim(),
+      if( isGroup ) "group" : groupId
     };
 
     ApiResponse response = await apiService.multipartRequest(
       method: "POST",
       isAuthRequired: true,
-      endPoint: ApiEndpoints.createPost,
+      endPoint: isGroup ? ApiEndpoints.createGroupPost : ApiEndpoints.createPost,
         fields: payLoad,
       images: selectedImages.value,
       imageKey: "attachments"

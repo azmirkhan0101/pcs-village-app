@@ -6,7 +6,7 @@ import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/core/utils/time_ago_calculator.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/data/models/post/comment_model.dart';
-import 'package:pcs_village/modules/home/controllers/post_details_controller.dart';
+import 'package:pcs_village/modules/post/controllers/post_details_controller.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';

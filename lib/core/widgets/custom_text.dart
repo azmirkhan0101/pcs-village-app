@@ -94,7 +94,9 @@ extension CustomTextSizeExt on CustomText {
   CustomText get s16 => copyWith(fontSize: 16);
   CustomText get s18 => copyWith(fontSize: 18);
   CustomText get s20 => copyWith(fontSize: 20);
+  CustomText get s22 => copyWith(fontSize: 22);
   CustomText get s24 => copyWith(fontSize: 24);
+  CustomText get s26 => copyWith(fontSize: 26);
   CustomText get s28 => copyWith(fontSize: 28);
 }
 
@@ -106,4 +108,8 @@ extension CustomTextWeightExt on CustomText {
   CustomText get w700 => copyWith(fontWeight: FontWeight.w700);
   CustomText get w800 => copyWith(fontWeight: FontWeight.w800);
   CustomText get w900 => copyWith(fontWeight: FontWeight.w900);
+}
+
+extension CustomTextColorExt on CustomText {
+  CustomText color(Color color) => copyWith(fontColor: color);
 }

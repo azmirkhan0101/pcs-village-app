@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/data/models/groups/group_model.dart';
 import 'package:pcs_village/modules/groups/controllers/groups_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
+
+import '../widgets/group_card.dart';
 
 class GroupsScreen extends StatelessWidget {
   GroupsScreen({super.key});
@@ -14,9 +18,9 @@ class GroupsScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Header Section
           Container(
-            padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 30),
+            padding: const EdgeInsets.only(
+                top: 60, left: 20, right: 20, bottom: 10),
             width: double.infinity,
             decoration: const BoxDecoration(
               color: Color(0xFF213A5E),
@@ -34,59 +38,65 @@ class GroupsScreen extends StatelessWidget {
                 ),
                 const Text(
                   'Community Feed',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  style:
+                  TextStyle(color: Colors.white70, fontSize: 16),
                 ),
-                const SizedBox(height: 25),
-                // Search Bar
+                const SizedBox(height: 20),
                 TextField(
+                  onChanged: controller.onSearch,
                   decoration: InputDecoration(
                     hintText: 'Search groups.....',
-                    hintStyle: const TextStyle(color: Colors.white54),
-                    prefixIcon: const Icon(Icons.search, color: Colors.white54),
+                    hintStyle:
+                    const TextStyle(color: Colors.white54),
+                    prefixIcon: const Icon(Icons.search,
+                        color: Colors.white54),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                    fillColor:
+                    Colors.white.withValues(alpha: 0.1),
+                    contentPadding:
+                    const EdgeInsets.symmetric(vertical: 0),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
+                const SizedBox(height: 15),
+                TabBar(
+                  controller: controller.tabController,
+                  indicatorColor: Colors.white,
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.white60,
+                  tabs: const [
+                    Tab(text: "Active"),
+                    Tab(text: "Suggested"),
+                    Tab(text: "Archived"),
+                  ],
+                ),
               ],
             ),
           ),
-
-          // Groups List
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(15),
+            child: TabBarView(
+              controller: controller.tabController,
               children: [
-                GroupCard(
-                  title: 'PCS to Fort Liberty - Spring 2026',
-                  subtitle: 'For families PCSing to Fort Liberty',
-                  members: '124 members',
-                  imageUrl: 'https://picsum.photos/id/22/200',
-                  onTap: (){
-                    Get.toNamed(AppRoutes.groupDetails);
-                  },
+                groupsList(
+                  groups: controller.activeGroups,
+                  onRefresh: controller.fetchActiveGroups,
+                  scrollController: controller.activeScrollController,
+                  isLoadingMore: controller.isActiveLoadingMore
                 ),
-                GroupCard(
-                  title: 'Army Spouses Support Group',
-                  subtitle: 'Connecting and supporting Army...',
-                  members: '425 members',
-                  imageUrl: 'https://picsum.photos/id/64/200',
-                  onTap: (){
-                    Get.toNamed(AppRoutes.groupDetails);
-                  },
+                groupsList(
+                  groups: controller.suggestedGroups,
+                  onRefresh: controller.fetchSuggestedGroups,
+                  scrollController: controller.suggestedScrollController,
+                  isLoadingMore: controller.isSuggestedLoadingMore
                 ),
-                GroupCard(
-                  title: 'Fort Liberty Fitness & Wellness',
-                  subtitle: 'Connecting and supporting Army...',
-                  members: '425 members',
-                  imageUrl: 'https://picsum.photos/id/64/200',
-                  onTap: (){
-                    Get.toNamed(AppRoutes.groupDetails);
-                  },
+                groupsList(
+                  groups: controller.archivedGroups,
+                  onRefresh: controller.fetchArchivedGroups,
+                  scrollController: controller.archivedScrollController,
+                  isLoadingMore: controller.isArchivedLoadingMore
                 ),
               ],
             ),
@@ -95,92 +105,70 @@ class GroupsScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class GroupCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final String members;
-  final String imageUrl;
-  final VoidCallback onTap;
+  Widget groupsList({
+    required RxList groups,
+    required Future<void> Function() onRefresh,
+    required ScrollController scrollController,
+    required RxBool isLoadingMore,
+  }) {
+    return Obx(() {
+      if (controller.isLoading.value && groups.isEmpty) {
+        return Center(
+          child: CircularProgressIndicator(color: AppColors.primaryColor),
+        );
+      }
 
-  const GroupCard({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.members,
-    required this.imageUrl,
-    required this.onTap
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 15),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Group Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.network(
-                imageUrl,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
+      if (!controller.isLoading.value && groups.isEmpty) {
+        return RefreshIndicator(
+          backgroundColor: Colors.white,
+          color: AppColors.primaryColor,
+          onRefresh: onRefresh,
+          child: ListView(
+            children: [
+              SizedBox(height: Get.height * 0.2),
+              const Center(
+                child: Text(
+                  "No groups found",
+                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                ),
               ),
-            ),
-            const SizedBox(width: 15),
-            // Text Content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Color(0xFF213A5E),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.people_outline, size: 16, color: Colors.grey.shade500),
-                      const SizedBox(width: 5),
-                      Text(
-                        members,
-                        style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
-          ],
+            ],
+          ),
+        );
+      }
+
+      return RefreshIndicator(
+        backgroundColor: Colors.white,
+        color: AppColors.primaryColor,
+        onRefresh: onRefresh,
+        child: ListView.builder(
+          padding: EdgeInsets.all(10),
+          controller: scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: groups.length + (isLoadingMore.value ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index < groups.length) {
+              final GroupModel group = groups[index];
+              return GroupCard(
+                title: group.groupName,
+                members: "${group.totalMember} members",
+                onTap: () {
+                  Get.toNamed(
+                      AppRoutes.groupDetails,
+                      arguments: group
+                  );
+                },
+              );
+            } else {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+          },
         ),
-      ),
-    );
+      );
+    });
   }
 }

@@ -12,11 +12,10 @@ import 'package:pcs_village/modules/auth/screens/signup_one_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_three_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
+import 'package:pcs_village/modules/groups/bindings/group_details_binding.dart';
 import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
-import 'package:pcs_village/modules/home/bindings/create_post_binding.dart';
-import 'package:pcs_village/modules/home/bindings/post_details_binding.dart';
-import 'package:pcs_village/modules/home/screens/create_post_screen.dart';
-import 'package:pcs_village/modules/home/screens/post_details_screen.dart';
+import 'package:pcs_village/modules/post/screens/create_post_screen.dart';
+import 'package:pcs_village/modules/post/screens/post_details_screen.dart';
 import 'package:pcs_village/modules/main_nav/bindings/main_nav_binding.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
 import 'package:pcs_village/modules/message/screens/message_details.dart';
@@ -34,6 +33,8 @@ import 'package:pcs_village/modules/auth/screens/forgot_password_screen.dart';
 import 'package:pcs_village/modules/auth/screens/otp_verify_screen.dart';
 
 import '../modules/auth/screens/reset_password_screen.dart';
+import '../modules/post/bindings/create_post_binding.dart';
+import '../modules/post/bindings/post_details_binding.dart';
 import '../modules/profile/screens/invite_friends.dart';
 
 part 'app_routes.dart';
@@ -151,7 +152,8 @@ class AppPages {
         name: AppRoutes.groupDetails,
         page: (){
           return GroupDetailsScreen();
-        }
+        },
+      binding: GroupDetailsBinding()
     ),
     GetPage(
         name: AppRoutes.editProfile,

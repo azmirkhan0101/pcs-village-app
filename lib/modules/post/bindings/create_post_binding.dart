@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:pcs_village/modules/home/controllers/create_post_controller.dart';
+import 'package:pcs_village/modules/post/controllers/create_post_controller.dart';
 
 class CreatePostBinding extends Bindings{
   @override

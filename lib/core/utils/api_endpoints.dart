@@ -5,7 +5,8 @@ class ApiEndpoints {
   //=======================BASE====================================
   //BASE URL
   //static const baseUrl = "https://lms-orpin-five.vercel.app/api/v1";
-  static const baseUrl = "http://10.10.20.42:5000/api/v1";
+  //static const baseUrl = "http://10.10.20.42:5000/api/v1";
+  static const baseUrl = "http://10.0.2.2:5000/api/v1";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
   static const login = "/auth/login";
@@ -45,7 +46,25 @@ class ApiEndpoints {
   static const addComment = "/community-comments";
   //##############################################################
   //==========================GROUPS==============================
-  static const getGroups = "/group/all?tab=ACTIVE&page=1&limit=10&sortOrder=desc&sortBy=stationName";
+  static String getGroups({bool isActive = false, bool isSuggested = false, bool isArchived = false, required int page}){
+    if( isActive ){
+      return "/group/all?tab=ACTIVE&page=$page&limit=10&sortOrder=desc&sortBy=stationName";
+    }else if( isSuggested ){
+      return "/group/all?tab=SUGGESTED&page=$page&limit=10&sortOrder=desc&sortBy=stationName";
+    }else{
+      return "/group/all?tab=ARCHIVED&page=$page&limit=10&sortOrder=desc&sortBy=stationName";
+    }
+  }
+  static String joinGroup({required String groupId}){
+    return "/group/join/$groupId";
+  }
+  static String leaveGroup({required String groupId}){
+    return "/group/leave/$groupId";
+  }
+  static String getGroupPosts({required String groupId}){
+    return "/group/posts/all?group=$groupId";
+  }
+  static const createGroupPost = "/group/posts";
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE

@@ -94,7 +94,13 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(AppRoutes.createPost);
+          Get.toNamed(
+              AppRoutes.createPost,
+            arguments: {
+              "isGroup" : false,
+              "groupId" : null
+            }
+          );
         },
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         backgroundColor: const Color(0xFF6B8E23),
