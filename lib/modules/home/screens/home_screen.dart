@@ -70,17 +70,20 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
                 ),
                 child: ListView.builder(
-                  itemCount: controller.posts.length,
+                  itemCount: controller.postsHelper.items.length,
                     controller: controller.scrollController,
 
                     itemBuilder: (context, index){
-                      final Post post = controller.posts[index];
+                      final Post post = controller.postsHelper.items[index];
 
                       return PostCard(
                         onTap: (){
                           Get.toNamed(
                               AppRoutes.postDetails,
-                            arguments: post
+                            arguments: {
+                                'isGroup' : false,
+                                'post' : post
+                            }
                           );
                         },
                         post: post,

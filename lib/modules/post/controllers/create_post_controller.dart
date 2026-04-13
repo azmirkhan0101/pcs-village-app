@@ -28,7 +28,7 @@ class CreatePostController extends GetxController {
   @override
   void onInit() {
 
-    isGroup = Get.arguments['isGroup'] as bool;
+    isGroup = Get.arguments['isGroup'] as bool? ?? false;
 
     if( isGroup ){
       groupId = Get.arguments['groupId'] as String;

@@ -1,44 +1,142 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pcs_village/data/models/groups/member_model.dart';
+import 'package:shimmer/shimmer.dart';
 
 class MembersTab extends StatelessWidget {
-  const MembersTab();
+  final RxList<MemberModel> members;
+  final RxBool isLoading;
+  final RxBool isMoreLoading;
+  final ScrollController scrollController;
+  final Future<void> Function() onRefresh;
+
+  const MembersTab({
+    super.key,
+    required this.members,
+    required this.isLoading,
+    required this.onRefresh,
+    required this.isMoreLoading,
+    required this.scrollController
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text("Group Members", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A365D))),
-        const SizedBox(height: 12),
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: Obx(() {
+        if (isLoading.value && members.isEmpty) {
+          return _buildSkeletonList();
+        }
 
-        // Search Bar
-        TextField(
-          decoration: InputDecoration(
-            hintText: "Search members...",
-            prefixIcon: const Icon(Icons.search, color: Colors.grey),
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.shade200),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
-              borderSide: BorderSide(color: Colors.grey.shade200),
-            ),
+        if (members.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return ListView.builder(
+          controller: scrollController,
+          padding: const EdgeInsets.all(16),
+          itemCount: members.length + 2,
+          itemBuilder: (context, index) {
+            if (index == 0) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Group Members",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A365D))),
+                  const SizedBox(height: 12),
+                  _buildSearchBar(),
+                  const SizedBox(height: 16),
+                ],
+              );
+            }
+
+            if (index == members.length + 1) {
+              return Obx(() => isMoreLoading.value
+                  ? _buildBottomLoader()
+                  : const SizedBox(height: 20));
+            }
+
+            final member = members[index - 1];
+            return _buildMemberCard(member);
+          },
+        );
+      }),
+    );
+  }
+
+  Widget _buildBottomLoader() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Center(
+        child: SizedBox(
+          height: 30,
+          width: 30,
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            color: Color(0xFF1E3A5F),
           ),
         ),
-        const SizedBox(height: 16),
+      ),
+    );
+  }
 
-        // Member List
-        _buildMemberCard("Sarah Mitchell", "https://images.unsplash.com/photo-1488161628813-04466f872be2?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
-        _buildMemberCard("Sarah Mitchell", "https://i.pravatar.cc/150?u=sarah2"),
-        _buildMemberCard("Sarah Mitchell", "https://i.pravatar.cc/150?u=sarah3"),
+  Widget _buildEmptyState() {
+    return ListView(
+      children: [
+        SizedBox(height: Get.height * 0.3),
+        const Center(
+          child: Text(
+            "No members found in this group.",
+            style: TextStyle(color: Colors.grey, fontSize: 16),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildMemberCard(String name, String imgUrl) {
+  Widget _buildSearchBar() {
+    return TextField(
+      decoration: InputDecoration(
+        hintText: "Search members...",
+        prefixIcon: const Icon(Icons.search, color: Colors.grey),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+      ),
+    );
+  }
+
+  //SKELETON LOADING
+  Widget _buildSkeletonList() {
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: 6,
+      itemBuilder: (context, index) => Shimmer.fromColors(
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.grey[100]!,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          height: 140,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMemberCard(dynamic member) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -57,8 +155,14 @@ class MembersTab extends StatelessWidget {
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    CircleAvatar(radius: 30, backgroundImage: NetworkImage(imgUrl)),
-                    const CircleAvatar(radius: 10, backgroundColor: Colors.white, child: Icon(Icons.check_circle, color: Colors.blue, size: 16)),
+                    CircleAvatar(
+                        radius: 30,
+                        backgroundImage: NetworkImage(member.profileImage ?? "")),
+                    const CircleAvatar(
+                        radius: 10,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.check_circle,
+                            color: Colors.blue, size: 16)),
                   ],
                 ),
                 const SizedBox(width: 12),
@@ -69,18 +173,34 @@ class MembersTab extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Color(0xFF1A365D))),
+                          Text(member.name ?? "Member",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17,
+                                  color: Color(0xFF1A365D))),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(6)),
-                            child: const Text("Military Spouse", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(6)),
+                            child: const Text("Military Spouse",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold)),
                           ),
                         ],
                       ),
-                      const Text("Army Spouse", style: TextStyle(color: Colors.grey)),
+                      const Text("Army Spouse",
+                          style: TextStyle(color: Colors.grey)),
                       const SizedBox(height: 4),
-                      const Text("📅 Moving in 3 months", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                      const Text("📍 Fort Carson, CO → Fort Liberty, NC", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      Text("📅 ${member.moveTimeline ?? 'N/A'}",
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey)),
+                      Text("📍 ${member.locationFlow ?? ''}",
+                          style: const TextStyle(
+                              fontSize: 11, color: Colors.grey)),
                     ],
                   ),
                 ),
@@ -143,4 +263,5 @@ class MembersTab extends StatelessWidget {
       ),
     );
   }
+
 }

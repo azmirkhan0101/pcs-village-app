@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/helper/pagination_helper.dart';
 import 'package:pcs_village/core/utils/api_response.dart';
 import 'package:pcs_village/data/models/groups/group_model.dart';
+import 'package:pcs_village/data/models/groups/member_model.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
@@ -18,15 +20,14 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
   RxBool isLeaving = false.obs;
   RxBool isJoining = false.obs;
 
-  RxList<Post> posts = <Post>[].obs;
-  final ScrollController scrollController = ScrollController();
-  int currentPage = 1;
-  bool hasMorePosts = true;
-  RxBool isPostsLoading = false.obs;
-  RxBool isPostsMoreLoading = false.obs;
-
-  // Loaded flags to control redundant loading in tab change if data is already empty
+  //POSTS
+  PaginationHelper<Post> postsHelper = PaginationHelper<Post>();
+  final ScrollController postScrollController = ScrollController();
+  final ScrollController membersScrollController = ScrollController();
   RxBool isPostsLoaded = false.obs;
+
+  //MEMBERS
+  PaginationHelper<MemberModel> membersHelper = PaginationHelper();
   RxBool isMembersLoaded = false.obs;
 
   @override
@@ -35,7 +36,7 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     groupModel = Get.arguments as GroupModel;
     isJoined.value = groupModel.isAlreadyJoined;
 
-    if( posts.isEmpty && isJoined.value ){
+    if( postsHelper.items.isEmpty && isJoined.value ){
       getPosts();
     }
 
@@ -54,9 +55,15 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
       }
     });
 
-    scrollController.addListener((){
-      if( scrollController.position.pixels == scrollController.position.maxScrollExtent * 0.9 ){
+    postScrollController.addListener((){
+      if( postScrollController.position.pixels == postScrollController.position.maxScrollExtent * 0.9 ){
         getPosts(refresh: false);
+      }
+    });
+
+    membersScrollController.addListener((){
+      if( membersScrollController.position.pixels == membersScrollController.position.maxScrollExtent * 0.9 ){
+        getMembers(refresh: false);
       }
     });
     super.onInit();
@@ -102,52 +109,42 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
   //GET POSTS
   Future<void> getPosts({bool refresh = true}) async{
 
-    if( isPostsLoading.value || isPostsMoreLoading.value ){
-      return;
-    }
-
     if( refresh ){
-      currentPage = 1;
-      hasMorePosts = true;
-      isPostsLoading.value = true;
-    }else{
-      if( isPostsMoreLoading.value == true || hasMorePosts == false ){
-        return;
-      }
-      isPostsMoreLoading.value = true;
+      isPostsLoaded.value = false;
     }
 
-    ApiResponse response = await apiService.networkRequest(
-        method: "GET",
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.getGroupPosts(groupId: groupModel.id)
+    await postsHelper.fetch(
+        isRefresh: refresh,
+        apiCall: (page) => apiService.networkRequest(
+            method: "GET",
+            isAuthRequired: true,
+            endPoint: ApiEndpoints.getGroupPosts(groupId: groupModel.id, page: page)
+        ),
+        fromJson: (json) => Post.fromJson(json),
+        listExtractor: (data) => data['data'] as List<dynamic>?
     );
-    isPostsLoaded.value = true;
-    isPostsLoading.value = false;
-    isPostsMoreLoading.value = false;
 
-    if( response.statusCode == 200 ){
-      final fetchedPosts = response.data['data'] as List<dynamic>?;
-      if( fetchedPosts is List && fetchedPosts.isNotEmpty ){
-        if( refresh ){
-          posts.assignAll(fetchedPosts.map((e){
-            return Post.fromJson(e);
-          }).toList());
-        }else{
-          posts.addAll(fetchedPosts.map((e){
-            return Post.fromJson(e);
-          }).toList());
-        }
-        if( fetchedPosts.length < 10 ){
-          hasMorePosts = false;
-        }else{
-          currentPage++;
-        }
-      }
-    }
+    isPostsLoaded.value = true;
   }
 
-  Future<void> getMembers() async{
+  Future<void> getMembers({bool refresh = true}) async{
+
+    if( refresh ){
+      isMembersLoaded.value = false;
+    }
+
+    await membersHelper.fetch(
+      isRefresh: true,
+      apiCall: (page) => apiService.networkRequest(
+        method: "GET",
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.getGroupMembers(groupId: groupModel.id)
+          ),
+      fromJson: (json) => MemberModel.fromJson(json),
+      listExtractor: (data) => data['data'] as List<dynamic>?
+    );
+
+    isMembersLoaded.value = true;
 
   }
 }

@@ -37,8 +37,8 @@ class ApiEndpoints {
   static String getAllPosts({required int page}){
     return "/community-posts/relevant?limit=10&page=$page&sortBy=content&sortOrder=desc";
   }
-  static String getPostComments({required String id}){
-    return "/community-comments/$id/all";
+  static String getPostComments({required String id, required int page}){
+    return "/community-comments/$id/all?page=$page&limit=10";
   }
   static String likeUnlikePost({required String id}){
     return "/community-likes/$id";
@@ -61,10 +61,20 @@ class ApiEndpoints {
   static String leaveGroup({required String groupId}){
     return "/group/leave/$groupId";
   }
-  static String getGroupPosts({required String groupId}){
-    return "/group/posts/all?group=$groupId";
+  static String getGroupPosts({required String groupId, required int page}){
+    return "/group/posts/all?group=$groupId&page=$page&limit=10";
   }
+  static String getGroupPostComments({required String postId, required int page}){
+    return "/group-comments/post/$postId?page=$page&limit=10";
+  }
+  static String groupPostLikeUnlike({required String postId}){
+    return "/group-likes/$postId";
+  }
+  static const addGroupPostComment = "/group-comments";
   static const createGroupPost = "/group/posts";
+  static String getGroupMembers({required String groupId}){
+    return "/group/member/$groupId";
+  }
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE

@@ -71,7 +71,13 @@ class PostsTab extends StatelessWidget {
             final post = posts[index - 1];
             return PostCard(
               post: post,
-              onTap: () => Get.toNamed(AppRoutes.postDetails, arguments: post),
+              onTap: () => Get.toNamed(
+                  AppRoutes.postDetails,
+                  arguments: {
+                    'isGroup': true,
+                    'post': post
+                  }
+              ),
             );
           },
         );

@@ -192,11 +192,11 @@ class PostDetailsScreen extends StatelessWidget {
 
                 // --- Reactive Comment Section ---
                 Obx(() {
-                  if (controller.isCommentsLoading.value) {
+                  if (controller.commentsHelper.isLoading.value) {
                     return _buildSkeletonLoader();
                   }
 
-                  if (controller.comments.isEmpty) {
+                  if (controller.commentsHelper.items.isEmpty) {
                     return _buildEmptyState();
                   }
 
@@ -205,9 +205,9 @@ class PostDetailsScreen extends StatelessWidget {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: controller.comments.length,
+                        itemCount: controller.commentsHelper.items.length,
                         itemBuilder: (context, index) {
-                          final comment = controller.comments[index];
+                          final comment = controller.commentsHelper.items[index];
                           return _buildCommentTile(
                             comment: comment,
                             isReply: false
@@ -215,7 +215,7 @@ class PostDetailsScreen extends StatelessWidget {
                         },
                       ),
                       // Bottom loader for pagination
-                      if (controller.isCommentsMoreLoading.value)
+                      if (controller.commentsHelper.isMoreLoading.value)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
                           child: Center(child: CircularProgressIndicator()),
@@ -547,7 +547,7 @@ class PostDetailsScreen extends StatelessWidget {
         Obx(() {
           if (controller.expandedCommentIds.contains(comment.id)) {
             return Padding(
-              padding: const EdgeInsets.only(left: 44.0), // Indent replies
+              padding: const EdgeInsets.only(left: 44.0),
               child: Column(
                 children: comment.replies!.map((reply) => _buildCommentTile(comment:  reply, isReply: true)).toList(),
               ),

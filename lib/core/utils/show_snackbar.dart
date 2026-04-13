@@ -16,6 +16,41 @@ void showSnackBar({required String title, required String message, required Colo
   );
 }
 
+void showApiSnackBar({
+  required int? statusCode,
+  dynamic data,
+}) {
+  String title;
+  Color backgroundColor;
+
+  String message = data?['message']?.toString().trim().isNotEmpty == true
+      ? data['message']
+      : "Something went wrong. Please try again.";
+
+  if (statusCode == null) {
+    title = "Error";
+    backgroundColor = Colors.grey;
+  } else if (statusCode >= 200 && statusCode < 300) {
+    title = "Success";
+    backgroundColor = Colors.green;
+  } else if (statusCode >= 400 && statusCode < 500) {
+    title = "Attention";
+    backgroundColor = Colors.orange;
+  } else if (statusCode >= 500) {
+    title = "Failed";
+    backgroundColor = Colors.red;
+  } else {
+    title = "Error";
+    backgroundColor = Colors.grey;
+  }
+
+  Get.snackbar(
+      title,
+      message,
+      backgroundColor: backgroundColor,
+      colorText: Colors.white
+  );
+}
 
 void noInternetSnackBar() {
   Get.snackbar(

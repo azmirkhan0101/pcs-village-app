@@ -1,5 +1,5 @@
 
-class Post {
+class  Post {
   final String id;
   final String content;
   final List<String> attachments;

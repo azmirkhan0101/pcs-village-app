@@ -95,14 +95,22 @@ class GroupDetailsScreen extends StatelessWidget {
               controller: controller.tabController,
               children: [
                 PostsTab(
-                  posts: controller.posts,
-                  isLoading: controller.isPostsLoading,
-                  scrollController: controller.scrollController,
+                  posts: controller.postsHelper.items,
+                  isLoading: controller.postsHelper.isLoading,
+                  scrollController: controller.postScrollController,
                   onRefresh: () async{
                     controller.getPosts(refresh: true);
                   },
                 ),
-                MembersTab(),
+                MembersTab(
+                  members: controller.membersHelper.items,
+                  isLoading: controller.membersHelper.isLoading,
+                  isMoreLoading: controller.membersHelper.isMoreLoading,
+                  scrollController: controller.membersScrollController,
+                  onRefresh: () async{
+                    controller.getMembers();
+                  },
+                ),
               ],
             );
           } else {
