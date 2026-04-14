@@ -43,6 +43,16 @@ extension AffiliationExtension on Affiliation {
       case Affiliation.militaryFamily:   return "MILITARY_FAMILY";
     }
   }
+
+  static String fromString(String value) {
+    try {
+      return Affiliation.values
+          .firstWhere((e) => e.value == value)
+          .displayName;
+    } catch (e) {
+      return value;
+    }
+  }
 }
 
 enum KidsAgeRange {

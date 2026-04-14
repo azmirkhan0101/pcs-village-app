@@ -103,6 +103,11 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
 
     if( response.statusCode == 200 || response.statusCode == 201 ){
       isJoined.value = false;
+      postsHelper.items.clear();
+      membersHelper.items.clear();
+      isPostsLoaded.value = false;
+      isMembersLoaded.value = false;
+      tabController.index = 0;
     }
   }
 

@@ -169,19 +169,19 @@ class GroupDetailsScreen extends StatelessWidget {
   Widget actionButtons({required bool isJoined}) {
     return Row(
       children: [
-        if (isJoined)
-          Expanded(
-            flex: 2,
-              child: CustomButton(
-                buttonHeight: 48,
-                  label: AppStrings.notificationsOn,
-                backgroundColor: AppColors.primaryColor,
-                prefixIcon: Icons.notifications_none,
-                buttonRadius: 10,
-                onPressed: () {},
-              )
-          ),
-        const SizedBox(width: 10),
+        // if (isJoined)
+        //   Expanded(
+        //     flex: 2,
+        //       child: CustomButton(
+        //         buttonHeight: 48,
+        //           label: AppStrings.notificationsOn,
+        //         backgroundColor: AppColors.primaryColor,
+        //         prefixIcon: Icons.notifications_none,
+        //         buttonRadius: 10,
+        //         onPressed: () {},
+        //       )
+        //   ),
+        // const SizedBox(width: 10),
 
         // LEAVE BUTTON
         if (isJoined)

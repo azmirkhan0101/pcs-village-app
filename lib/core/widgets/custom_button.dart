@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 
 import '../utils/app_colors.dart';
@@ -7,6 +8,7 @@ import '../utils/app_colors.dart';
 class CustomButton extends StatelessWidget {
   final String label;
   final IconData? prefixIcon;
+  final String? prefixSvgIcon;
   final double prefixIconSize;
   final Color prefixIconColor;
   final IconData? icon;
@@ -39,6 +41,7 @@ class CustomButton extends StatelessWidget {
     required this.label,
     this.icon,
     this.prefixIcon,
+    this.prefixSvgIcon,
     this.prefixIconSize = 20,
     this.prefixIconColor = AppColors.white,
     this.iconHeight,
@@ -122,7 +125,16 @@ class CustomButton extends StatelessWidget {
                           : prefixIconColor.withValues(alpha: 0.5),
                       size: prefixIconSize.r,
                     ),
-                  if (prefixIcon != null) SizedBox(width: 12.w),
+                  if( prefixSvgIcon != null )
+                    SvgPicture.asset(
+                      prefixSvgIcon!,
+                      color: isEnabled
+                          ? prefixIconColor
+                          : prefixIconColor.withValues(alpha: 0.5),
+                      height: iconHeight?.h,
+                      width: iconWidth?.w,
+                    ),
+                  if (prefixIcon != null || prefixSvgIcon != null) SizedBox(width: 12.w),
                   CustomText(
                     text: label,
                     fontColor: isEnabled

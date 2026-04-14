@@ -36,4 +36,10 @@ class AppColors {
       Color(0xFF556B2F)
     ],
   );
+
+  static const LinearGradient waveButtonGradient = LinearGradient(
+    colors: [Color(0xFFA68B5B), Color(0xFF5D6D3E)],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+  );
 }
