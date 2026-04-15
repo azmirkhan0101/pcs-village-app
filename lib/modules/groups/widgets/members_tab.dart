@@ -68,8 +68,11 @@ class MembersTab extends StatelessWidget {
                   : const SizedBox(height: 20));
             }
 
-            final member = members[index - 1];
-            return MemberCard(member: member);
+            final String memberId = members[index - 1].id;
+            return Obx(() {
+              final liveMember = members.firstWhere((m) => m.id == memberId);
+              return MemberCard(member: liveMember);
+            });
           },
         );
       }),

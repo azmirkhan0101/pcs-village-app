@@ -27,6 +27,8 @@ class PaginationHelper<T> {
       currentPage = 1;
       hasMore = true;
       isLoading.value = true;
+      _items.clear();
+      items.clear();
     } else {
       if (isMoreLoading.value || !hasMore) return;
       isMoreLoading.value = true;

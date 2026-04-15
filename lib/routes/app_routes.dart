@@ -32,6 +32,7 @@ static const String groupDetails = "/group-details";
 
 static const String editProfile = "/edit-profile";
 static const String settingsScreen = "/settings_screen";
+static const String faqScreen = "/faq_screen";
 static const String changePassword = "/change-password";
 static const String inviteFriends = "/invite-friends";
 static const String upgradePremium = "/upgrade-premium";

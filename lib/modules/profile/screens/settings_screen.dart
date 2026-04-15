@@ -39,7 +39,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 40), // Spacing below header
+          const SizedBox(height: 40),
 
           // Settings Options
           Padding(
@@ -47,10 +47,17 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildSettingsTile(
+                  icon: Icons.question_answer_rounded,
+                  title: 'FAQ',
+                  textColor: AppColors.primaryColor,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.faqScreen);
+                  },
+                ),
+                _buildSettingsTile(
                   icon: Icons.lock,
-                  iconColor: const Color(0xFF1A365D),
                   title: 'Change Password',
-                  textColor: const Color(0xFF1A365D),
+                  textColor: AppColors.primaryColor,
                   onTap: () {
                     Get.toNamed(AppRoutes.changePassword);
                   },
@@ -58,7 +65,6 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 _buildSettingsTile(
                   icon: Icons.delete_outline,
-                  iconColor: Colors.red,
                   title: 'Delete Account',
                   textColor: Colors.red,
                   onTap: () {
@@ -73,16 +79,14 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // Helper method to create the list tiles
   Widget _buildSettingsTile({
     required IconData icon,
-    required Color iconColor,
     required String title,
     required Color textColor,
-    required VoidCallback onTap,
+    required VoidCallback onTap
   }) {
     return ListTile(
-      leading: Icon(icon, color: iconColor, size: 28),
+      leading: Icon(icon, color: textColor, size: 28),
       title: Text(
         title,
         style: TextStyle(
@@ -114,7 +118,6 @@ class SettingsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: CupertinoColors.destructiveRed,
                     shape: BoxShape.circle,
-                    //borderRadius: BorderRadius.circular(100)
                   ),
                   child: Icon(Icons.exit_to_app, color: AppColors.white, fontWeight: FontWeight.bold, size: 28,),
                 ),

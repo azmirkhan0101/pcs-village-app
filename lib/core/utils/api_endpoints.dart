@@ -85,6 +85,10 @@ class ApiEndpoints {
   static const deleteAccount = "/user/delete-profile";
   //UPDATE PROFILE
   static const updateProfile = "/auth/update-profile";
+  //FAQ
+  static String getFaq({required int page}){
+    return "/faq?page=$page&limit=10";
+  }
 
   //=====================NOTIFICATION=============================
   static String getNotifications({required int page}){

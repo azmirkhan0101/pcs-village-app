@@ -15,10 +15,6 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
   late TabController tabController;
 
   late GroupModel groupModel;
-  RxBool isJoined = false.obs;
-
-  RxBool isLeaving = false.obs;
-  RxBool isJoining = false.obs;
 
   //POSTS
   PaginationHelper<Post> postsHelper = PaginationHelper<Post>();
@@ -29,6 +25,64 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
   //MEMBERS
   PaginationHelper<MemberModel> membersHelper = PaginationHelper();
   RxBool isMembersLoaded = false.obs;
+
+
+  RxBool isJoined = false.obs;
+
+  RxBool isLeaving = false.obs;
+  RxBool isJoining = false.obs;
+//======JOIN GROUP======
+  Future<void> joinGroup() async {
+    if (isJoining.value) {
+      return;
+    }
+    isJoining.value = true;
+    ApiResponse response = await apiService.networkRequest(
+        method: 'POST',
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.joinGroup(groupId: groupModel.id)
+    );
+    isJoining.value = false;
+
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+      isJoined.value = true;
+      getPosts();
+    }
+  }
+
+//======LEAVE GROUP======
+  Future<void> leaveGroup() async {
+    if (isLeaving.value) {
+      return;
+    }
+    isLeaving.value = true;
+    ApiResponse response = await apiService.networkRequest(
+        method: 'POST',
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.leaveGroup(groupId: groupModel.id)
+    );
+    isLeaving.value = false;
+
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+      isJoined.value = false;
+      postsHelper.items.clear();
+      membersHelper.items.clear();
+      isPostsLoaded.value = false;
+      isMembersLoaded.value = false;
+      tabController.index = 0;
+    }
+  }
+
+
+//SEND WAVE
+  Future<void> sendWave({required String memberId}) async{
+    //TODO: SEND WAVE
+    //final updatedMember = await _repo.sendWave(memberId);
+    final index = membersHelper.items.indexWhere((m) => m.id == memberId);
+    if (index != -1) {
+      //membersHelper.items[index] = updatedMember;
+    }
+  }
 
   @override
   void onInit() {
@@ -69,48 +123,6 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     super.onInit();
   }
 
-  //======JOIN GROUP======
-  Future<void> joinGroup() async {
-    if (isJoining.value) {
-      return;
-    }
-    isJoining.value = true;
-    ApiResponse response = await apiService.networkRequest(
-      method: 'POST',
-      isAuthRequired: true,
-      endPoint: ApiEndpoints.joinGroup(groupId: groupModel.id)
-    );
-    isJoining.value = false;
-
-    if( response.statusCode == 200 || response.statusCode == 201 ){
-      isJoined.value = true;
-      getPosts();
-    }
-  }
-
-  //======LEAVE GROUP======
-  Future<void> leaveGroup() async {
-    if (isLeaving.value) {
-      return;
-    }
-    isLeaving.value = true;
-    ApiResponse response = await apiService.networkRequest(
-        method: 'POST',
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.leaveGroup(groupId: groupModel.id)
-    );
-    isLeaving.value = false;
-
-    if( response.statusCode == 200 || response.statusCode == 201 ){
-      isJoined.value = false;
-      postsHelper.items.clear();
-      membersHelper.items.clear();
-      isPostsLoaded.value = false;
-      isMembersLoaded.value = false;
-      tabController.index = 0;
-    }
-  }
-
   //GET POSTS
   Future<void> getPosts({bool refresh = true}) async{
 
@@ -119,6 +131,7 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     }
 
     await postsHelper.fetch(
+
         isRefresh: refresh,
         apiCall: (page) => apiService.networkRequest(
             method: "GET",
@@ -139,7 +152,7 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     }
 
     await membersHelper.fetch(
-      isRefresh: true,
+      isRefresh: refresh,
       apiCall: (page) => apiService.networkRequest(
         method: "GET",
         isAuthRequired: true,
@@ -152,4 +165,5 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     isMembersLoaded.value = true;
 
   }
+
 }

@@ -257,7 +257,11 @@ class ApiService extends GetxService {
       final response = await http.post(
         Uri.parse("${ApiEndpoints.baseUrl}${ApiEndpoints.refreshToken}"),
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"refreshToken": refreshToken}),
+        body: jsonEncode(
+            {
+              "refreshToken": refreshToken
+            }
+        ),
       );
 
       print("Refresh call finish");
