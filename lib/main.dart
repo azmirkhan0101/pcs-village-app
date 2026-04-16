@@ -11,9 +11,8 @@ import 'core/services/api_service.dart';
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   await Get.putAsync(() => ApiService().init());
 
-  // final storage = GetStorage();
-  // storage.write(accessTokenKey, "hey");
   runApp(MainApp());
 }

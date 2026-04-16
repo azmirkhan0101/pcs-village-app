@@ -7,7 +7,6 @@ const String emailKey = "emailKey";
 const String accessTokenKey = "accessTokenKey";
 const String refreshTokenKey = "refreshTokenKey";
 const String resetTokenKey = "resetTokenKey";
-const String requireVerificationKey = "requireVerificationKey";
 const String forgotPasswordTokenKey = "forgotPasswordTokenKey";
 const String profileModelKey = "profileModelKey";
 const String userNameKey = "userNameKey";

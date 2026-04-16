@@ -15,6 +15,7 @@ class FaqScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: Column(
         children: [
@@ -29,7 +30,7 @@ class FaqScreen extends StatelessWidget {
     return AppBar(
       title: const Text('FAQs'),
       centerTitle: true,
-      elevation: 0,
+      forceMaterialTransparency: true,
     );
   }
 
@@ -66,6 +67,7 @@ class FaqScreen extends StatelessWidget {
   // ── FAQ card ───────────────────────────────────────────────────────────
   Widget _buildFaqCard(FaqModel faq) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,

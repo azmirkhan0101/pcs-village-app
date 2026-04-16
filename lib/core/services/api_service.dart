@@ -234,26 +234,21 @@ class ApiService extends GetxService {
   //REFRESH TOKEN
   Future<bool> refreshTokenOnce() async {
     if (_isRefreshing) {
-      print("Isrefreshing");
       return _refreshCompleter?.future ?? Future.value(false);
     }
 
-    print("Refresh start");
 
     _isRefreshing = true;
     _refreshCompleter = Completer<bool>();
 
     try {
       final refreshToken = storage.read(refreshTokenKey);
-      print("Refresh token: $refreshToken");
       if (refreshToken == null) {
-        print("Refresh token is null");
         await _forceLogout();
         _refreshCompleter!.complete(false);
         return false;
       }
 
-      print("refresh token is not null");
       final response = await http.post(
         Uri.parse("${ApiEndpoints.baseUrl}${ApiEndpoints.refreshToken}"),
         headers: {"Content-Type": "application/json"},
@@ -264,9 +259,7 @@ class ApiService extends GetxService {
         ),
       );
 
-      print("Refresh call finish");
       if (response.statusCode == 200) {
-        print("Refresh api call successssssssssssss");
         final data = jsonDecode(response.body);
 
         storage.write(accessTokenKey, data['data']['accessToken']);
@@ -278,13 +271,11 @@ class ApiService extends GetxService {
         _refreshCompleter!.complete(true);
         return true;
       } else {
-        print("refresh api call not success ${response.statusCode} ${response.body}");
         await _forceLogout();
         _refreshCompleter!.complete(false);
         return false;
       }
     } catch (e) {
-      print("Refresh errorrrrrrrrr: $e");
       await _forceLogout();
       if (!_refreshCompleter!.isCompleted) {
         _refreshCompleter!.complete(false);

@@ -90,13 +90,18 @@ class LoginController extends GetxController {
         backgroundColor: AppColors.warningYellow,
         textColor: AppColors.black,
       );
-      storage.write(requireVerificationKey, true);
       storage.write(
         emailKey,
         emailController.text.trim(),
       ); //SAVE EMAIL FOR VERIFY NOW SCREEN
-      //go to verify now screen
-      //Get.offNamed(AppRoutes.verifyNow);
+      Get.offNamed(
+        AppRoutes.otpVerificationScreen,
+        arguments: {
+          emailKey: emailController.text.trim(),
+          isSignupKey: false,
+          isLoginKey: true
+        }
+      );
     } else if (response.statusCode == 401) {
       //WRONG PASSWORD
       isLoginLoading.value = false;

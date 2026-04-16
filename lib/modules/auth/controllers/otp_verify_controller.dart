@@ -87,7 +87,6 @@ class OtpVerifyController extends GetxController {
 
     if( response.statusCode == 200 ){
       showSnackBar(title: "Otp verified!", message: message ?? "Otp verified successfully.", backgroundColor: AppColors.greenPrimary);
-      storage.write( requireVerificationKey, false );
       Get.offAllNamed( AppRoutes.loginScreen );
     }else if( response.statusCode == 400 ){
       showSnackBar(title: "OTP required", message: message ?? "Please enter the otp and try again.", backgroundColor: AppColors.warningYellow);
@@ -166,7 +165,7 @@ Future<void> verifyForgotPasswordOtp() async{
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: false,
-        endPoint: isSignup ? ApiEndpoints.otpResend : ApiEndpoints.otpForgotPassword,
+        endPoint: isSignup || isLogin ? ApiEndpoints.otpResend : ApiEndpoints.otpForgotPassword,
       body: payLoad
     );
 

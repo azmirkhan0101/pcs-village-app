@@ -21,8 +21,6 @@ class SplashScreen extends StatelessWidget {
     // Read the token and verification status
     final String? token = storage.read( accessTokenKey );
 
-    final bool verificationRequired = storage.read( requireVerificationKey ) ?? false;
-
     // If token is null or empty, the user is logged out (or never logged in)
     if ( token == null || token.isEmpty ) {//NO TOKEN -> LOGGED OUT
       return AuthStatus.loggedOut;

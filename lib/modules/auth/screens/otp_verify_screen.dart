@@ -85,7 +85,7 @@ class OtpVerifyScreen extends StatelessWidget {
                   label: AppStrings.cContinue,
                   isLoading: controller.isOtpVerifying.value,
                   onPressed: (){
-                    if( controller.isSignup ){
+                    if( controller.isSignup || controller.isLogin ){
                       controller.verifySignupOtp();
                     }else{
                       controller.verifyForgotPasswordOtp();

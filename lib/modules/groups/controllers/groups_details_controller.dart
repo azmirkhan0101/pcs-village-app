@@ -9,61 +9,133 @@ import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
 import '../../../data/models/post/post.dart';
 
-class GroupsDetailsController extends GetxController with GetSingleTickerProviderStateMixin{
+class GroupsDetailsController extends GetxController
+    with GetSingleTickerProviderStateMixin {
 
   final ApiService apiService = Get.find<ApiService>();
   late TabController tabController;
-
   late GroupModel groupModel;
 
-  //POSTS
-  PaginationHelper<Post> postsHelper = PaginationHelper<Post>();
+  // POSTS
+  final PaginationHelper<Post> postsHelper = PaginationHelper<Post>();
   final ScrollController postScrollController = ScrollController();
+  final RxBool isPostsLoaded = false.obs;
+
+  // MEMBERS
+  final PaginationHelper<MemberModel> membersHelper = PaginationHelper<MemberModel>();
   final ScrollController membersScrollController = ScrollController();
-  RxBool isPostsLoaded = false.obs;
+  final RxBool isMembersLoaded = false.obs;
 
-  //MEMBERS
-  PaginationHelper<MemberModel> membersHelper = PaginationHelper();
-  RxBool isMembersLoaded = false.obs;
+  final RxBool isJoined = false.obs;
+  final RxBool isLeaving = false.obs;
+  final RxBool isJoining = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
 
-  RxBool isJoined = false.obs;
+    tabController = TabController(length: 2, vsync: this);
+    groupModel = Get.arguments as GroupModel;
+    isJoined.value = groupModel.isAlreadyJoined;
 
-  RxBool isLeaving = false.obs;
-  RxBool isJoining = false.obs;
-//======JOIN GROUP======
-  Future<void> joinGroup() async {
-    if (isJoining.value) {
-      return;
+    _initPostsHelper();
+    _initMembersHelper();
+
+    postsHelper.attachScrollController(postScrollController);
+    membersHelper.attachScrollController(membersScrollController);
+
+    tabController.addListener(_onTabChanged);
+
+    if (isJoined.value) {
+      getPosts();
     }
-    isJoining.value = true;
-    ApiResponse response = await apiService.networkRequest(
-        method: 'POST',
+  }
+
+  void _initPostsHelper() {
+    postsHelper.init(
+      apiCall: (page) => apiService.networkRequest(
+        method: 'GET',
         isAuthRequired: true,
-        endPoint: ApiEndpoints.joinGroup(groupId: groupModel.id)
+        endPoint: ApiEndpoints.getGroupPosts(
+          groupId: groupModel.id,
+          page: page,
+        ),
+      ),
+      fromJson: (json) => Post.fromJson(json),
+      listExtractor: (data) => data['data'] as List<dynamic>?,
     );
+  }
+
+  void _initMembersHelper() {
+    membersHelper.init(
+      apiCall: (page) => apiService.networkRequest(
+        method: 'GET',
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.getGroupMembers(groupId: groupModel.id),
+      ),
+      fromJson: (json) => MemberModel.fromJson(json),
+      listExtractor: (data) => data['data'] as List<dynamic>?,
+    );
+  }
+
+  void _onTabChanged() {
+    if (!isJoined.value) return;
+    if (tabController.indexIsChanging) return;
+
+    if (tabController.index == 0) {
+      if (!isPostsLoaded.value) getPosts();
+    } else {
+      if (!isMembersLoaded.value) getMembers();
+    }
+  }
+
+  // ====== GET POSTS ======
+  Future<void> getPosts({bool refresh = true}) async {
+    if (refresh) isPostsLoaded.value = false;
+    await postsHelper.fetch(isRefresh: refresh);
+    isPostsLoaded.value = true;
+  }
+
+  // ====== GET MEMBERS ======
+  Future<void> getMembers({bool refresh = true}) async {
+    if (refresh) isMembersLoaded.value = false;
+    await membersHelper.fetch(isRefresh: refresh);
+    isMembersLoaded.value = true;
+  }
+
+  // ====== JOIN GROUP ======
+  Future<void> joinGroup() async {
+    if (isJoining.value) return;
+    isJoining.value = true;
+
+    final ApiResponse response = await apiService.networkRequest(
+      method: 'POST',
+      isAuthRequired: true,
+      endPoint: ApiEndpoints.joinGroup(groupId: groupModel.id),
+    );
+
     isJoining.value = false;
 
-    if( response.statusCode == 200 || response.statusCode == 201 ){
+    if (response.statusCode == 200 || response.statusCode == 201) {
       isJoined.value = true;
       getPosts();
     }
   }
 
-//======LEAVE GROUP======
+  // ====== LEAVE GROUP ======
   Future<void> leaveGroup() async {
-    if (isLeaving.value) {
-      return;
-    }
+    if (isLeaving.value) return;
     isLeaving.value = true;
-    ApiResponse response = await apiService.networkRequest(
-        method: 'POST',
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.leaveGroup(groupId: groupModel.id)
+
+    final ApiResponse response = await apiService.networkRequest(
+      method: 'POST',
+      isAuthRequired: true,
+      endPoint: ApiEndpoints.leaveGroup(groupId: groupModel.id),
     );
+
     isLeaving.value = false;
 
-    if( response.statusCode == 200 || response.statusCode == 201 ){
+    if (response.statusCode == 200 || response.statusCode == 201) {
       isJoined.value = false;
       postsHelper.items.clear();
       membersHelper.items.clear();
@@ -73,97 +145,22 @@ class GroupsDetailsController extends GetxController with GetSingleTickerProvide
     }
   }
 
-
-//SEND WAVE
-  Future<void> sendWave({required String memberId}) async{
-    //TODO: SEND WAVE
-    //final updatedMember = await _repo.sendWave(memberId);
+  // ====== SEND WAVE ======
+  Future<void> sendWave({required String memberId}) async {
+    // TODO: implement wave API call
+    // final updatedMember = await _repo.sendWave(memberId);
     final index = membersHelper.items.indexWhere((m) => m.id == memberId);
     if (index != -1) {
-      //membersHelper.items[index] = updatedMember;
+      // membersHelper.items[index] = updatedMember;
     }
   }
 
   @override
-  void onInit() {
-    tabController = TabController(length: 2, vsync: this);
-    groupModel = Get.arguments as GroupModel;
-    isJoined.value = groupModel.isAlreadyJoined;
-
-    if( postsHelper.items.isEmpty && isJoined.value ){
-      getPosts();
-    }
-
-    tabController.addListener((){
-      if( !isJoined.value ) return;
-      if (tabController.indexIsChanging) return;
-
-      if( tabController.index == 0 ){
-        if( !isPostsLoaded.value ){
-          getPosts();
-        }
-      }else{
-        if( !isMembersLoaded.value ){
-          getMembers();
-        }
-      }
-    });
-
-    postScrollController.addListener((){
-      if( postScrollController.position.pixels == postScrollController.position.maxScrollExtent * 0.9 ){
-        getPosts(refresh: false);
-      }
-    });
-
-    membersScrollController.addListener((){
-      if( membersScrollController.position.pixels == membersScrollController.position.maxScrollExtent * 0.9 ){
-        getMembers(refresh: false);
-      }
-    });
-    super.onInit();
+  void onClose() {
+    tabController.removeListener(_onTabChanged);
+    tabController.dispose();
+    postScrollController.dispose();
+    membersScrollController.dispose();
+    super.onClose();
   }
-
-  //GET POSTS
-  Future<void> getPosts({bool refresh = true}) async{
-
-    if( refresh ){
-      isPostsLoaded.value = false;
-    }
-
-    await postsHelper.fetch(
-
-        isRefresh: refresh,
-        apiCall: (page) => apiService.networkRequest(
-            method: "GET",
-            isAuthRequired: true,
-            endPoint: ApiEndpoints.getGroupPosts(groupId: groupModel.id, page: page)
-        ),
-        fromJson: (json) => Post.fromJson(json),
-        listExtractor: (data) => data['data'] as List<dynamic>?
-    );
-
-    isPostsLoaded.value = true;
-  }
-
-  Future<void> getMembers({bool refresh = true}) async{
-
-    if( refresh ){
-      isMembersLoaded.value = false;
-    }
-
-    await membersHelper.fetch(
-      isRefresh: refresh,
-      apiCall: (page) => apiService.networkRequest(
-        method: "GET",
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.getGroupMembers(groupId: groupModel.id)
-          ),
-      fromJson: (json) => MemberModel.fromJson(json),
-      listExtractor: (data) => data['data'] as List<dynamic>?
-    );
-
-    isMembersLoaded.value = true;
-
-  }
-
 }
