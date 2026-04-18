@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
-class MessageScreen extends StatelessWidget {
-  const MessageScreen({super.key});
+class ContactListScreen extends StatelessWidget {
+  const ContactListScreen({super.key});
 
   // Sample data to mimic the screenshot
   final List<Map<String, dynamic>> messages = const [
@@ -89,7 +89,7 @@ class MessageScreen extends StatelessWidget {
                 final item = messages[index];
                 return ListTile(
                   onTap: (){
-                    Get.toNamed(AppRoutes.messageDetails);
+                    Get.toNamed(AppRoutes.chatScreen);
                   },
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   leading: Stack(

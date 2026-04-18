@@ -1,42 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/services/api_service.dart';
 
-import '../utils/api_response.dart';
 import '../utils/show_snackbar.dart';
 
 class PaginationHelper<T> {
-  final RxList<T> _items = <T>[].obs;
 
-  RxList<T> get items => _items;
+  //==============API SERVICE CLASS==============
+  final ApiService _apiService = Get.find<ApiService>();
 
+  //================REACTIVE LIST================
+  final RxList<T> items = <T>[].obs;
+  //================LOADING STATES===============
   final RxBool isLoading = false.obs;
   final RxBool isMoreLoading = false.obs;
-
+  //================PAGINATION===================
   int currentPage = 1;
   bool hasMore = true;
 
   //CONFIGS
-  late Future<ApiResponse> Function(int page) _apiCall;
+  String _method = "GET";
+  late String Function(int page) _endPoint;
+  bool _isAuthRequired = true;
   late T Function(dynamic json) _fromJson;
   late List<dynamic>? Function(dynamic data) _listExtractor;
-
   int _pageSize = 10;
   bool _showMessage = false;
 
   void init({
-    required Future<ApiResponse> Function(int page) apiCall,
+    String method = "GET",
+    required String Function(int page) endPoint,
+    bool isAuthRequired = true,
     required T Function(dynamic json) fromJson,
     required List<dynamic>? Function(dynamic data) listExtractor,
     int pageSize = 10,
     bool showMessage = false,
+    ScrollController? scrollController
   }) {
-    _apiCall = apiCall;
+    _method = method;
+    _endPoint = endPoint;
+    _isAuthRequired = isAuthRequired;
     _fromJson = fromJson;
     _listExtractor = listExtractor;
     _pageSize = pageSize;
     _showMessage = showMessage;
+
+    //==============Attach scroll listener==================
+    if (scrollController != null) {
+      scrollController.addListener(() {
+        if (!scrollController.hasClients) return;
+
+        if (scrollController.position.pixels >=
+            scrollController.position.maxScrollExtent * 0.9) {
+          fetch(isRefresh: false);
+        }
+      });
+    }
   }
 
+  //==============PAGINATED API CALL==================
   Future<void> fetch({required bool isRefresh}) async {
     if (isLoading.value) return;
 
@@ -44,13 +66,17 @@ class PaginationHelper<T> {
       currentPage = 1;
       hasMore = true;
       isLoading.value = true;
-      _items.clear();
+      items.clear();
     } else {
       if (isMoreLoading.value || !hasMore) return;
       isMoreLoading.value = true;
     }
 
-    final response = await _apiCall(currentPage);
+    final response = await _apiService.networkRequest(
+        method: _method,
+        isAuthRequired: _isAuthRequired,
+        endPoint: _endPoint(currentPage)
+    );
 
     isLoading.value = false;
     isMoreLoading.value = false;
@@ -66,9 +92,9 @@ class PaginationHelper<T> {
         final fetched = tempList.map(_fromJson).toList();
 
         if (isRefresh) {
-          _items.assignAll(fetched);
+          items.assignAll(fetched);
         } else {
-          _items.addAll(fetched);
+          items.addAll(fetched);
         }
 
         if (fetched.length < _pageSize) {
@@ -78,16 +104,5 @@ class PaginationHelper<T> {
         }
       }
     }
-  }
-
-  void attachScrollController(ScrollController controller) {
-    controller.addListener(() {
-      if (!controller.hasClients) return;
-
-      if (controller.position.pixels >=
-          controller.position.maxScrollExtent * 0.9) {
-        fetch(isRefresh: false);
-      }
-    });
   }
 }

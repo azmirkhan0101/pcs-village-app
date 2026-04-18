@@ -30,6 +30,9 @@ class ApiEndpoints {
   }
   //REFRESH TOKEN
   static const refreshToken = "/auth/refresh-token";
+  static String getMemberProfile({required String memberId}){
+    return "asedasdsad";
+  }
 
   //##############################################################
   //=========================POSTS================================
@@ -72,8 +75,14 @@ class ApiEndpoints {
   }
   static const addGroupPostComment = "/group-comments";
   static const createGroupPost = "/group/posts";
-  static String getGroupMembers({required String groupId}){
-    return "/group/member/$groupId";
+  static String getGroupMembers({required String groupId, required int page}){
+    return "/group/member/$groupId?page=$page&limit=10";
+  }
+  //##############################################################
+  //=======================MEMBERS================================
+  static const sendWave = "/wave";
+  static String waveBack({required String userId}){
+    return "/wave/accept/$userId";
   }
   //##############################################################
   //=======================PROFILE================================

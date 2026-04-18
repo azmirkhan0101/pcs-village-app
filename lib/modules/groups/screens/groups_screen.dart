@@ -90,13 +90,13 @@ class GroupsScreen extends StatelessWidget {
                   groups: controller.suggestedPagination.items,
                   onRefresh: controller.fetchSuggestedGroups,
                   scrollController: controller.suggestedScrollController,
-                  isLoadingMore: controller.isSuggestedLoadingMore
+                  isLoadingMore: controller.suggestedPagination.isMoreLoading
                 ),
                 groupsList(
-                  groups: controller.archivedGroups,
+                  groups: controller.archivedPagination.items,
                   onRefresh: controller.fetchArchivedGroups,
                   scrollController: controller.archivedScrollController,
-                  isLoadingMore: controller.isArchivedLoadingMore
+                  isLoadingMore: controller.archivedPagination.isMoreLoading
                 ),
               ],
             ),

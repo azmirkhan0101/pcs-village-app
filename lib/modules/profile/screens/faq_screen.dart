@@ -49,7 +49,7 @@ class FaqScreen extends StatelessWidget {
       return RefreshIndicator(
         onRefresh: () => controller.fetchFaqs(),
         child: ListView.builder(
-          controller: controller.scrollController,
+          controller: controller.faqScrollController,
           padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
           // +1 for bottom loading indicator
           itemCount: controller.faqHelper.items.length + 1,

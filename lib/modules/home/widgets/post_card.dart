@@ -21,6 +21,7 @@ class PostCard extends StatelessWidget {
         .displayName;
 
     return GestureDetector(
+      //THIS ONTAP IS TRIGGERING ON WHOLE CARD CLICK
       onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(
@@ -96,6 +97,7 @@ class PostCard extends StatelessWidget {
               // Interaction Row
               Row(
                 children: [
+                  //I WANT TO CALL VOID CALLBACK HERE FOR USING THIS ICON CLICK FROM PARENT WIDGET
                   SvgPicture.asset(Assets.icons.favouriteOutlined),
                   const SizedBox(width: 4),
                   Text("${post.likesCount}",

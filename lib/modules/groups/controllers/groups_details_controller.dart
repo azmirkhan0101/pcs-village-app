@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/helper/pagination_helper.dart';
 import 'package:pcs_village/core/utils/api_response.dart';
+import 'package:pcs_village/core/utils/show_snackbar.dart';
 import 'package:pcs_village/data/models/groups/group_model.dart';
 import 'package:pcs_village/data/models/groups/member_model.dart';
 
@@ -14,15 +15,16 @@ class GroupsDetailsController extends GetxController
 
   final ApiService apiService = Get.find<ApiService>();
   late TabController tabController;
+  RxInt currentTabIndex = 0.obs;
   late GroupModel groupModel;
 
   // POSTS
-  final PaginationHelper<Post> postsHelper = PaginationHelper<Post>();
+  final postsHelper = PaginationHelper<Post>();
   final ScrollController postScrollController = ScrollController();
   final RxBool isPostsLoaded = false.obs;
 
   // MEMBERS
-  final PaginationHelper<MemberModel> membersHelper = PaginationHelper<MemberModel>();
+  final membersHelper = PaginationHelper<MemberModel>();
   final ScrollController membersScrollController = ScrollController();
   final RxBool isMembersLoaded = false.obs;
 
@@ -38,68 +40,58 @@ class GroupsDetailsController extends GetxController
     groupModel = Get.arguments as GroupModel;
     isJoined.value = groupModel.isAlreadyJoined;
 
-    _initPostsHelper();
-    _initMembersHelper();
+    initPostsHelper();
+    initMembersHelper();
 
-    postsHelper.attachScrollController(postScrollController);
-    membersHelper.attachScrollController(membersScrollController);
+    tabController.addListener( onTabChanged );
 
-    tabController.addListener(_onTabChanged);
-
-    if (isJoined.value) {
+    if ( isJoined.value && postsHelper.items.isEmpty ) {
       getPosts();
     }
   }
 
-  void _initPostsHelper() {
+  void initPostsHelper() {
     postsHelper.init(
-      apiCall: (page) => apiService.networkRequest(
-        method: 'GET',
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.getGroupPosts(
-          groupId: groupModel.id,
-          page: page,
-        ),
-      ),
-      fromJson: (json) => Post.fromJson(json),
-      listExtractor: (data) => data['data'] as List<dynamic>?,
+        endPoint: (page) => ApiEndpoints.getGroupPosts( groupId: groupModel.id, page: page ),
+        fromJson: (json) => Post.fromJson(json),
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+      scrollController: postScrollController
     );
   }
 
-  void _initMembersHelper() {
+  void initMembersHelper() {
     membersHelper.init(
-      apiCall: (page) => apiService.networkRequest(
-        method: 'GET',
-        isAuthRequired: true,
-        endPoint: ApiEndpoints.getGroupMembers(groupId: groupModel.id),
-      ),
-      fromJson: (json) => MemberModel.fromJson(json),
-      listExtractor: (data) => data['data'] as List<dynamic>?,
+        endPoint: (page) => ApiEndpoints.getGroupMembers(groupId: groupModel.id, page: page),
+        fromJson: (json) => MemberModel.fromJson(json),
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+      scrollController: membersScrollController
     );
   }
 
-  void _onTabChanged() {
+  void onTabChanged() {
     if (!isJoined.value) return;
     if (tabController.indexIsChanging) return;
 
     if (tabController.index == 0) {
+      currentTabIndex.value = 0;
       if (!isPostsLoaded.value) getPosts();
     } else {
+      currentTabIndex.value = 1;
       if (!isMembersLoaded.value) getMembers();
     }
   }
 
   // ====== GET POSTS ======
-  Future<void> getPosts({bool refresh = true}) async {
-    if (refresh) isPostsLoaded.value = false;
-    await postsHelper.fetch(isRefresh: refresh);
+  Future<void> getPosts() async {
+    isPostsLoaded.value = false;
+    await postsHelper.fetch(isRefresh: true);
     isPostsLoaded.value = true;
   }
 
   // ====== GET MEMBERS ======
-  Future<void> getMembers({bool refresh = true}) async {
-    if (refresh) isMembersLoaded.value = false;
-    await membersHelper.fetch(isRefresh: refresh);
+  Future<void> getMembers() async {
+    isMembersLoaded.value = false;
+    await membersHelper.fetch(isRefresh: true);
     isMembersLoaded.value = true;
   }
 
@@ -146,18 +138,67 @@ class GroupsDetailsController extends GetxController
   }
 
   // ====== SEND WAVE ======
-  Future<void> sendWave({required String memberId}) async {
-    // TODO: implement wave API call
-    // final updatedMember = await _repo.sendWave(memberId);
-    final index = membersHelper.items.indexWhere((m) => m.id == memberId);
-    if (index != -1) {
-      // membersHelper.items[index] = updatedMember;
+  Future<void> sendWave({required String userId}) async {
+
+    final member = membersHelper.items.firstWhereOrNull((m) => m.userId == userId);
+
+    if( member == null || member.isWaveLoading.value ){
+      return;
+    }
+    member.isWaveLoading.value = true;
+
+    final Map<String, String> payLoad = {
+      "receiver": userId
+    };
+
+    ApiResponse response = await apiService.networkRequest(
+        method: "POST",
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.sendWave,
+      body: payLoad
+    );
+
+    member.isWaveLoading.value = false;
+
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+      member.isWavePending = true;
+    }else{
+      showApiSnackBar(
+          statusCode: response.statusCode
+      );
+    }
+  }
+
+  Future<void> waveBack({required String userId}) async{
+
+    final member = membersHelper.items.firstWhereOrNull((m) => m.userId == userId);
+
+    if( member == null || member.isWaveLoading.value ){
+      return;
+    }
+    member.isWaveLoading.value = true;
+
+    ApiResponse response = await apiService.networkRequest(
+        method: "POST",
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.waveBack(userId: userId)
+    );
+
+    member.isWaveLoading.value = false;
+
+    if( response.statusCode == 200 || response.statusCode == 201 ){
+      member.isWavePending = false;
+      member.isIncomingWave = false;
+      member.isMatched = true;
+    }else{
+      showApiSnackBar(
+          statusCode: response.statusCode
+      );
     }
   }
 
   @override
   void onClose() {
-    tabController.removeListener(_onTabChanged);
     tabController.dispose();
     postScrollController.dispose();
     membersScrollController.dispose();

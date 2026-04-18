@@ -14,11 +14,13 @@ import 'package:pcs_village/modules/auth/screens/signup_three_screen.dart';
 import 'package:pcs_village/modules/auth/screens/signup_two_screen.dart';
 import 'package:pcs_village/modules/groups/bindings/group_details_binding.dart';
 import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
+import 'package:pcs_village/modules/groups/screens/member_profile_screen.dart';
+import 'package:pcs_village/modules/message/bindings/chat_binding.dart';
 import 'package:pcs_village/modules/post/screens/create_post_screen.dart';
 import 'package:pcs_village/modules/post/screens/post_details_screen.dart';
 import 'package:pcs_village/modules/main_nav/bindings/main_nav_binding.dart';
 import 'package:pcs_village/modules/main_nav/screens/main_nav_screen.dart';
-import 'package:pcs_village/modules/message/screens/message_details.dart';
+import 'package:pcs_village/modules/message/screens/chat_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
 import 'package:pcs_village/modules/profile/bindings/faq_binding.dart';
@@ -145,10 +147,11 @@ class AppPages {
       binding: CreatePostBinding()
     ),
     GetPage(
-        name: AppRoutes.messageDetails,
+        name: AppRoutes.chatScreen,
         page: (){
           return ChatScreen();
-        }
+        },
+      binding: ChatBinding()
     ),
     GetPage(
         name: AppRoutes.groupDetails,
@@ -156,6 +159,12 @@ class AppPages {
           return GroupDetailsScreen();
         },
       binding: GroupDetailsBinding()
+    ),
+    GetPage(
+        name: AppRoutes.memberProfile,
+        page: (){
+          return MemberProfileScreen();
+        }
     ),
     GetPage(
         name: AppRoutes.editProfile,

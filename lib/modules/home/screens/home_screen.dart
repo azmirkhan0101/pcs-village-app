@@ -71,7 +71,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: ListView.builder(
                   itemCount: controller.postsHelper.items.length,
-                    controller: controller.scrollController,
+                    controller: controller.postScrollController,
 
                     itemBuilder: (context, index){
                       final Post post = controller.postsHelper.items[index];

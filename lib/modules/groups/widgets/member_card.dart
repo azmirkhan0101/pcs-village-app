@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/data/models/groups/member_model.dart';
+import 'package:pcs_village/modules/main_nav/controllers/main_nav_controller.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../core/utils/app_constants.dart';
@@ -12,8 +15,15 @@ import '../../../core/widgets/custom_text.dart';
 class MemberCard extends StatelessWidget {
 
   final MemberModel member;
+  final Function(String id) onSendWave;
+  final Function(String id) onWaveBack;
 
-  const MemberCard({super.key, required this.member});
+  const MemberCard({
+    super.key,
+    required this.member,
+    required this.onSendWave,
+    required this.onWaveBack
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -71,12 +81,12 @@ class MemberCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                          "📅 ${member.name ?? 'N/A'}",
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.grey
-                          )
-                      ),
+                      // Text(
+                      //     "📅 ${member.name ?? 'N/A'}",
+                      //     style: const TextStyle(
+                      //         fontSize: 12, color: Colors.grey
+                      //     )
+                      // ),
                       Text(
                           "📍 ${member.movement ?? ''}",
                           style: const TextStyle(
@@ -91,31 +101,39 @@ class MemberCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
-                  child: CustomButton(
+                  child: Obx((){
+                    return CustomButton(
                       label: member.isMatched
-                    ? "Message"
-                      : member.isWavePending
-                    ? "Wave sent"
-                      : member.isIncomingWave
-                    ? "Wave back"
-                      : "Send wave",
-                    buttonHeight: 35,
-                    isEnabled: member.isWavePending ? false : true,
-                    fontSize: 14,
-                    buttonRadius: 8,
-                    prefixSvgIcon: member.isMatched ? Assets.icons.chat : Assets.icons.raiseHand,
-                    iconHeight: 20,
-                    gradient: AppColors.waveButtonGradient,
-                    onPressed: () {
+                          ? "Message"
+                          : member.isWavePending
+                          ? "Wave sent"
+                          : member.isIncomingWave
+                          ? "Wave back"
+                          : "Send wave",
+                      buttonHeight: 35,
+                      isLoading: member.isWaveLoading.value,
+                      isEnabled: member.isWavePending ? false : true,
+                      fontSize: 14,
+                      buttonRadius: 8,
+                      prefixSvgIcon: member.isMatched ? Assets.icons.chat : Assets.icons.raiseHand,
+                      iconHeight: 20,
+                      gradient: AppColors.waveButtonGradient,
+                      onPressed: () {
                         if( member.isMatched ){
                           //TODO: GO TO CONVERSATION
+                          //TODO: PASS ARGS IN CONVERSATION SCREEN, NOT CHATS
+                          Get.back();
+                          Get.isRegistered<MainNavController>()
+                              ? Get.find<MainNavController>().changeIndex(2)
+                              : Get.put(MainNavController()).changeIndex(2);
                         }else if( member.isIncomingWave ){
-                          //TODO: WAVE BACK
+                          onWaveBack(member.userId);
                         }else{
-                          //TODO: SEND WAVE
+                          onSendWave(member.userId);
                         }
-                    },
-                  ),
+                      },
+                    );
+                  }),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -127,7 +145,7 @@ class MemberCard extends StatelessWidget {
                     iconHeight: 20,
                     buttonRadius: 8,
                     onPressed: () {
-                        //TODO: GO TO PROFILE
+                        Get.toNamed(AppRoutes.memberProfile);
                     },
                   ),
                 ),

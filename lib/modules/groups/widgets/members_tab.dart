@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:pcs_village/core/utils/app_constants.dart';
-import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/core/widgets/pagination_loader.dart';
 import 'package:pcs_village/data/models/groups/member_model.dart';
 import 'package:pcs_village/modules/groups/widgets/member_card.dart';
 import 'package:pcs_village/modules/groups/widgets/members_skeleton_list.dart';
 import 'package:pcs_village/modules/groups/widgets/no_members_state.dart';
-import 'package:shimmer/shimmer.dart';
-
-import '../../../core/assets_gen/assets.gen.dart';
 
 class MembersTab extends StatelessWidget {
   final RxList<MemberModel> members;
@@ -18,6 +12,8 @@ class MembersTab extends StatelessWidget {
   final RxBool isMoreLoading;
   final ScrollController scrollController;
   final Future<void> Function() onRefresh;
+  final Function(String id) onSendWave;
+  final Function(String id) onWaveBack;
 
   const MembersTab({
     super.key,
@@ -25,7 +21,9 @@ class MembersTab extends StatelessWidget {
     required this.isLoading,
     required this.onRefresh,
     required this.isMoreLoading,
-    required this.scrollController
+    required this.scrollController,
+    required this.onSendWave,
+    required this.onWaveBack
   });
 
   @override
@@ -71,7 +69,15 @@ class MembersTab extends StatelessWidget {
             final String memberId = members[index - 1].id;
             return Obx(() {
               final liveMember = members.firstWhere((m) => m.id == memberId);
-              return MemberCard(member: liveMember);
+              return MemberCard(
+                member: liveMember,
+                onSendWave: (String id) {
+                  onSendWave(liveMember.userId);
+                },
+                onWaveBack: (String id) {
+                  onWaveBack(liveMember.userId);
+                }
+              );
             });
           },
         );

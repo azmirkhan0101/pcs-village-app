@@ -11,19 +11,18 @@ class PostDetailsController extends GetxController {
 
   final ApiService apiService = Get.find<ApiService>();
   final ScrollController scrollController = ScrollController();
-  PaginationHelper<Comment> commentsHelper = PaginationHelper<Comment>();
+  final commentsHelper = PaginationHelper<Comment>();
 
   RxBool isLikeLoading = false.obs;
 
-  final TextEditingController commentController = TextEditingController();
-
   late Post post;
-
+  final TextEditingController commentController = TextEditingController();
   final FocusNode commentFocusNode = FocusNode();
 
   Rxn<Comment> replyingToComment = Rxn<Comment>();
-  void toggleReplies(String id) => expandedCommentIds.contains(id) ? expandedCommentIds.remove(id) : expandedCommentIds.add(id);
-
+  void toggleReplies(String id) => expandedCommentIds.contains(id)
+      ? expandedCommentIds.remove(id)
+      : expandedCommentIds.add(id);
   var expandedCommentIds = <String>{}.obs;
 
   void setReplyingTo(Comment comment) {
@@ -43,37 +42,31 @@ class PostDetailsController extends GetxController {
   void onInit() {
 
     isGroup = Get.arguments['isGroup'] as bool? ?? false;
-    
     post = Get.arguments['post'] as Post;
+
+    initCommentsHelper();
 
     if( commentsHelper.items.isEmpty ){
       getPostComments();
     }
 
-    scrollController.addListener(() {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent * 0.9) {
-        getPostComments(refresh: false);
-      }
-    });
     super.onInit();
   }
 
-  //GET POSTS
-  Future<void> getPostComments({bool refresh = true}) async {
-
-    await commentsHelper.fetch(
-        isRefresh: refresh,
-        apiCall: (page) => apiService.networkRequest(
-          method: "GET",
-          isAuthRequired: true,
-          endPoint: isGroup
-              ? ApiEndpoints.getGroupPostComments(postId: post.id, page: page)
-              : ApiEndpoints.getPostComments(id: post.id, page: page),
-        ),
+  void initCommentsHelper(){
+    commentsHelper.init(
+        endPoint: (page) => isGroup
+            ? ApiEndpoints.getGroupPostComments(postId: post.id, page: page)
+            : ApiEndpoints.getPostComments(id: post.id, page: page),
         fromJson: (json) => Comment.fromJson(json),
-        listExtractor: (data) => data['data'] as List<dynamic>?
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+        scrollController: scrollController
     );
+  }
+
+  //GET POSTS
+  Future<void> getPostComments() async {
+    await commentsHelper.fetch(isRefresh: true);
   }
 
   //==================LIKE/UNLIKE POST==========================

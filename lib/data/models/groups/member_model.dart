@@ -1,12 +1,14 @@
 
+import 'package:get/get.dart';
+
 class MemberModel {
   final String id;
   final DateTime joinedAt;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final bool isMatched;
-  final bool isWavePending;
-  final bool isIncomingWave;
+  bool isMatched;
+  bool isWavePending;
+  bool isIncomingWave;
   final bool isDeclinedByMe;
   final bool isDeclinedByThem;
   final String name;
@@ -17,6 +19,9 @@ class MemberModel {
   final String profileImage;
   final String affiliation;
   final String movement;
+
+  //WAVE LOADING SATE
+  RxBool isWaveLoading = false.obs;
 
   MemberModel({
     required this.id,

@@ -84,6 +84,16 @@ class LoginController extends GetxController {
     } else if (response.statusCode == 400) {
       //ACCOUNT FOUND, BUT NOT VERIFIED
       isLoginLoading.value = false;
+
+      if( message != null && message.contains("Credential not matched") ){
+        showSnackBar(
+            title: "Attention",
+            message: message,
+            backgroundColor: AppColors.warningYellow
+        );
+        return;
+      }
+
       showSnackBar(
         title: "Attention!",
         message: message ?? "Verify your account using the OTP sent to your email.",
@@ -118,7 +128,7 @@ class LoginController extends GetxController {
         message:
             message ??
             "No account found matching this email. Try creating an account.",
-        backgroundColor: AppColors.errorRed,
+        backgroundColor: AppColors.warningYellow
       );
     } else {
       isLoginLoading.value = false;

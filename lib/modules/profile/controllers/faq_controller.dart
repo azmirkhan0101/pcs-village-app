@@ -9,27 +9,31 @@ import '../../../data/models/faq/faq_model.dart';
 class FaqController extends GetxController {
 
   final ApiService apiService = Get.find<ApiService>();
-  PaginationHelper<FaqModel> faqHelper = PaginationHelper<FaqModel>();
-  final ScrollController scrollController = ScrollController();
+  final faqHelper = PaginationHelper<FaqModel>();
+  final ScrollController faqScrollController = ScrollController();
 
   @override
   void onInit() {
 
-    fetchFaqs();
+    initFaqHelper();
+
+    if( faqHelper.items.isEmpty ) {
+      fetchFaqs();
+    }
 
     super.onInit();
   }
 
-  Future<void> fetchFaqs({bool isRefresh = true}) async {
-    await faqHelper.fetch(
-        isRefresh: isRefresh,
-        apiCall: (page) => apiService.networkRequest(
-            method: "GET",
-            isAuthRequired: true,
-            endPoint: ApiEndpoints.getFaq(page: page)
-        ),
+  void initFaqHelper(){
+    faqHelper.init(
+        endPoint: (page) => ApiEndpoints.getFaq(page: page),
         fromJson: (json) => FaqModel.fromJson(json),
-        listExtractor: (data) => data['data'] as List<dynamic>?
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+        scrollController: faqScrollController
     );
+  }
+
+  Future<void> fetchFaqs() async {
+    await faqHelper.fetch(isRefresh: true);
   }
 }

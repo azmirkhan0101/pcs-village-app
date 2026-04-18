@@ -27,7 +27,6 @@ class GroupDetailsScreen extends StatelessWidget {
               pinned: true,
               backgroundColor: const Color(0xFF1E3A5F),
               leading: const BackButton(color: Colors.white),
-              actions: [circleBtn(Icons.settings)],
               flexibleSpace: FlexibleSpaceBar(
                 centerTitle: true,
                 background: Center(
@@ -99,7 +98,7 @@ class GroupDetailsScreen extends StatelessWidget {
                   isLoading: controller.postsHelper.isLoading,
                   scrollController: controller.postScrollController,
                   onRefresh: () async{
-                    controller.getPosts(refresh: true);
+                    controller.getPosts();
                   },
                 ),
                 MembersTab(
@@ -109,7 +108,12 @@ class GroupDetailsScreen extends StatelessWidget {
                   scrollController: controller.membersScrollController,
                   onRefresh: () async{
                     controller.getMembers();
-                  },
+                  }, onSendWave: (String id) {
+                    controller.sendWave(userId: id);
+                },
+                  onWaveBack: (String id) {
+                    controller.waveBack(userId: id);
+                  }
                 ),
               ],
             );
@@ -135,8 +139,9 @@ class GroupDetailsScreen extends StatelessWidget {
         }),
       ),
       floatingActionButton: Obx(() {
-        // Only show FAB if joined
+        // Only show FAB if joined and in posts tab
         return controller.isJoined.value
+            && controller.currentTabIndex.value == 0
             ? FloatingActionButton(
           onPressed: () {
             Get.toNamed(
@@ -153,16 +158,6 @@ class GroupDetailsScreen extends StatelessWidget {
         )
             : const SizedBox.shrink();
       }),
-    );
-  }
-
-  Widget circleBtn(IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: CircleAvatar(
-        backgroundColor: Colors.black.withValues(alpha: 0.3),
-        child: Icon(icon, color: Colors.white, size: 20),
-      ),
     );
   }
 

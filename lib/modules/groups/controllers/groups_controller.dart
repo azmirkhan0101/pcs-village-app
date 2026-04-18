@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../core/helper/pagination_helper.dart';
-import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
 import '../../../data/models/groups/group_model.dart';
 
 class GroupsController extends GetxController
     with GetSingleTickerProviderStateMixin {
 
-  final ApiService apiService = Get.find<ApiService>();
   late TabController tabController;
 
   RxBool isLoading = false.obs;
@@ -35,43 +33,21 @@ class GroupsController extends GetxController
 
     tabController = TabController(length: 3, vsync: this);
 
-    activePagination.attachScrollController(activeScrollController);
-    suggestedPagination.attachScrollController(suggestedScrollController);
-    archivedPagination.attachScrollController(archivedScrollController);
+    initActivePagination();
+    initSuggestedPagination();
+    initArchivedPagination();
 
-    activePagination.init(
-        apiCall: (page) => apiService.networkRequest(
-          method: "GET",
-          endPoint: ApiEndpoints.getGroups(isActive: true, page: page),
-          isAuthRequired: true,
-        ),
-        fromJson: (json) => GroupModel.fromJson(json),
-        listExtractor: (data) => data['data']
-    );
+    if (activePagination.items.isEmpty) {
+      fetchActiveGroups();
+    }
 
-    suggestedPagination.init(
-        apiCall: (page) => apiService.networkRequest(
-          method: "GET",
-          endPoint: ApiEndpoints.getGroups(isSuggested: true, page: page),
-          isAuthRequired: true,
-        ),
-        fromJson: (json) => GroupModel.fromJson(json),
-        listExtractor: (data) => data['data']
-    );
+    tabController.addListener( onTabChanged );
 
-    archivedPagination.init(
-        apiCall: (page) => apiService.networkRequest(
-          method: "GET",
-          endPoint: ApiEndpoints.getGroups(isArchived: true, page: page),
-          isAuthRequired: true,
-        ),
-        fromJson: (json) => GroupModel.fromJson(json),
-        listExtractor: (data) => data['data']
-    );
+  }
 
-    fetchActiveGroups();
 
-    tabController.addListener(() {
+  //=============TAB CHANGE LISTENER===========
+  void onTabChanged() {
       if (tabController.indexIsChanging) return;
 
       switch (tabController.index) {
@@ -85,27 +61,53 @@ class GroupsController extends GetxController
           if (!isArchivedLoaded.value) fetchArchivedGroups();
           break;
       }
-    });
+    }
+
+  void initActivePagination(){
+    activePagination.init(
+        endPoint: (page) => ApiEndpoints.getGroups(isActive: true, page: page),
+        fromJson: (json) => GroupModel.fromJson(json),
+        listExtractor: (data) => data['data'],
+      scrollController: activeScrollController
+    );
+  }
+
+  void initSuggestedPagination(){
+    suggestedPagination.init(
+        endPoint: (page) => ApiEndpoints.getGroups(isSuggested: true, page: page),
+        fromJson: (json) => GroupModel.fromJson(json),
+        listExtractor: (data) => data['data'],
+      scrollController: suggestedScrollController
+    );
+  }
+
+  void initArchivedPagination(){
+    archivedPagination.init(
+        endPoint: (page) => ApiEndpoints.getGroups(isArchived: true, page: page),
+        fromJson: (json) => GroupModel.fromJson(json),
+        listExtractor: (data) => data['data'],
+      scrollController: archivedScrollController
+    );
   }
 
   // ================= ACTIVE =================
-  Future<void> fetchActiveGroups({bool loadMore = false}) async {
-
-    await activePagination.fetch( isRefresh: !loadMore );
+  Future<void> fetchActiveGroups() async {
+    isActiveLoaded.value = false;
+    await activePagination.fetch( isRefresh: true );
     isActiveLoaded.value = true;
   }
 
   // ================= SUGGESTED =================
-  Future<void> fetchSuggestedGroups({bool loadMore = false}) async {
-
-    suggestedPagination.fetch( isRefresh: !loadMore );
+  Future<void> fetchSuggestedGroups() async {
+    isSuggestedLoaded.value = false;
+    await suggestedPagination.fetch( isRefresh: true );
     isSuggestedLoaded.value = true;
   }
 
   // ================= ARCHIVED =================
-  Future<void> fetchArchivedGroups({bool loadMore = false}) async {
-
-    await archivedPagination.fetch(isRefresh: !loadMore,);
+  Future<void> fetchArchivedGroups() async {
+    isArchivedLoaded.value = false;
+    await archivedPagination.fetch( isRefresh: true );
     isArchivedLoaded.value = true;
   }
 
