@@ -68,6 +68,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/favourite_fill.svg
   String get favouriteFill => 'assets/icons/favourite_fill.svg';
 
+  /// File path: assets/icons/favourite_filled.svg
+  String get favouriteFilled => 'assets/icons/favourite_filled.svg';
+
   /// File path: assets/icons/favourite_outlined.svg
   String get favouriteOutlined => 'assets/icons/favourite_outlined.svg';
 
@@ -157,6 +160,7 @@ class $AssetsIconsGen {
     edit,
     exit,
     favouriteFill,
+    favouriteFilled,
     favouriteOutlined,
     filter,
     flag,

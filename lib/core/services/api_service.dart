@@ -86,7 +86,7 @@ class ApiService extends GetxService {
         case 'DELETE':
           {
             response = await http
-                .delete(uri, headers: headers)
+                .delete(uri, body: body == null ? null : jsonEncode(body), headers: headers)
                 .timeout(Duration(seconds: timeout));
           }
           break;

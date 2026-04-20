@@ -6,6 +6,7 @@ class Comment {
   final String authorName;
   final String? authorProfileImg;
   final List<Comment> replies;
+  final bool isMyComment;
 
   Comment({
     required this.id,
@@ -15,12 +16,14 @@ class Comment {
     required this.authorName,
     this.authorProfileImg,
     required this.replies,
+    required this.isMyComment
   });
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     return Comment(
       id: json['_id'] as String,
       postId: json['post'] as String,
+      isMyComment: json['isMyComment'] as bool? ?? false,
       content: json['content'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       authorName: json['authorName'] as String,
@@ -30,17 +33,5 @@ class Comment {
           .toList() ??
           [],
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'post': postId,
-      'content': content,
-      'createdAt': createdAt.toIso8601String(),
-      'authorName': authorName,
-      'authorProfileImg': authorProfileImg,
-      'replies': replies.map((e) => e.toJson()).toList()
-    };
   }
 }

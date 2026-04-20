@@ -26,6 +26,9 @@ static const String resetPasswordScreen = "/reset-password-screen";
 static const String mainNav = "/main-nav";
 static const String postDetails = "/post-details";
 static const String createPost = "/create_post";
+  static const String reportPost = "/report_post";
+
+static const String editPost = "/edit_post";
 static const String chatScreen = "/chat_screen";
 
 //=======================GROUP=======================

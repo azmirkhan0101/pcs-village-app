@@ -6,6 +6,8 @@ import 'package:pcs_village/modules/groups/widgets/member_card.dart';
 import 'package:pcs_village/modules/groups/widgets/members_skeleton_list.dart';
 import 'package:pcs_village/modules/groups/widgets/no_members_state.dart';
 
+import '../../../core/utils/app_colors.dart';
+
 class MembersTab extends StatelessWidget {
   final RxList<MemberModel> members;
   final RxBool isLoading;
@@ -14,6 +16,7 @@ class MembersTab extends StatelessWidget {
   final Future<void> Function() onRefresh;
   final Function(String id) onSendWave;
   final Function(String id) onWaveBack;
+  final TextEditingController searchController;
 
   const MembersTab({
     super.key,
@@ -23,12 +26,15 @@ class MembersTab extends StatelessWidget {
     required this.isMoreLoading,
     required this.scrollController,
     required this.onSendWave,
-    required this.onWaveBack
+    required this.onWaveBack,
+    required this.searchController
   });
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      backgroundColor: Colors.white,
+      color: AppColors.primaryColor,
       onRefresh: onRefresh,
       child: Obx(() {
         if (isLoading.value && members.isEmpty) {
@@ -40,6 +46,7 @@ class MembersTab extends StatelessWidget {
         }
 
         return ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: scrollController,
           padding: const EdgeInsets.all(16),
           itemCount: members.length + 2,
@@ -87,6 +94,7 @@ class MembersTab extends StatelessWidget {
 
   Widget searchBar() {
     return TextField(
+      controller: searchController,
       decoration: InputDecoration(
         hintText: "Search members...",
         prefixIcon: const Icon(Icons.search, color: Colors.grey),

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
+import 'package:pcs_village/modules/post/widgets/post_menu_button.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../core/utils/time_ago_calculator.dart';
@@ -10,10 +11,23 @@ import '../../../data/models/post/post.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
+  final bool isMyPost;
   final VoidCallback onTap;
+  final VoidCallback onFavouriteTap;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onReport;
 
-  const PostCard({super.key, required this.post, required this.onTap});
-
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.isMyPost,
+    required this.onTap,
+    required this.onFavouriteTap,
+    this.onEdit,
+    this.onDelete,
+    this.onReport
+  });
   @override
   Widget build(BuildContext context) {
     String affiliation = Affiliation.values
@@ -21,7 +35,6 @@ class PostCard extends StatelessWidget {
         .displayName;
 
     return GestureDetector(
-      //THIS ONTAP IS TRIGGERING ON WHOLE CARD CLICK
       onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(
@@ -36,8 +49,9 @@ class PostCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Row (Avatar, Name, Time)
+              // Header Row (Avatar, Name, Time + PopupMenu)
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
@@ -52,39 +66,65 @@ class PostCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(post.authorName,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              post.authorName,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16)),
-                          const SizedBox(width: 4),
-                          SvgPicture.asset(Assets.icons.verified)
-                        ],
-                      ),
-                      Text("$affiliation • ${timeAgo(post.createdAt)}",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            SvgPicture.asset(Assets.icons.verified),
+                          ],
+                        ),
+                        Text(
+                          "$affiliation • ${timeAgo(post.createdAt)}",
                           style: const TextStyle(
-                              color: Colors.grey, fontSize: 12)),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_pin,
-                              size: 12, color: Colors.grey),
-                          Text(post.stationName,
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_pin,
+                              size: 12,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              post.stationName,
                               style: const TextStyle(
-                                  color: Colors.grey, fontSize: 12)),
-                        ],
-                      ),
-                    ],
+                                  color: Colors.grey,
+                                  fontSize: 12
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  // --- Added PopupMenuButton here ---
+                  PostMenuButton(
+                      isMyPost: isMyPost,
+                    onEdit: () => onEdit?.call(),
+                    onDelete: () => onDelete?.call(),
+                    onReport: () => onReport?.call(),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
 
               // Post Content
-              Text(post.content,
-                  style: const TextStyle(fontSize: 14, height: 1.4)),
+              Text(
+                  post.content,
+                  style: const TextStyle(fontSize: 14, height: 1.4)
+              ),
 
               // --- Attachments Section ---
               if (post.attachments.isNotEmpty) ...[
@@ -97,16 +137,33 @@ class PostCard extends StatelessWidget {
               // Interaction Row
               Row(
                 children: [
-                  //I WANT TO CALL VOID CALLBACK HERE FOR USING THIS ICON CLICK FROM PARENT WIDGET
-                  SvgPicture.asset(Assets.icons.favouriteOutlined),
-                  const SizedBox(width: 4),
-                  Text("${post.likesCount}",
-                      style: const TextStyle(color: Colors.grey)),
+                  InkWell(
+                    onTap: onFavouriteTap,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            post.isLikedByMe ? Assets.icons.favouriteFill : Assets.icons.favouriteOutlined,
+                            colorFilter:  post.isLikedByMe ? ColorFilter.mode(Colors.red.shade400, BlendMode.srcIn) : null,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "${post.likesCount}",
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   const SizedBox(width: 24),
                   SvgPicture.asset(Assets.icons.chat),
                   const SizedBox(width: 4),
-                  Text("${post.commentsCount}",
-                      style: const TextStyle(color: Colors.grey)),
+                  Text(
+                    "${post.commentsCount}",
+                    style: const TextStyle(color: Colors.grey),
+                  ),
                 ],
               ),
             ],
@@ -178,9 +235,10 @@ class PostCard extends StatelessWidget {
                             child: Text(
                               "+${count - 2}",
                               style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
@@ -196,10 +254,6 @@ class PostCard extends StatelessWidget {
   }
 
   Widget _imageItem(String url) {
-    return SizedBox.expand(
-      child: CachedImageWidget(
-        imageUrl: url,
-      ),
-    );
+    return SizedBox.expand(child: CachedImageWidget(imageUrl: url));
   }
 }

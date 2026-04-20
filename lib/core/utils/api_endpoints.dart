@@ -31,22 +31,37 @@ class ApiEndpoints {
   //REFRESH TOKEN
   static const refreshToken = "/auth/refresh-token";
   static String getMemberProfile({required String memberId}){
-    return "asedasdsad";
+    return "/group/member/$memberId/profile";
   }
 
   //##############################################################
   //=========================POSTS================================
-  static const createPost = "/community-posts";
-  static String getAllPosts({required int page}){
-    return "/community-posts/relevant?limit=10&page=$page&sortBy=content&sortOrder=desc";
+  static const createCommunityPost = "/community-posts";
+  static String deleteCommunityPostImage({required String postId}){
+    return "/community-posts/attachments/$postId";
   }
-  static String getPostComments({required String id, required int page}){
+  static String updateCommunityPost({required String postId}){
+    return "/community-posts/$postId";
+  }
+  static String getAllCommunityPosts({required int page, required String searchQuery}){
+    return "/community-posts/relevant?limit=10&page=$page&searchTerm=$searchQuery&sortBy=content&sortOrder=desc";
+  }
+  static String getCommunityPostById({required String postId}){
+    return "/community-posts/$postId";
+  }
+  static String getCommunityPostComments({required String id, required int page}){
     return "/community-comments/$id/all?page=$page&limit=10";
   }
-  static String likeUnlikePost({required String id}){
+  static String likeUnlikeCommunityPost({required String id}){
     return "/community-likes/$id";
   }
-  static const addComment = "/community-comments";
+  static const addCommunityComment = "/community-comments";
+  static String deleteCommunityComment({required String commentId}){
+    return "/community-comments/$commentId";
+  }
+  static String deleteCommunityPost({required String postId}){
+    return "/community-posts/$postId";
+  }
   //##############################################################
   //==========================GROUPS==============================
   static String getGroups({bool isActive = false, bool isSuggested = false, bool isArchived = false, required int page}){
@@ -67,6 +82,9 @@ class ApiEndpoints {
   static String getGroupPosts({required String groupId, required int page}){
     return "/group/posts/all?group=$groupId&page=$page&limit=10";
   }
+  static String getGroupPostById({required String postId}){
+    return "/group/posts/$postId";
+  }
   static String getGroupPostComments({required String postId, required int page}){
     return "/group-comments/post/$postId?page=$page&limit=10";
   }
@@ -74,9 +92,26 @@ class ApiEndpoints {
     return "/group-likes/$postId";
   }
   static const addGroupPostComment = "/group-comments";
+  static String deleteGroupPostComment({required String commentId}){
+    return "/group-comments/$commentId";
+  }
   static const createGroupPost = "/group/posts";
-  static String getGroupMembers({required String groupId, required int page}){
-    return "/group/member/$groupId?page=$page&limit=10";
+  static String deleteGroupPostImage({required String postId}){
+    return "/group/posts/attachments/$postId";
+  }
+  static String updateGroupPost({required String postId}){
+    return "/group/posts/$postId";
+  }
+  static String deleteGroupPost({required String postId}){
+    return "/group/posts/$postId";
+  }
+  static String getGroupMembers({required String groupId, required int page, required String searchQuery}){
+    return "/group/member/$groupId?page=$page&limit=10&searchTerm=$searchQuery";
+  }
+
+  //REPORT POST
+  static String reportPost(){
+    return "/reports";
   }
   //##############################################################
   //=======================MEMBERS================================

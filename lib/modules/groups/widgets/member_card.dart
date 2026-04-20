@@ -145,7 +145,10 @@ class MemberCard extends StatelessWidget {
                     iconHeight: 20,
                     buttonRadius: 8,
                     onPressed: () {
-                        Get.toNamed(AppRoutes.memberProfile);
+                        Get.toNamed(
+                            AppRoutes.memberProfile,
+                          arguments: member.userId
+                        );
                     },
                   ),
                 ),

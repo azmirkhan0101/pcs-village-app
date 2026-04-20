@@ -8,7 +8,7 @@ class NoMembersState extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        SizedBox(height: Get.height * 0.2),
+        SizedBox(height: Get.height * 0.15),
         const Center(
           child: Text(
             "No members found.",

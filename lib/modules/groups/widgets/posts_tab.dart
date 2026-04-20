@@ -3,13 +3,16 @@ import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/data/models/post/post.dart';
 import 'package:pcs_village/routes/app_pages.dart';
-import '../../home/widgets/post_card.dart';
+import '../../post/widgets/post_card.dart';
 
 class PostsTab extends StatelessWidget {
   final RxList<Post> posts;
   final RxBool isLoading;
   final ScrollController scrollController;
   final Future<void> Function() onRefresh;
+  final Function(String postID) onFavouriteTap;
+  final Function(String postID) onDelete;
+  final String userId;
 
   const PostsTab({
     super.key,
@@ -17,6 +20,9 @@ class PostsTab extends StatelessWidget {
     required this.isLoading,
     required this.scrollController,
     required this.onRefresh,
+    required this.onFavouriteTap,
+    required this.onDelete,
+    required this.userId
   });
 
   @override
@@ -75,9 +81,34 @@ class PostsTab extends StatelessWidget {
                   AppRoutes.postDetails,
                   arguments: {
                     'isGroup': true,
-                    'post': post
+                    'postId' : post.id
                   }
               ),
+              onFavouriteTap: (){
+                onFavouriteTap(post.id);
+              },
+              isMyPost: post.authorId == userId,
+              onEdit: (){
+                Get.toNamed(
+                    AppRoutes.editPost,
+                    arguments: {
+                      "isGroup" : true,
+                      "post" : post
+                    }
+                );
+              },
+              onDelete: (){
+                onDelete(post.id);
+              },
+              onReport: (){
+                Get.toNamed(
+                  AppRoutes.reportPost,
+                  arguments: {
+                    "isGroup" : true,
+                    "postId" : post.id
+                  }
+                );
+              },
             );
           },
         );
@@ -98,7 +129,7 @@ class PostsTab extends StatelessWidget {
   Widget _buildEmptyState() {
     return ListView( // Wrap in ListView so RefreshIndicator still works
       children: [
-        SizedBox(height: Get.height * 0.3),
+        SizedBox(height: Get.height * 0.15),
         const Center(
           child: Column(
             children: [

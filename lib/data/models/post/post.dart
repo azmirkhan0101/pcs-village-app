@@ -18,8 +18,11 @@ class  Post {
   final String stationState;
   final String stationCity;
   final String stationType;
-  final int commentsCount;
-  final int likesCount;
+  int commentsCount;
+  int likesCount;
+  final int totalReports;
+  final bool hasReported;
+  bool isLikedByMe;
 
   Post({
     required this.id,
@@ -41,10 +44,12 @@ class  Post {
     required this.stationCity,
     required this.stationType,
     required this.commentsCount,
-    required this.likesCount
+    required this.likesCount,
+    required this.totalReports,
+    required this.hasReported,
+    required this.isLikedByMe
   });
 
-  // Factory method to create an instance from JSON
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['_id'] ?? '',
@@ -65,12 +70,14 @@ class  Post {
       stationState: json['stationState'] ?? '',
       stationCity: json['stationCity'] ?? '',
       stationType: json['stationType'] ?? '',
-      commentsCount: json['comments'] ?? 0,
+      commentsCount: json['comments'] as int? ?? 0,
       likesCount: json['likes'] ?? 0,
+      totalReports: json['totalReports'] as int? ?? 0,
+      hasReported: json['hasReported'] ?? false,
+      isLikedByMe: json['isLikedByMe'] ?? false,
     );
   }
 
-  // Method to convert instance back to JSON
   Map<String, dynamic> toJson() {
     return {
       '_id': id,

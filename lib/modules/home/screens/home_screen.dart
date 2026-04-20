@@ -8,7 +8,7 @@ import 'package:pcs_village/routes/app_pages.dart';
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../data/models/post/post.dart';
 import '../controllers/home_controller.dart';
-import '../widgets/post_card.dart';
+import '../../post/widgets/post_card.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
@@ -36,9 +36,9 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
         actions: [
-          IconButton(onPressed: () {},
-              icon: SvgPicture.asset(Assets.icons.filter)
-          ),
+          // IconButton(onPressed: () {},
+          //     icon: SvgPicture.asset(Assets.icons.filter)
+          // ),
         ],
       ),
       body: RefreshIndicator(
@@ -52,8 +52,11 @@ class HomeScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
+                cursorColor: Colors.white,
+                style: TextStyle(color: Colors.white),
+                controller: controller.searchController,
                 decoration: InputDecoration(
-                  hintText: "Search posts, people, or topics...",
+                  hintText: "Search posts...",
                   hintStyle: const TextStyle(color: Colors.white60),
                   prefixIcon: const Icon(Icons.search, color: Colors.white60),
                   filled: true,
@@ -66,15 +69,14 @@ class HomeScreen extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Colors.white, // Light grey background for feed
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
                 ),
                 child: ListView.builder(
-                  itemCount: controller.postsHelper.items.length,
+                  itemCount: controller.displayPosts.length,
                     controller: controller.postScrollController,
-
                     itemBuilder: (context, index){
-                      final Post post = controller.postsHelper.items[index];
+                      final Post post = controller.displayPosts[index];
 
                       return PostCard(
                         onTap: (){
@@ -82,11 +84,35 @@ class HomeScreen extends StatelessWidget {
                               AppRoutes.postDetails,
                             arguments: {
                                 'isGroup' : false,
-                                'post' : post
+                                'postId' : post.id
                             }
                           );
                         },
                         post: post,
+                        onFavouriteTap: () {
+                          controller.likeUnlikePost( postId: post.id );
+                        },
+                        isMyPost: profileController.profileModel.value?.id == post.authorId,
+                        onEdit: (){
+                          Get.toNamed(
+                              AppRoutes.editPost,
+                            arguments: {
+                              "isGroup" : false,
+                              "post" : post
+                            }
+                          );
+                        },
+                        onDelete: (){
+                          controller.showDeleteDialog(postId: post.id);
+                        },
+                        onReport: (){
+                          Get.toNamed(
+                            AppRoutes.reportPost,
+                          arguments: {
+                              "isGroup" : false,
+                              "postId" : post.id
+                          });
+                        },
                       );
                     }
                 ),
