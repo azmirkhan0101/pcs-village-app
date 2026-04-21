@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:pcs_village/modules/message/controllers/conversation_controller.dart';
 
 import '../../groups/controllers/groups_controller.dart';
 import '../../home/controllers/home_controller.dart';
@@ -17,9 +18,9 @@ class MainNavBinding extends Bindings{
     Get.lazyPut<GroupsController>((){
       return GroupsController();
     }, fenix: true);
-    // Get.lazyPut<NotificationController>((){
-    //   return NotificationController();
-    // }, fenix: true);
+    Get.lazyPut<ConversationController>((){
+      return ConversationController();
+    }, fenix: true);
     // Get.lazyPut<SettingsController>((){
     //   return SettingsController();
     // }, fenix: true);

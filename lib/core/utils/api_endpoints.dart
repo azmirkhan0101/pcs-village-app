@@ -120,6 +120,11 @@ class ApiEndpoints {
     return "/wave/accept/$userId";
   }
   //##############################################################
+  //======================MESSAGE=================================
+  static String allConversations({required int page, required String searchQuery}){
+    return "/conversations?page=$page&limit=10&searchterm=$searchQuery";
+  }
+  //##############################################################
   //=======================PROFILE================================
   //GET PROFILE
   static const getProfile = "/auth/me";

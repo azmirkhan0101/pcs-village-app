@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/modules/groups/screens/groups_screen.dart';
-import 'package:pcs_village/modules/message/screens/contact_list_screen.dart';
+import 'package:pcs_village/modules/message/screens/conversation_screen.dart';
 
 import '../../../core/utils/app_colors.dart';
 import '../../home/screens/home_screen.dart';

@@ -1,8 +1,8 @@
 import "package:flutter/material.dart";
 
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+class MessageScreen extends StatelessWidget {
+  const MessageScreen({super.key});
 
   // Data represented as a simple List of Maps
   final List<Map<String, String>> messages = const [

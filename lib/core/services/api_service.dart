@@ -33,6 +33,7 @@ class ApiService extends GetxService {
     required String endPoint,
     Map<String, dynamic>? body,
     int timeout = 12,
+    bool shouldPrint = false
   }) async {
     var result;
     var code;
@@ -128,7 +129,9 @@ class ApiService extends GetxService {
       print("🌐 Endpoint: $endPoint");
       print("🟢 Code: $code");
       //developer.log("✅ Result: $result");
-      logPrettyJson(result.toString());
+      if( shouldPrint ){
+        logPrettyJson(result.toString());
+      }
     }
   }
 

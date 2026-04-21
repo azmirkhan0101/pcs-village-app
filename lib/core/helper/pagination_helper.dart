@@ -59,7 +59,7 @@ class PaginationHelper<T> {
   }
 
   //==============PAGINATED API CALL==================
-  Future<void> fetch({required bool isRefresh}) async {
+  Future<void> fetch({required bool isRefresh, bool shouldPrint = false}) async {
     if (isLoading.value) return;
 
     if (isRefresh) {
@@ -75,7 +75,8 @@ class PaginationHelper<T> {
     final response = await _apiService.networkRequest(
         method: _method,
         isAuthRequired: _isAuthRequired,
-        endPoint: _endPoint(currentPage)
+        endPoint: _endPoint(currentPage),
+      shouldPrint: shouldPrint
     );
 
     isLoading.value = false;
