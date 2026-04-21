@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../data/models/notification/notification_item.dart';
+import '../controllers/notification_controller.dart';
 
 class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({super.key});
+  NotificationScreen({super.key});
+
+  final NotificationController controller = Get.find<NotificationController>();
+
 
   @override
   Widget build(BuildContext context) {

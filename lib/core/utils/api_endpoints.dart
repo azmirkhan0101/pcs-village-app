@@ -5,8 +5,8 @@ class ApiEndpoints {
   //=======================BASE====================================
   //BASE URL
   //static const baseUrl = "https://lms-orpin-five.vercel.app/api/v1";
-  //static const baseUrl = "http://10.10.20.42:5000/api/v1";
-  static const baseUrl = "http://10.0.2.2:5000/api/v1";
+  static const baseUrl = "http://10.10.20.19:5000/api/v1";
+  //static const baseUrl = "http://10.0.2.2:5000/api/v1";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
   static const login = "/auth/login";
@@ -124,6 +124,9 @@ class ApiEndpoints {
   static String allConversations({required int page, required String searchQuery}){
     return "/conversations?page=$page&limit=10&searchterm=$searchQuery";
   }
+  static String allMessages(){
+
+  }
   //##############################################################
   //=======================PROFILE================================
   //GET PROFILE
@@ -141,7 +144,8 @@ class ApiEndpoints {
 
   //=====================NOTIFICATION=============================
   static String getNotifications({required int page}){
-    return "/notification/my-notifications/?page=$page&limit=10";
+    //return "/notification?page=$page&limit=10";
+    return "/notifications";
   }
   static String notificationMarkAsRead({required String notificationId}){
     return "/notification/mark-as-read/$notificationId";

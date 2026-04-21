@@ -1,20 +1,20 @@
 class Conversation {
-  final String? id;
+  final String id;
   final String? initiator;
   final LastMessage? lastMessage;
-  final String? opponentName;
+  final String opponentName;
   final String? opponentEmail;
-  final String? opponentProfileImg;
+  final String opponentProfileImg;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
   Conversation({
-    this.id,
+    required this.id,
     this.initiator,
     this.lastMessage,
-    this.opponentName,
+    required this.opponentName,
     this.opponentEmail,
-    this.opponentProfileImg,
+    required this.opponentProfileImg,
     this.createdAt,
     this.updatedAt,
   });
@@ -26,9 +26,9 @@ class Conversation {
       lastMessage: json['lastMessage'] != null
           ? LastMessage.fromJson(json['lastMessage'])
           : null,
-      opponentName: json['opponentName'],
+      opponentName: json['opponentName'] as String? ?? "",
       opponentEmail: json['opponentEmail'],
-      opponentProfileImg: json['opponentProfileImg'],
+      opponentProfileImg: json['opponentProfileImg'] as String? ?? "",
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : null,

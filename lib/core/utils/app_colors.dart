@@ -28,6 +28,11 @@ class AppColors {
   static const Color warningYellow3 = Color(0xFFF9A825);
   static const Color warningYellow2 = Color(0xffffcc00);
 
+  static const Color avatarGrey = Color(0xFF8E9AAF);
+  static const Color navy = Color(0xFF1B365D);
+  static const Color beige = Color(0xFFF5F5F0);
+  static const Color inputGrey = Color(0xFFF2F2F2);
+
   static const LinearGradient splashGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,

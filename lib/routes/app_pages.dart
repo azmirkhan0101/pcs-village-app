@@ -16,7 +16,7 @@ import 'package:pcs_village/modules/groups/bindings/group_details_binding.dart';
 import 'package:pcs_village/modules/groups/bindings/member_profile_binding.dart';
 import 'package:pcs_village/modules/groups/screens/group_details_screen.dart';
 import 'package:pcs_village/modules/groups/screens/member_profile_screen.dart';
-import 'package:pcs_village/modules/message/bindings/contact_list_binding.dart';
+import 'package:pcs_village/modules/message/bindings/message_binding.dart';
 import 'package:pcs_village/modules/post/bindings/edit_post_binding.dart';
 import 'package:pcs_village/modules/post/bindings/report_post_binding.dart';
 import 'package:pcs_village/modules/post/screens/create_post_screen.dart';

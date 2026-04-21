@@ -74,8 +74,12 @@ class ContactListScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = controller.conversationHelper.items[index];
                     return ListTile(
-                      onTap: () =>
-                          Get.toNamed(AppRoutes.chatScreen, arguments: item),
+                      onTap: (){
+                        Get.toNamed(
+                            AppRoutes.chatScreen,
+                            arguments: item
+                        );
+                      },
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 10,
@@ -139,7 +143,7 @@ class ContactListScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            item.lastMessage?.createdAt?.toIso8601String() ?? "",
+                            _formatTime(item.lastMessage?.createdAt?.toLocal() ?? null),
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 12,
@@ -171,6 +175,16 @@ class ContactListScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatTime(DateTime? dt) {
+
+    if( dt == null ) return "";
+
+    final h = dt.hour > 12 ? dt.hour - 12 : dt.hour == 0 ? 12 : dt.hour;
+    final m = dt.minute.toString().padLeft(2, '0');
+    final period = dt.hour >= 12 ? 'PM' : 'AM';
+    return '$h:$m $period';
   }
 
   // --- UI Sub-Widgets ---

@@ -66,6 +66,7 @@ class ProfileController extends GetxController{
       //SAVE PROFILE DATA IN STORAGE
       storage.write( profileModelKey, model.toJson() );
       storage.write( userNameKey, model.name );
+      storage.write( userIdKey, model.id );
       profileModel.value = model;
       profileImageUrl.value = profileModel.value?.profileImage ?? "";
       initializeEditProfileControllers();

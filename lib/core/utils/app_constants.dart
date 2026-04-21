@@ -10,6 +10,7 @@ const String resetTokenKey = "resetTokenKey";
 const String forgotPasswordTokenKey = "forgotPasswordTokenKey";
 const String profileModelKey = "profileModelKey";
 const String userNameKey = "userNameKey";
+const String userIdKey = "userIdKey";
 
 //AUTH STATUS
 enum AuthStatus {
