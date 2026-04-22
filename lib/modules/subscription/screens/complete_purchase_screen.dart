@@ -10,7 +10,7 @@ class CompletePurchaseScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: const Icon(Icons.arrow_back, color: Color(0xFF1E3A5F)),
+        leading: const BackButton(),
         title: const Text('Complete Purchase',
             style: TextStyle(color: Color(0xFF1E3A5F), fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,

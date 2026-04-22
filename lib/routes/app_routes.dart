@@ -29,7 +29,7 @@ static const String createPost = "/create_post";
   static const String reportPost = "/report_post";
 
 static const String editPost = "/edit_post";
-static const String chatScreen = "/chat_screen";
+static const String messageScreen = "/message_screen";
 
 //=======================GROUP=======================
 static const String groupDetails = "/group-details";

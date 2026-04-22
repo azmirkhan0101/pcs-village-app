@@ -45,7 +45,7 @@ class _MessageScreenState extends State<MessageScreen> {
           Expanded(child: _buildBody()),
           Obx((){
             if( _controller.isTyping.value ){
-              return TypingIndicator(friendName: _controller.conversation.opponentName,);
+              return TypingIndicator(friendName: _controller.participantModel.name,);
             }else{
               return const SizedBox.shrink();
             }
@@ -78,7 +78,7 @@ class _MessageScreenState extends State<MessageScreen> {
           Stack(
             children: [
               CachedImageWidget(
-                  imageUrl: _controller.conversation.opponentProfileImg,
+                  imageUrl: _controller.participantModel.profileImage,
                 borderRadius: 100,
                 height: 45,
                 width: 45,
@@ -90,7 +90,7 @@ class _MessageScreenState extends State<MessageScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _controller.conversation.opponentName,
+                _controller.participantModel.name,
                 style: TextStyle(
                   color: AppColors.navy,
                   fontWeight: FontWeight.bold,
@@ -111,18 +111,12 @@ class _MessageScreenState extends State<MessageScreen> {
           const Icon(Icons.check_circle_outline, size: 16, color: Colors.grey),
         ],
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.more_vert, color: AppColors.navy),
-          onPressed: () {},
-        ),
-      ],
     );
   }
 
   Widget _buildBody() {
     return Obx(() {
-      if (!_controller.isConnected.value && _controller.messages.isEmpty) {
+      if (_controller.messageHelper.isLoading.value && _controller.messages.isEmpty) {
         return const SkeletonMessageLoader();
       }
 
@@ -139,8 +133,19 @@ class _MessageScreenState extends State<MessageScreen> {
       return ListView.builder(
         controller: _controller.scrollController,
         padding: const EdgeInsets.all(16),
-        itemCount: _controller.messages.length,
+        reverse: true,
+        itemCount: _controller.messages.length + 1,
         itemBuilder: (context, index) {
+          // Last index = visually TOP = where older messages load
+          if (index == _controller.messages.length) {
+            return Obx(() => _controller.messageHelper.isMoreLoading.value
+                ? const Padding(
+              padding: EdgeInsets.all(8),
+              child: Center(child: CircularProgressIndicator()),
+            )
+                : const SizedBox.shrink());
+          }
+
           final msg = _controller.messages[index];
           final isMe = msg.senderId == _controller.currentUserId;
           return MessageItem(message: msg, isMe: isMe);

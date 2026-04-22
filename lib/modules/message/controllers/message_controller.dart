@@ -1,11 +1,13 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pcs_village/core/helper/pagination_helper.dart';
 import 'package:pcs_village/core/utils/api_endpoints.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
-import 'package:pcs_village/data/models/message/conversation_model.dart';
+import 'package:pcs_village/data/models/message/participant_model.dart';
+
 import '../../../core/services/socket_service.dart';
 import '../../../data/models/message/message_model.dart';
 
@@ -14,58 +16,53 @@ class MessageController extends GetxController {
   final SocketService _socketService = Get.find<SocketService>();
   late String currentUserId;
   late String _conversationId;
-  late Conversation conversation;
+  late ParticipantModel participantModel;
   final storage = GetStorage();
   final scrollController = ScrollController();
   final TextEditingController textController = TextEditingController();
-  final messageHelper = PaginationHelper<MessageModel>();
+  PaginationHelper<MessageModel> messageHelper = PaginationHelper<MessageModel>();
+  bool shouldScrollToBottom = true;
 
   @override
   void onInit() {
 
     currentUserId = storage.read( userIdKey );
-    conversation = Get.arguments as Conversation;
-    _conversationId = conversation.id;
+    participantModel = Get.arguments as ParticipantModel;
+    _conversationId = participantModel.conversationId;
 
+    initMessageHelper();
     initSocket();
 
     ever(messages, (_) => _scrollToBottom());
 
+    _loadInitialMessages();
     super.onInit();
   }
 
   void initMessageHelper(){
     messageHelper.init(
-        endPoint: ApiEndpoints,
-        fromJson: fromJson,
-        listExtractor: listExtractor
+        endPoint: (page) => ApiEndpoints.allMessages(page: page, conversationId: _conversationId),
+        fromJson: (json) => MessageModel.fromJson(json),
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+      scrollController: scrollController,
+      isChat: true
     );
+
+    ever(messageHelper.fetchedItems, (fetched) {
+      if (fetched.isEmpty) return;
+      shouldScrollToBottom = false;
+      // Prepend older messages (they go to the end of the list = visually top)
+      messages.addAll(fetched);
+      shouldScrollToBottom = true;
+    });
   }
 
   Future<void> _loadInitialMessages() async {
-
-
-
-    isLoadingMessages.value = true;
-    try {
-      // Replace with your actual endpoint
-      final response = await _apiService.get(
-        '/conversations/$_conversationId/messages',
-      );
-
-      if (response.statusCode == 200) {
-        final List data = response.data as List;
-        final history = data
-            .map((e) => MessageModel.fromJson(Map<String, dynamic>.from(e)))
-            .toList();
-        messages.assignAll(history);
-        _scrollToBottom();
-      }
-    } catch (e) {
-      debugPrint('[Chat] Failed to load history: $e');
-    } finally {
-      isLoadingMessages.value = false;
-    }
+    await messageHelper.fetch(
+        isRefresh: true,
+      shouldPrint: true
+    );
+    messages.assignAll(messageHelper.items.toList());
   }
 
   void handleSend() {
@@ -76,10 +73,14 @@ class MessageController extends GetxController {
   }
 
   void _scrollToBottom() {
+    if( !shouldScrollToBottom ){
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients) {
         scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
+          0,
+          //scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOut,
         );
@@ -87,7 +88,7 @@ class MessageController extends GetxController {
     });
   }
 
-  final messages = <MessageModel>[].obs;
+  RxList<MessageModel> messages = <MessageModel>[].obs;
   RxBool isTyping = false.obs;
   final isConnected = false.obs;
 
@@ -137,7 +138,7 @@ class MessageController extends GetxController {
       message: trimmed,
     );
 
-    messages.add(optimistic);
+    messages.insert(0, optimistic);
 
     _socketService.sendMessage(
       conversationId: _conversationId,

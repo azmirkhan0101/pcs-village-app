@@ -24,6 +24,21 @@ class ProfileController extends GetxController{
   //PROFILE IMAGE
   RxString profileImageUrl = "".obs;
 
+  //=====================EDIT PROFILE====================
+  final List<String> availableInterests = [
+    "Fitness", "Cooking", "Reading", "Travel", "Photography",
+    "Sports", "Arts & Crafts", "Music", "Gardening"
+  ];
+  var selectedInterests = <String>[].obs;
+
+  void toggleInterestSelection(String label) {
+    if (selectedInterests.contains(label)) {
+      selectedInterests.remove(label);
+    } else {
+      selectedInterests.add(label);
+    }
+  }
+
   @override
   void onInit() {
 

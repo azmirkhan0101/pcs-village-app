@@ -166,7 +166,7 @@ class AppPages {
         binding: ReportPostBinding()
     ),
     GetPage(
-        name: AppRoutes.chatScreen,
+        name: AppRoutes.messageScreen,
         page: (){
           return MessageScreen();
         },

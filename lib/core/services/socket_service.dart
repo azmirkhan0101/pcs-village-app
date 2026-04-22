@@ -12,8 +12,6 @@ class SocketService {
 
   io.Socket? _socket;
 
-  final String socketBaseUrl = "http://10.10.20.19:5000";
-
   // Event stream controllers
   final _messageController = StreamController<MessageModel>.broadcast();
   final _typingController = StreamController<String>.broadcast();
@@ -33,7 +31,7 @@ class SocketService {
     if (_socket != null && isConnected) return;
 
     _socket = io.io(
-      '$socketBaseUrl?token=$accessToken',
+      '${ApiEndpoints.socketBaseUrl}?token=$accessToken',
       io.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()

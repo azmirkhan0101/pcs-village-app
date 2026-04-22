@@ -7,6 +7,7 @@ class ApiEndpoints {
   //static const baseUrl = "https://lms-orpin-five.vercel.app/api/v1";
   static const baseUrl = "http://10.10.20.19:5000/api/v1";
   //static const baseUrl = "http://10.0.2.2:5000/api/v1";
+  static const socketBaseUrl = "http://10.10.20.19:5000";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
   static const login = "/auth/login";
@@ -124,8 +125,8 @@ class ApiEndpoints {
   static String allConversations({required int page, required String searchQuery}){
     return "/conversations?page=$page&limit=10&searchterm=$searchQuery";
   }
-  static String allMessages(){
-
+  static String allMessages({required int page, required String conversationId}){
+    return "/conversations/messages?page=$page&limit=10&sortBy=createdAt&sortOrder=desc&conversation=$conversationId";
   }
   //##############################################################
   //=======================PROFILE================================

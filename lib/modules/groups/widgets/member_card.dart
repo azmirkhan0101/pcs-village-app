@@ -17,12 +17,14 @@ class MemberCard extends StatelessWidget {
   final MemberModel member;
   final Function(String id) onSendWave;
   final Function(String id) onWaveBack;
+  final Function(MemberModel member) onMessage;
 
   const MemberCard({
     super.key,
     required this.member,
     required this.onSendWave,
-    required this.onWaveBack
+    required this.onWaveBack,
+    required this.onMessage
   });
 
   @override
@@ -120,12 +122,7 @@ class MemberCard extends StatelessWidget {
                       gradient: AppColors.waveButtonGradient,
                       onPressed: () {
                         if( member.isMatched ){
-                          //TODO: GO TO CONVERSATION
-                          //TODO: PASS ARGS IN CONVERSATION SCREEN, NOT CHATS
-                          Get.back();
-                          Get.isRegistered<MainNavController>()
-                              ? Get.find<MainNavController>().changeIndex(2)
-                              : Get.put(MainNavController()).changeIndex(2);
+                          onMessage(member);
                         }else if( member.isIncomingWave ){
                           onWaveBack(member.userId);
                         }else{

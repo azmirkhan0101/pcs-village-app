@@ -11,6 +11,7 @@ class PaginationHelper<T> {
 
   //================REACTIVE LIST================
   final RxList<T> items = <T>[].obs;
+  final RxList<T> fetchedItems = <T>[].obs;
   //================LOADING STATES===============
   final RxBool isLoading = false.obs;
   final RxBool isMoreLoading = false.obs;
@@ -26,6 +27,7 @@ class PaginationHelper<T> {
   late List<dynamic>? Function(dynamic data) _listExtractor;
   int _pageSize = 10;
   bool _showMessage = false;
+  bool _isChat = false;
 
   void init({
     String method = "GET",
@@ -35,7 +37,8 @@ class PaginationHelper<T> {
     required List<dynamic>? Function(dynamic data) listExtractor,
     int pageSize = 10,
     bool showMessage = false,
-    ScrollController? scrollController
+    ScrollController? scrollController,
+    bool isChat = false
   }) {
     _method = method;
     _endPoint = endPoint;
@@ -44,6 +47,7 @@ class PaginationHelper<T> {
     _listExtractor = listExtractor;
     _pageSize = pageSize;
     _showMessage = showMessage;
+    _isChat = isChat;
 
     //==============Attach scroll listener==================
     if (scrollController != null) {
@@ -51,9 +55,9 @@ class PaginationHelper<T> {
         if (!scrollController.hasClients) return;
 
         if (scrollController.position.pixels >=
-            scrollController.position.maxScrollExtent * 0.9) {
-          fetch(isRefresh: false);
-        }
+              scrollController.position.maxScrollExtent * 0.9) {
+            fetch(isRefresh: false);
+          }
       });
     }
   }
@@ -91,11 +95,13 @@ class PaginationHelper<T> {
 
       if (tempList != null && tempList.isNotEmpty) {
         final fetched = tempList.map(_fromJson).toList();
-
         if (isRefresh) {
           items.assignAll(fetched);
         } else {
-          items.addAll(fetched);
+          fetchedItems.assignAll(fetched);
+          if (!_isChat) {
+            items.addAll(fetched);
+          }
         }
 
         if (fetched.length < _pageSize) {

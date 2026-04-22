@@ -79,22 +79,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             _buildLabel("Military Affiliation"),
             _buildTextField(""),
 
-            // Interest Section
+            //Interest Section
             _buildLabel("Interests"),
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: [
-                _buildChip("Fitness", isSelected: true),
-                _buildChip("Cooking", isSelected: true),
-                _buildChip("Reading", isSelected: true),
-                _buildChip("Travel", isSelected: true),
-                _buildChip("Photography"),
-                _buildChip("Sports"),
-                _buildChip("Arts & Crafts"),
-                _buildChip("Music"),
-                _buildChip("Gardening"),
-              ],
+              children: controller.availableInterests.map((interest) {
+                return _buildChip(interest); // This handles its own reactivity
+              }).toList(),
             ),
             const SizedBox(height: 24),
 
@@ -103,13 +95,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: [
-                _buildChip("0-2 years"),
-                _buildChip("3-5 years", isSelected: true),
-                _buildChip("6-12 years", isSelected: true),
-                _buildChip("13-17 years"),
-                _buildChip("18+ years"),
-              ],
+              children: controller.availableInterests.map((interest) {
+                return _buildChip(interest); // This handles its own reactivity
+              }).toList(),
             ),
           ],
         ),
@@ -126,20 +114,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   // Custom Chip Widget
-  Widget _buildChip(String label, {bool isSelected = false}) {
-    return FilterChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (bool value) {},
-      labelStyle: TextStyle(color: isSelected ? Colors.white : primaryNavy, fontSize: 14),
-      backgroundColor: Colors.white,
-      selectedColor: primaryNavy,
-      checkmarkColor: Colors.white,
-      shape: StadiumBorder(side: BorderSide(color: Colors.grey.shade300)),
-      // To mimic the "X" in your image:
-      deleteIcon: isSelected ? const Icon(Icons.close, size: 14, color: Colors.white) : null,
-      onDeleted: isSelected ? () {} : null,
-    );
+  //I WANT TO SELECT AND UNSELECT THIS ITEM. MODIFY THE CLASS TO HANDLE THIS.
+  //USE RXLIST OF STRING TO STORE THE SELECTED ITEMS.
+  // Inside your View/Screen
+  Widget _buildChip(String label) {
+    // Use Obx here so each chip reacts individually to the list changes
+    return Obx(() {
+      final bool isSelected = controller.selectedInterests.contains(label);
+
+      return FilterChip(
+        label: Text(label),
+        selected: isSelected,
+        onSelected: (bool value) => controller.toggleInterestSelection(label),
+        labelStyle: TextStyle(
+            color: isSelected ? Colors.white : primaryNavy,
+            fontSize: 14
+        ),
+        backgroundColor: Colors.white,
+        selectedColor: primaryNavy,
+        checkmarkColor: Colors.white,
+        shape: StadiumBorder(side: BorderSide(color: Colors.grey.shade300)),
+
+        // The "X" icon logic
+        deleteIcon: isSelected
+            ? const Icon(Icons.close, size: 14, color: Colors.white)
+            : null,
+        onDeleted: isSelected
+            ? () => controller.toggleInterestSelection(label)
+            : null,
+      );
+    });
   }
 
   // Custom Text Field

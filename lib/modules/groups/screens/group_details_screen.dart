@@ -6,6 +6,8 @@ import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
+import 'package:pcs_village/data/models/groups/member_model.dart';
+import 'package:pcs_village/data/models/message/participant_model.dart';
 import 'package:pcs_village/modules/groups/controllers/groups_details_controller.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 
@@ -125,7 +127,13 @@ class GroupDetailsScreen extends StatelessWidget {
                 },
                   onWaveBack: (String id) {
                     controller.waveBack(userId: id);
-                  }
+                  },
+                  onMessage: (MemberModel member){
+                    Get.toNamed(
+                        AppRoutes.messageScreen,
+                      arguments: ParticipantModel.fromMemberModel(member)
+                    );
+                  },
                 ),
               ],
             );

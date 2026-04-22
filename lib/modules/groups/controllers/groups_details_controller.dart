@@ -138,7 +138,7 @@ class GroupsDetailsController extends GetxController
   // ====== GET MEMBERS ======
   Future<void> getMembers({bool isSearch = false}) async {
     isMembersLoaded.value = false;
-    await membersHelper.fetch(isRefresh: true);
+    await membersHelper.fetch(isRefresh: true, shouldPrint: true);
     displayMembers.assignAll(membersHelper.items);
     if( !isSearch ){
       originalMembersBackup.assignAll(membersHelper.items);

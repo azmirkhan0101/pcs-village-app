@@ -10,7 +10,7 @@ class ManageSubscriptionScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const Icon(Icons.arrow_back, color: Color(0xFF344767)),
+        leading: const BackButton(),
         title: const Text(
           'Manage Subscription',
           style: TextStyle(color: Color(0xFF344767), fontWeight: FontWeight.bold),

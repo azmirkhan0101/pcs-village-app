@@ -42,25 +42,25 @@ class GroupsScreen extends StatelessWidget {
                   TextStyle(color: Colors.white70, fontSize: 16),
                 ),
                 const SizedBox(height: 20),
-                TextField(
-                  onChanged: controller.onSearch,
-                  decoration: InputDecoration(
-                    hintText: 'Search groups.....',
-                    hintStyle:
-                    const TextStyle(color: Colors.white54),
-                    prefixIcon: const Icon(Icons.search,
-                        color: Colors.white54),
-                    filled: true,
-                    fillColor:
-                    Colors.white.withValues(alpha: 0.1),
-                    contentPadding:
-                    const EdgeInsets.symmetric(vertical: 0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
+                // TextField(
+                //   onChanged: controller.onSearch,
+                //   decoration: InputDecoration(
+                //     hintText: 'Search groups.....',
+                //     hintStyle:
+                //     const TextStyle(color: Colors.white54),
+                //     prefixIcon: const Icon(Icons.search,
+                //         color: Colors.white54),
+                //     filled: true,
+                //     fillColor:
+                //     Colors.white.withValues(alpha: 0.1),
+                //     contentPadding:
+                //     const EdgeInsets.symmetric(vertical: 0),
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(12),
+                //       borderSide: BorderSide.none,
+                //     ),
+                //   ),
+                // ),
                 const SizedBox(height: 15),
                 TabBar(
                   controller: controller.tabController,

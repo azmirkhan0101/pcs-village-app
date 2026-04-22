@@ -19,6 +19,7 @@ class MemberModel {
   final String profileImage;
   final String affiliation;
   final String movement;
+  final String conversationId;
 
   //WAVE LOADING SATE
   RxBool isWaveLoading = false.obs;
@@ -40,7 +41,8 @@ class MemberModel {
     required this.membershipStatus,
     required this.profileImage,
     required this.affiliation,
-    required this.movement
+    required this.movement,
+    required this.conversationId
   });
 
   factory MemberModel.fromJson(Map<String, dynamic> json) {
@@ -61,29 +63,8 @@ class MemberModel {
       membershipStatus: json['membershipStatus'] ?? '',
       profileImage: json['profileImage'] ?? '',
       affiliation: json['affiliation'] ?? '',
-      movement: json['movement'] ?? ''
+      movement: json['movement'] ?? '',
+      conversationId: json['conversationId'] ?? ''
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'joinedAt': joinedAt.toIso8601String(),
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      'isMatched': isMatched,
-      'isWavePending': isWavePending,
-      'isIncomingWave': isIncomingWave,
-      'isDeclinedByMe': isDeclinedByMe,
-      'isDeclinedByThem': isDeclinedByThem,
-      'name': name,
-      'email': email,
-      'userId': userId,
-      'group': group,
-      'membershipStatus': membershipStatus,
-      'profileImage': profileImage,
-      'affiliation': affiliation,
-      'movement': movement
-    };
   }
 }

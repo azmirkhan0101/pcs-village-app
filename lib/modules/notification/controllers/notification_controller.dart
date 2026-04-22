@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:pcs_village/core/helper/pagination_helper.dart';
 
 import '../../../core/utils/api_endpoints.dart';
-import '../../../data/models/notification/notification_item.dart';
+import '../../../data/models/notification/notification_model.dart';
 
 class NotificationController extends GetxController {
   final ScrollController notificationScrollController = ScrollController();

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/data/models/message/conversation_model.dart';
+import 'package:pcs_village/data/models/message/participant_model.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:pcs_village/modules/message/controllers/conversation_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
@@ -72,12 +74,12 @@ class ContactListScreen extends StatelessWidget {
                   separatorBuilder: (context, index) =>
                       const Divider(height: 1, indent: 20, endIndent: 20),
                   itemBuilder: (context, index) {
-                    final item = controller.conversationHelper.items[index];
+                    final Conversation conversation = controller.conversationHelper.items[index];
                     return ListTile(
                       onTap: (){
                         Get.toNamed(
-                            AppRoutes.chatScreen,
-                            arguments: item
+                            AppRoutes.messageScreen,
+                            arguments: ParticipantModel.fromConversationModel(conversation)
                         );
                       },
                       contentPadding: const EdgeInsets.symmetric(
@@ -90,7 +92,7 @@ class ContactListScreen extends StatelessWidget {
                             radius: 28,
                             backgroundColor: Colors.grey[200],
                             backgroundImage: NetworkImage(
-                              item.opponentProfileImg ?? "",
+                              conversation.opponentProfileImg ?? "",
                             ),
                           ),
                           // if (item.isOnline ?? false)
@@ -115,7 +117,7 @@ class ContactListScreen extends StatelessWidget {
                       title: Row(
                         children: [
                           Text(
-                            item.opponentName ?? "Unknown",
+                            conversation.opponentName ?? "Unknown",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 17,
@@ -133,7 +135,7 @@ class ContactListScreen extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(
-                        item.lastMessage?.message ?? "",
+                        conversation.lastMessage?.message ?? "",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.black54),
@@ -143,7 +145,7 @@ class ContactListScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            _formatTime(item.lastMessage?.createdAt?.toLocal() ?? null),
+                            _formatTime(conversation.lastMessage?.createdAt?.toLocal() ?? null),
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 12,
