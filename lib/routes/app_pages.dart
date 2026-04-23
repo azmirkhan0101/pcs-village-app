@@ -28,11 +28,15 @@ import 'package:pcs_village/modules/message/screens/message_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/auth_selection_screen.dart';
 import 'package:pcs_village/modules/onboarding/screens/splash_screen.dart';
 import 'package:pcs_village/modules/post/screens/report_post_screen.dart';
+import 'package:pcs_village/modules/profile/bindings/base_binding.dart';
 import 'package:pcs_village/modules/profile/bindings/faq_binding.dart';
 import 'package:pcs_village/modules/profile/bindings/settings_binding.dart';
+import 'package:pcs_village/modules/profile/screens/base_request_screen.dart';
 import 'package:pcs_village/modules/profile/screens/change_password_screen.dart';
 import 'package:pcs_village/modules/profile/screens/community_guidelines.dart';
 import 'package:pcs_village/modules/profile/screens/faq_screen.dart';
+import 'package:pcs_village/modules/subscription/bindings/manage_subscription_binding.dart';
+import 'package:pcs_village/modules/subscription/bindings/plan_binding.dart';
 import 'package:pcs_village/modules/subscription/screens/complete_purchase_screen.dart';
 import 'package:pcs_village/modules/profile/screens/edit_profile_screen.dart';
 import 'package:pcs_village/modules/subscription/screens/manage_subscription_screen.dart';
@@ -222,7 +226,8 @@ class AppPages {
         name: AppRoutes.upgradePremium,
         page: (){
           return UpgradePremiumScreen();
-        }
+        },
+      binding: PlanBinding()
     ),
     GetPage(
         name: AppRoutes.completePurchase,
@@ -234,7 +239,15 @@ class AppPages {
         name: AppRoutes.manageSubscription,
         page: (){
           return ManageSubscriptionScreen();
-        }
+        },
+      binding: ManageSubscriptionBinding()
+    ),
+    GetPage(
+        name: AppRoutes.baseRequest,
+        page: (){
+          return BaseRequestScreen();
+        },
+        binding: BaseBinding()
     ),
     GetPage(
         name: AppRoutes.communityGuidelines,

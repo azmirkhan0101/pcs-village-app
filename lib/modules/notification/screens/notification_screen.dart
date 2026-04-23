@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/modules/notification/widgets/notification_item_widget.dart';
+import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../data/models/notification/notification_model.dart';
 import '../controllers/notification_controller.dart';
@@ -56,8 +58,11 @@ class NotificationScreen extends StatelessWidget {
 
         // 3. DATA LIST + PAGINATION LOADER
         return RefreshIndicator(
+          backgroundColor: Colors.white,
+          color: AppColors.primaryColor,
           onRefresh: () => controller.getNotifications(),
           child: ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: controller.notificationScrollController, // Essential for pagination
             padding: const EdgeInsets.only(bottom: 20),
             itemCount: controller.notificationsHelper.items.length +
@@ -75,7 +80,12 @@ class NotificationScreen extends StatelessWidget {
               final NotificationModel model = controller.notificationsHelper.items[index];
               return NotificationItemWidget(
                   type: model.type,
-                  model: model
+                  model: model,
+                onViewProfile: (){
+                    // Get.toNamed(AppRoutes.memberProfile,
+                    //   arguments: model.
+                    // );
+                },
               );
             },
           ),

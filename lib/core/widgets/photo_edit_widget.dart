@@ -13,9 +13,10 @@ import 'cached_image_widget.dart';
 class PhotoEditWidget extends StatelessWidget {
   final String? imageUrl;
   final Rxn<File> profileImage = Rxn<File>();
+  final File? controllerImage;
   final Function(File file)? onImagePicked;
 
-  PhotoEditWidget({super.key, this.imageUrl, this.onImagePicked});
+  PhotoEditWidget({super.key, this.imageUrl, this.onImagePicked, this.controllerImage});
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +55,8 @@ class PhotoEditWidget extends StatelessWidget {
   Widget _buildProfileImage() {
     if (profileImage.value != null) {
       return Image.file(profileImage.value!, fit: BoxFit.cover);
+    }else if( controllerImage != null ){
+      return Image.file(controllerImage!, fit: BoxFit.cover);
     } else if (imageUrl != null && imageUrl!.isNotEmpty) {
       return CachedImageWidget(
           imageUrl: imageUrl!,

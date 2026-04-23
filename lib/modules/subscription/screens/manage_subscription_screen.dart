@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/modules/subscription/controllers/manage_subsciption_controller.dart';
+import 'package:pcs_village/modules/subscription/widgets/history_card.dart';
+
+import '../../../data/models/subscription/history_model.dart';
 
 class ManageSubscriptionScreen extends StatelessWidget {
-  const ManageSubscriptionScreen({super.key});
+  ManageSubscriptionScreen({super.key});
+
+  final ManageSubscriptionController controller = Get.find<ManageSubscriptionController>();
 
   @override
   Widget build(BuildContext context) {
@@ -21,61 +30,57 @@ class ManageSubscriptionScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // --- Premium Membership Card ---
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: const Color(0xFF425A7D),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white.withOpacity(0.2),
-                        child: const Icon(Icons.workspace_premium, color: Colors.orangeAccent),
-                      ),
-                      const SizedBox(width: 16),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Premium Membership',
-                              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                          Row(
-                            children: [
-                              Icon(Icons.circle, size: 8, color: Colors.greenAccent),
-                              SizedBox(width: 4),
-                              Text('Active', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const Divider(height: 40, color: Colors.white24),
-                  const Text.rich(
-                    TextSpan(
+            Obx((){
+              if( controller.isActivePlanLoading.value ){
+                return Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),);
+              }else if( !controller.isActivePlanLoading.value && controller.activePlanModel.value == null ){
+                return Center(child: Text("No active plan found"),);
+              }
+              return Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF425A7D),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        TextSpan(text: '\$2', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
-                        TextSpan(text: '/month', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                        CircleAvatar(
+                          backgroundColor: Colors.white.withOpacity(0.2),
+                          child: const Icon(Icons.workspace_premium, color: Colors.orangeAccent),
+                        ),
+                        const SizedBox(width: 16),
+                        const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Premium Membership',
+                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                            Row(
+                              children: [
+                                Icon(Icons.circle, size: 8, color: Colors.greenAccent),
+                                SizedBox(width: 4),
+                                Text('Active', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // --- Subscription Details Card ---
-            _buildWhiteCard([
-              _buildDetailRow(Icons.calendar_month_outlined, 'Next billing date', 'April 12, 2026'),
-              const Divider(height: 30),
-              _buildDetailRow(Icons.credit_card, 'Payment method', '•••• •••• •••• 4242', trailing: 'Update'),
-              const Divider(height: 30),
-              _buildDetailRow(Icons.check_circle_outline, 'Member since', 'March 12, 2026'),
-            ]),
+                    const Divider(height: 40, color: Colors.white24),
+                    // Text.rich(
+                    //   TextSpan(
+                    //     children: [
+                    //       TextSpan(text: controller.activePlanModel.value., style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+                    //       TextSpan(text: '/month', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    //     ],
+                    //   ),
+                    // ),
+                  ],
+                ),
+              );
+            }),
             const SizedBox(height: 20),
 
             // --- Benefits Card ---
@@ -101,32 +106,37 @@ class ManageSubscriptionScreen extends StatelessWidget {
             const SizedBox(height: 20),
 
             // --- Billing History Card ---
-            _buildWhiteCard([
-              const Text('Billing History',
-                  style: TextStyle(color: Color(0xFF1E3A5F), fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 20),
-              const Divider(),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('March 2026', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text('Paid on Mar 12, 2026', style: TextStyle(color: Colors.grey[500], fontSize: 13)),
-                    ],
-                  ),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text('\$2.00', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text('Receipt', style: TextStyle(color: Color(0xFF1E3A5F), fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                ],
-              ),
-            ]),
+            Container(
+              height: 250,
+              child: _buildWhiteCard([
+                const Text('Billing History',
+                    style: TextStyle(color: Color(0xFF1E3A5F), fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+                const Divider(),
+                const SizedBox(height: 10),
+                Obx((){
+                  if( controller.isPlanHistoryLoading.value ){
+                    return Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),);
+                  }else if( controller.historyList.isEmpty ){
+                    return Center(child: Text("No history found"),);
+                  }else{
+                    return ListView.builder(
+                        itemCount: controller.historyList.length,
+                        itemBuilder: (context, index){
+
+                          final HistoryModel history = controller.historyList[index];
+
+                          return HistoryCard(
+                              title: DateFormat("dd MM YYYY").format(history.createdAt.toLocal()),
+                              subtitle: "Paid on ${DateFormat("dd MM YYYY").format(history.createdAt.toLocal())}",
+                              amount: history.planPrice.toString()
+                          );
+                        }
+                    );
+                  }
+                })
+              ]),
+            ),
           ],
         ),
       ),

@@ -80,16 +80,16 @@ class ProfileScreen extends StatelessWidget {
                           String affiliation = Affiliation.values.firstWhereOrNull((element) => element.value == controller.profileModel.value?.affiliation)?.displayName ?? Affiliation.activeDuty.displayName;
                           return Text( affiliation, style: TextStyle(fontSize: 14, color: primaryNavy));
                         }),
-                        const SizedBox(height: 16),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _StatItem(label: 'Posts', value: '12'),
-                            _StatItem(label: 'Groups', value: '3'),
-                            _StatItem(label: 'Connections', value: '48'),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
+                        // const Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     _StatItem(label: 'Posts', value: '12'),
+                        //     _StatItem(label: 'Groups', value: '3'),
+                        //     _StatItem(label: 'Connections', value: '48'),
+                        //   ],
+                        // ),
+                        const SizedBox(height: 10),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
@@ -135,7 +135,7 @@ class ProfileScreen extends StatelessWidget {
                             Icons.date_range_outlined,
                             'PCS Timeline',
                             pcsDate != null
-                                ? DateFormat("dd-MM-yyyy").format(pcsDate)
+                                ? DateFormat("dd-MM-yyyy").format(pcsDate.toLocal())
                                 : "No date found",
                           );
                         }),
@@ -188,7 +188,15 @@ class ProfileScreen extends StatelessWidget {
                         }),
                         const SizedBox(height: 16),
                         const _SectionLabel(label: 'Member Since'),
-                        const Text('January 2026', style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)),
+                       Obx((){
+                         final joinDate = controller.profileModel.value?.createdAt;
+                         return  Text(
+                           joinDate == null
+                             ? "No date found"
+                             : DateFormat("dd-MM-yyyy").format(joinDate.toLocal()),
+                             style: const TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)
+                         );
+                       }),
                       ],
                     ),
                   ),
@@ -212,12 +220,12 @@ class ProfileScreen extends StatelessWidget {
                             Icons.description_outlined, 'Community Guidelines', primaryNavy
                         ),
                         const Divider(height: 1),
-                        _buildListTile(
-                          onTap: (){
-                            Get.toNamed(AppRoutes.inviteFriends);
-                          },
-                            Icons.person_add_alt, 'Invite Friends', primaryNavy
-                        ),
+                        // _buildListTile(
+                        //   onTap: (){
+                        //     Get.toNamed(AppRoutes.inviteFriends);
+                        //   },
+                        //     Icons.person_add_alt, 'Invite Friends', primaryNavy
+                        // ),
                         const Divider(height: 1),
                         _buildListTile(
                           onTap: (){

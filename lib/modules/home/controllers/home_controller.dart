@@ -61,13 +61,13 @@ class HomeController extends GetxController {
         endPoint: (page) => ApiEndpoints.getAllCommunityPosts(page: page, searchQuery: searchQuery),
         fromJson: (json) => Post.fromJson(json),
         listExtractor: (data) => data['data'] as List<dynamic>?,
-      scrollController: postScrollController
+      scrollController: postScrollController,
     );
   }
 
   //GET POSTS
   Future<void> getPosts({bool isSearch = false}) async {
-    await postsHelper.fetch(isRefresh: true);
+    await postsHelper.fetch(isRefresh: true, shouldPrint: true);
     displayPosts.assignAll(postsHelper.items);
     if( !isSearch ){
       originalFeedBackup.assignAll(postsHelper.items);

@@ -5,9 +5,10 @@ class ApiEndpoints {
   //=======================BASE====================================
   //BASE URL
   //static const baseUrl = "https://lms-orpin-five.vercel.app/api/v1";
-  static const baseUrl = "http://10.10.20.19:5000/api/v1";
+  //static const baseUrl = "http://10.10.20.19:5000/api/v1";
+  static const baseUrl = "http://16.171.204.102:5000/api/v1";
   //static const baseUrl = "http://10.0.2.2:5000/api/v1";
-  static const socketBaseUrl = "http://10.10.20.19:5000";
+  static const socketBaseUrl = "http://16.171.204.102:5000";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
   static const login = "/auth/login";
@@ -152,10 +153,17 @@ class ApiEndpoints {
     return "/notification/mark-as-read/$notificationId";
   }
 
+  //======================SUBSCRIPTION==========================
+  static const getSubscriptionPlan = "/sub-plan";
+  static const subscribeToPlan = "/subscription/checkout";
+  static const activeSubscription = "/subscription/my-subscription";
+  static const subscriptionHistory = "/subscription/histories?page=1&limit=10";
+
   //=========================ABOUT US===========================
   static const String aboutUs = "/about/retrive";
   //=========================PRIVACY POLICY========================
   static const String privacyPolicy = "/privacy/retrive";
 //=========================TERMS AND CONDITIONS====================
   static const String termsAndConditions = "/terms/retrive";
+  static const String baseReq = "/base-request";
 }

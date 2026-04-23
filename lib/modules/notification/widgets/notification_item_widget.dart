@@ -154,7 +154,7 @@ class NotificationItemWidget extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
               child: CustomButton(
-                label: AppStrings.wavedBack,
+                label: "Wave back",
                 onPressed: onWaveBack,
                 buttonRadius: 15,
                 borderColor: Colors.grey,

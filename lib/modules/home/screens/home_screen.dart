@@ -73,6 +73,7 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
                 ),
                 child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: controller.displayPosts.length,
                     controller: controller.postScrollController,
                     itemBuilder: (context, index){

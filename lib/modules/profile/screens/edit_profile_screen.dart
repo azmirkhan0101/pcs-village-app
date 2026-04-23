@@ -5,7 +5,12 @@ import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 
+import '../../../core/utils/app_constants.dart';
+import '../../../core/widgets/custom_date_picker.dart';
 import '../../../core/widgets/photo_edit_widget.dart';
+import '../../../data/models/auth/branch_model.dart';
+import '../../../data/models/auth/duty_station_model.dart';
+import '../../auth/controllers/duty_stations_controller.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -17,9 +22,50 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final ProfileController controller = Get.find<ProfileController>();
+  final DutyStationsController stationsController = Get.isRegistered<DutyStationsController>()
+  ? Get.find<DutyStationsController>() : Get.put(DutyStationsController());
   // Define colors based on the UI
   final Color primaryNavy = const Color(0xFF1D3557);
   final Color lightGrey = const Color(0xFFF8F9FA);
+  List<String> affiliations = [
+    Affiliation.activeDutySpouse.displayName,
+    Affiliation.activeDuty.displayName,
+    Affiliation.veteran.displayName,
+    Affiliation.militaryFamily.displayName
+  ];
+  final List<String> _options = [
+    KidsAgeRange.infant.displayName,
+    KidsAgeRange.toddler.displayName,
+    KidsAgeRange.preSchool.displayName,
+    KidsAgeRange.schoolAge.displayName,
+    KidsAgeRange.teenager.displayName
+  ];
+
+  void _toggleOption(String option) {
+    final String optionValue = KidsAgeRange.values
+        .firstWhere((element) => element.displayName == option)
+        .value;
+
+    setState(() {
+      if (controller.kidsAgeRange.contains(optionValue)) {
+        controller.kidsAgeRange.remove(optionValue);
+      } else {
+        controller.kidsAgeRange.add(optionValue);
+      }
+    });
+  }
+
+  String? branchError;
+
+  @override
+  void initState() {
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      controller.getBranches();
+    });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Obx((){
               return PhotoEditWidget(
                 imageUrl: controller.profileImageUrl.value,
+                controllerImage: controller.profileImage.value,
                 onImagePicked: (file){
                   controller.profileImage.value = file;
                 },
@@ -74,10 +121,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               },
             ),
             _buildLabel("Military Branch"),
-            _buildDropdownField(["Army", "Navy", "Air Force", "Marines"]),
+            Obx((){
+              return _buildDropdownField(
+                  hint: "Select Branch",
+                  value: controller.selectedBranch.value,
+                  errorText: branchError,
+                  items: controller.branches.value.map((e){
+                    return e.name;
+                  }).toList(),
+                  onChanged: (String? value) {
+                    if( value == null ) return;
+                    setState(() {
+                      BranchModel model = controller.branches[controller.branches.indexOf(controller.branches.firstWhere((element) => element.name == value))];
+                      controller.selectedBranch.value = value;
+                      controller.selectedBranchId.value = model.id;
+                    });
+                  }
+              );
+            }),
 
             _buildLabel("Military Affiliation"),
-            _buildTextField(""),
+            _buildDropdownField(
+                hint: "Select Affiliation",
+                value: controller.selectedAffiliation.value,
+                items: affiliations,
+                errorText: null,
+                onChanged: (String? value) {
+                  if( value == null ){
+                    return;
+                  }
+                  setState(() {
+                    controller.selectedAffiliation.value = value;
+                  });
+                }
+            ),
 
             //Interest Section
             _buildLabel("Interests"),
@@ -85,7 +162,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               spacing: 8,
               runSpacing: 8,
               children: controller.availableInterests.map((interest) {
-                return _buildChip(interest); // This handles its own reactivity
+                return _buildChip(interest,isAgeRangeChip: false );
               }).toList(),
             ),
             const SizedBox(height: 24),
@@ -95,12 +172,100 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: controller.availableInterests.map((interest) {
-                return _buildChip(interest); // This handles its own reactivity
+              children: _options.map((ageRange) {
+                return _buildChip(ageRange, isAgeRangeChip: true);
               }).toList(),
             ),
+            const SizedBox(height: 20,),
+            // Form Fields
+            CustomTextField(
+              label: 'Current Duty Station',
+              hintText: 'Search current station',
+              controller: controller.currentStationController,
+              onChanged: (value){
+                stationsController.searchStation(query: value, isCurrent: true);
+              },
+              validator: (value){
+                if( controller.currentStationId == null ){
+                  return 'Please select current station';
+                }else{
+                  return null;
+                }
+              },
+            ),
+            const SizedBox( height: 10,),
+            Obx((){
+              if( stationsController.currentStationResults.isEmpty && !stationsController.isCurrentLoading.value ){
+                return const SizedBox.shrink();
+              }
+              return searchResults(stationsController.currentStationResults, true);
+            }),
+            const SizedBox( height: 20,),
+            CustomTextField(
+              label: 'Future Duty Station',
+              hintText: 'Search future station',
+              controller: controller.futureStationController,
+              onChanged: (value){
+                stationsController.searchStation(query: value, isCurrent: false);
+              },
+            ),
+            const SizedBox( height: 10,),
+            Obx((){
+              if( stationsController.futureStationResults.isEmpty && !stationsController.isFutureLoading.value ){
+                return const SizedBox.shrink();
+              }else{
+                return searchResults(stationsController.futureStationResults, false);
+              }}),
+            const SizedBox(height: 20,),
+            CustomDatePicker(
+              label: "Select moving date",
+              initialDate: controller.pcsTimeline?.toLocal(),
+              onDateSelected: (datetime){
+                if( datetime != null ){
+                  controller.movingTime = datetime;
+                }
+              },
+              firstDay: DateTime.now(),
+              lastDay: DateTime.now().add(const Duration(days: 365)),
+              initialYear: DateTime.now().year,
+              firstYear: DateTime.now().year,
+              lastYear: DateTime.now().year + 1,
+            ),
+            const SizedBox(height: 40,)
           ],
         ),
+      ),
+    );
+  }
+
+  Widget searchResults(List<DutyStationModel> results, bool isCurrent) {
+    return Container(
+      margin: const EdgeInsets.only(top: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+      ),
+      constraints: const BoxConstraints(maxHeight: 400),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: results.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(results[index].name),
+            onTap: () {
+              if (isCurrent) {
+                controller.currentStationId = results[index].id;
+                controller.currentStationController.text = results[index].name;
+                stationsController.currentStationResults.clear();
+              } else {
+                controller.futureStationId = results[index].id;
+                controller.futureStationController.text = results[index].name;
+                stationsController.futureStationResults.clear();
+              }
+            },
+          );
+        },
       ),
     );
   }
@@ -109,23 +274,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget _buildLabel(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 16),
-      child: Text(text, style: TextStyle(color: primaryNavy.withOpacity(0.8), fontWeight: FontWeight.w600)),
+      child: Text(text, style: TextStyle(color: primaryNavy.withValues(alpha: 0.8), fontWeight: FontWeight.w600)),
     );
   }
 
   // Custom Chip Widget
-  //I WANT TO SELECT AND UNSELECT THIS ITEM. MODIFY THE CLASS TO HANDLE THIS.
-  //USE RXLIST OF STRING TO STORE THE SELECTED ITEMS.
-  // Inside your View/Screen
-  Widget _buildChip(String label) {
-    // Use Obx here so each chip reacts individually to the list changes
+  Widget _buildChip(String label, {required bool isAgeRangeChip}) {
     return Obx(() {
-      final bool isSelected = controller.selectedInterests.contains(label);
+      final bool isSelected = isAgeRangeChip
+          ? controller.kidsAgeRange.contains(KidsAgeRange.values.firstWhere((e) => e.displayName == label).value)
+          : controller.selectedInterests.contains(label);
+      //final bool isSelected = controller.selectedInterests.contains(label);
 
       return FilterChip(
         label: Text(label),
         selected: isSelected,
-        onSelected: (bool value) => controller.toggleInterestSelection(label),
+        onSelected: (bool value) => isAgeRangeChip
+        ? _toggleOption(label)
+        : controller.toggleInterestSelection(label),
         labelStyle: TextStyle(
             color: isSelected ? Colors.white : primaryNavy,
             fontSize: 14
@@ -140,36 +306,50 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ? const Icon(Icons.close, size: 14, color: Colors.white)
             : null,
         onDeleted: isSelected
-            ? () => controller.toggleInterestSelection(label)
+            ? () => isAgeRangeChip ? _toggleOption(label) : controller.toggleInterestSelection(label)
             : null,
       );
     });
   }
 
-  // Custom Text Field
-  Widget _buildTextField(String hint) {
-    return TextField(
+  Widget _buildDropdownField({
+    required String hint,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+    String? errorText,
+  }) {
+    return DropdownButtonFormField<String>(
+      dropdownColor: Colors.white,
+      value: value,
+      items: items.map((String val) {
+        return DropdownMenuItem<String>(
+          value: val,
+          child: Text(val),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      // Styling the dropdown to match your previous design
       decoration: InputDecoration(
         hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey[400]),
         filled: true,
-        fillColor: lightGrey,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-      ),
-    );
-  }
-
-  // Custom Dropdown
-  Widget _buildDropdownField(List<String> items) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(color: lightGrey, borderRadius: BorderRadius.circular(12)),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: items.first,
-          isExpanded: true,
-          items: items.map((String value) => DropdownMenuItem(value: value, child: Text(value))).toList(),
-          onChanged: (_) {},
+        fillColor: Colors.grey[50],
+        errorText: errorText,
+        // The error message shows here
+        contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 12),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[200]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey[200]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.lightBlueAccent),
         ),
       ),
     );

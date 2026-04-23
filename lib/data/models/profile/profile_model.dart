@@ -18,6 +18,7 @@ class ProfileModel {
   final DateTime estimatedPcsDate;
   final StationModel? futureStation;
   final StationModel? currentStation;
+  final DateTime createdAt;
 
   ProfileModel({
     required this.id,
@@ -35,6 +36,7 @@ class ProfileModel {
     required this.estimatedPcsDate,
     required this.futureStation,
     required this.currentStation,
+    required this.createdAt,
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
@@ -53,7 +55,8 @@ class ProfileModel {
       kidsAgeRanges: List<String>.from(json['kidsAgeRanges'] ?? []),
       estimatedPcsDate: DateTime.parse(json['estimatedPcsDate']),
       futureStation: json['futureStation'] != null ? StationModel.fromJson(json['futureStation']) : null,
-      currentStation: json['currentStation'] != null ? StationModel.fromJson(json['currentStation']) : null
+      currentStation: json['currentStation'] != null ? StationModel.fromJson(json['currentStation']) : null,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 
@@ -73,7 +76,8 @@ class ProfileModel {
       'kidsAgeRanges': kidsAgeRanges.map((range) => range.toString()).toList(),
       'estimatedPcsDate': estimatedPcsDate.toIso8601String(),
       'futureStation': futureStation?.toJson(),
-      'currentStation': currentStation?.toJson()
+      'currentStation': currentStation?.toJson(),
+      'createdAt': createdAt.toIso8601String()
     };
   }
 }

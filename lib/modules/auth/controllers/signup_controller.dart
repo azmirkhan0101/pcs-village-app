@@ -146,6 +146,7 @@ Future<void> getBranches() async{
       method: "GET",
         isAuthRequired: false,
         endPoint: ApiEndpoints.getAllBranches,
+      shouldPrint: true
     );
     if( response.statusCode == 200 ){
       final fetchedBranches = response.data['data'] as List<dynamic>?;
@@ -157,7 +158,6 @@ Future<void> getBranches() async{
     }
 }
 
-//GET BRANCHES
   Future<void> searchDutyStations({required String search}) async{
     ApiResponse response = await apiService.networkRequest(
       method: "GET",

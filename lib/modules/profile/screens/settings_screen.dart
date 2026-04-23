@@ -47,6 +47,22 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 _buildSettingsTile(
+                  icon: Icons.military_tech,
+                  title: 'Base Request',
+                  textColor: AppColors.primaryColor,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.baseRequest);
+                  },
+                ),
+                _buildSettingsTile(
+                  icon: Icons.workspace_premium,
+                  title: 'Manage Subscription',
+                  textColor: AppColors.primaryColor,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.manageSubscription);
+                  },
+                ),
+                _buildSettingsTile(
                   icon: Icons.question_answer_rounded,
                   title: 'FAQ',
                   textColor: AppColors.primaryColor,

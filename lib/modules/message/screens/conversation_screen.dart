@@ -35,6 +35,9 @@ class ContactListScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  cursorColor: Colors.white,
+                  style: TextStyle(color: Colors.white),
+                  controller: controller.searchController,
                   decoration: InputDecoration(
                     hintText: 'Search your connection...',
                     hintStyle: const TextStyle(color: Colors.white54),

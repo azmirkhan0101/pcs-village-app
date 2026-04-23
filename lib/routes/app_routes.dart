@@ -43,6 +43,7 @@ static const String inviteFriends = "/invite-friends";
 static const String upgradePremium = "/upgrade-premium";
 static const String completePurchase = "/complete-purchase";
 static const String manageSubscription = "/manage-subscription";
+static const String baseRequest = "/base-request";
 static const String communityGuidelines = "/community-guidelines";
 
 
