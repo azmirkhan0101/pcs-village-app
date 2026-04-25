@@ -47,6 +47,4 @@ class BaseRequestController extends GetxController {
 
     showApiSnackBar(statusCode: response.statusCode, data: response.data);
   }
-
-
 }

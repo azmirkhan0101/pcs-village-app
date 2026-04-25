@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
+import 'package:pcs_village/core/widgets/custom_text_field.dart';
 import 'package:pcs_village/modules/profile/controllers/base_request_controller.dart';
 
 class BaseRequestScreen extends StatelessWidget {
@@ -30,35 +31,38 @@ class BaseRequestScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      _buildTextField(
-                        controller: controller.baseNameController,
+                      CustomTextField(
                         label: 'Base Name',
-                        hint: 'Enter base name',
+                        controller: controller.baseNameController,
+                        hintText: 'Enter base name',
                       ),
                       const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: controller.cityController,
+                      CustomTextField(
                         label: 'City',
-                        hint: 'Enter city',
+                        controller: controller.cityController,
+                        hintText: 'Enter city',
                       ),
                       const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: controller.stateController,
+                      CustomTextField(
                         label: 'State',
-                        hint: 'Enter state',
+                        controller: controller.stateController,
+                        hintText: 'Enter state',
+
                       ),
                       const SizedBox(height: 16),
-                      _buildTextField(
-                        controller: controller.countryController,
+                      CustomTextField(
                         label: 'Country',
-                        hint: 'Enter country',
+                        controller: controller.countryController,
+                        hintText: 'Enter country',
                       ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
               ),
               Obx((){
-                return CustomButton(label: "Submit",
+                return CustomButton(
+                  label: "Submit",
                 isLoading: controller.isLoading.value,
                   onPressed: (){
                     if( _formKey.currentState!.validate() ){
@@ -73,27 +77,6 @@ class BaseRequestScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required String hint,
-  }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        border: const OutlineInputBorder(),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Please enter the $label';
-        }
-        return null;
-      },
     );
   }
 }

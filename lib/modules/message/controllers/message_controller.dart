@@ -1,17 +1,26 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pcs_village/core/helper/pagination_helper.dart';
+import 'package:pcs_village/core/services/api_service.dart';
 import 'package:pcs_village/core/utils/api_endpoints.dart';
+import 'package:pcs_village/core/utils/api_response.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
 import 'package:pcs_village/data/models/message/participant_model.dart';
 
 import '../../../core/services/socket_service.dart';
 import '../../../data/models/message/message_model.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 
 class MessageController extends GetxController {
+
+  final ApiService apiService = Get.find<ApiService>();
 
   final SocketService _socketService = Get.find<SocketService>();
   late String currentUserId;
@@ -22,6 +31,11 @@ class MessageController extends GetxController {
   final TextEditingController textController = TextEditingController();
   PaginationHelper<MessageModel> messageHelper = PaginationHelper<MessageModel>();
   bool shouldScrollToBottom = true;
+
+  // ─── Image picking state ───────────────────────────────────────────────────
+  final ImagePicker _picker = ImagePicker();
+  RxList<File> selectedImages = <File>[].obs;
+  RxBool isUploadingImages = false.obs;
 
   @override
   void onInit() {
@@ -145,6 +159,120 @@ class MessageController extends GetxController {
       message: trimmed,
     );
   }
+
+  // ─── Image picking ─────────────────────────────────────────────────────────
+
+  /// Opens gallery for multi-image selection, compresses each, adds to [selectedImages].
+  Future<void> pickImages() async {
+    final List<XFile> picked = await _picker.pickMultiImage();
+    if (picked.isEmpty) return;
+
+    final List<File> compressed = [];
+    for (final xFile in picked) {
+      final file = File(xFile.path);
+      final compressedFile = await compressImage(file);
+      compressed.add(compressedFile ?? file);
+    }
+    selectedImages.addAll(compressed);
+  }
+
+  /// Removes a staged image by index.
+  void removeSelectedImage(int index) {
+    if (index >= 0 && index < selectedImages.length) {
+      selectedImages.removeAt(index);
+    }
+  }
+
+  /// Clears all staged images.
+  void clearSelectedImages() => selectedImages.clear();
+
+  // ─── Image compress ───────────────────────────────────────────────────────
+
+  Future<File?> compressImage(File file) async {
+    final dir = await getTemporaryDirectory();
+    final targetPath = p.join(
+      dir.path,
+      '${DateTime.now().millisecondsSinceEpoch}.jpg',
+    );
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 50,
+      format: CompressFormat.jpeg,
+    );
+
+    return result != null ? File(result.path) : null;
+  }
+
+  // ─── Image upload + send ──────────────────────────────────────────────────
+
+  /// Uploads all [selectedImages] to your server, then sends the image message via socket.
+  /// Replace [_uploadImagesToServer] with your actual API call.
+  Future<void> _handleImageSend({String captionText = ''}) async {
+    if (selectedImages.isEmpty) return;
+
+    final imagesToSend = List<File>.from(selectedImages);
+    clearSelectedImages();
+
+    // Optimistic bubble with local file paths so the user sees it instantly
+    final tempId = _generateTempId();
+    final optimistic = MessageModel.optimistic(
+      tempId: tempId,
+      conversationId: _conversationId,
+      senderId: currentUserId,
+      message: captionText,
+      attachments: imagesToSend.map((f) => f.path).toList(),
+    );
+    messages.insert(0, optimistic);
+
+    isUploadingImages.value = true;
+    try {
+      // ── Replace this with your real upload API call ──────────────────────
+      final List<String> uploadedUrls = await _uploadImagesToServer(imagesToSend);
+      // ─────────────────────────────────────────────────────────────────────
+
+      _socketService.sendImageMessage(
+        conversationId: _conversationId,
+        imageUrls: uploadedUrls,
+        message: captionText,
+      );
+    } catch (e) {
+      Get.snackbar('Upload failed', 'Could not send images. Please try again.');
+      // Remove the optimistic message on failure
+      messages.removeWhere((m) => m.id == tempId);
+    } finally {
+      isUploadingImages.value = false;
+    }
+  }
+
+  /// Stub — replace with your real multipart upload logic.
+  /// Should return the list of remote image URLs after a successful upload.
+  Future<List<String>> _uploadImagesToServer(List<File> files) async {
+
+    ApiResponse response = await apiService.multipartRequest(
+        method: "POST",
+        endPoint: "/conversations/upload",
+        isAuthRequired: true,
+        fields: {},
+      images: files,
+      imageKey: "attachments"
+    );
+
+    return response.data?['data'] as List<String>? ?? [];
+
+    // Example (replace with your Dio/http multipart call):
+    //
+    // final formData = FormData();
+    // for (final file in files) {
+    //   formData.files.add(MapEntry('images', await MultipartFile.fromFile(file.path)));
+    // }
+    // final response = await _dio.post(ApiEndpoints.uploadImages, data: formData);
+    // return List<String>.from(response.data['urls']);
+
+    throw UnimplementedError('Replace _uploadImagesToServer with your real upload logic');
+  }
+
 
   void notifyTyping() {
     _socketService.sendTyping(_conversationId);

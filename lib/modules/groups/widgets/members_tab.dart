@@ -5,7 +5,6 @@ import 'package:pcs_village/data/models/groups/member_model.dart';
 import 'package:pcs_village/modules/groups/widgets/member_card.dart';
 import 'package:pcs_village/modules/groups/widgets/members_skeleton_list.dart';
 import 'package:pcs_village/modules/groups/widgets/no_members_state.dart';
-import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
 

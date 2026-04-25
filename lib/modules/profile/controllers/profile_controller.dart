@@ -86,6 +86,8 @@ class ProfileController extends GetxController{
     selectedAffiliation.value = affiliation;
     selectedInterests.value = profileModel.value?.interestTags ?? [];
     kidsAgeRange.value = profileModel.value?.kidsAgeRanges ?? [];
+    currentStationController.text = profileModel.value?.currentStation?.name ?? "";
+    futureStationController.text = profileModel.value?.futureStation?.name ?? "";
   }
 
   //GET PROFILE

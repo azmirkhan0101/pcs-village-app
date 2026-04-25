@@ -38,6 +38,8 @@ class NotificationScreen extends StatelessWidget {
         // 2. EMPTY STATE
         if (controller.notificationsHelper.items.isEmpty) {
           return RefreshIndicator(
+            backgroundColor: Colors.white,
+            color: AppColors.primaryColor,
             onRefresh: () => controller.getNotifications(),
             child: ListView(
               children: [

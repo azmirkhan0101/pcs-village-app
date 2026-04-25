@@ -8,6 +8,7 @@ class MessageModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final MessageStatus status;
+  final List<String> localImagePaths; // local file paths for optimistic image bubbles
 
   const MessageModel({
     required this.id,
@@ -19,6 +20,7 @@ class MessageModel {
     required this.createdAt,
     required this.updatedAt,
     this.status = MessageStatus.sent,
+    this.localImagePaths = const [],  // defaults to empty — no change to existing usage
   });
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class MessageModel {
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       status: MessageStatus.sent,
+      // localImagePaths intentionally omitted — server never sends local paths
     );
   }
 
@@ -44,6 +47,7 @@ class MessageModel {
     'isSeen': isSeen,
     'createdAt': createdAt.toIso8601String(),
     'updatedAt': updatedAt.toIso8601String(),
+    // localImagePaths intentionally omitted — client-only field
   };
 
   MessageModel copyWith({
@@ -56,6 +60,7 @@ class MessageModel {
     DateTime? createdAt,
     DateTime? updatedAt,
     MessageStatus? status,
+    List<String>? localImagePaths,
   }) {
     return MessageModel(
       id: id ?? this.id,
@@ -67,15 +72,17 @@ class MessageModel {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       status: status ?? this.status,
+      localImagePaths: localImagePaths ?? this.localImagePaths,
     );
   }
 
-  /// Creates a temporary optimistic message before server confirmation.
   factory MessageModel.optimistic({
     required String tempId,
     required String conversationId,
     required String senderId,
     required String message,
+    List<String> attachments = const [],
+    List<String> localImagePaths = const [],
   }) {
     final now = DateTime.now();
     return MessageModel(
@@ -83,11 +90,12 @@ class MessageModel {
       conversationId: conversationId,
       senderId: senderId,
       message: message,
-      attachments: [],
+      attachments: attachments,
       isSeen: false,
       createdAt: now,
       updatedAt: now,
       status: MessageStatus.sending,
+      localImagePaths: localImagePaths,
     );
   }
 }

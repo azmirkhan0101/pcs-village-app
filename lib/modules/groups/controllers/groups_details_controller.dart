@@ -122,6 +122,7 @@ class GroupsDetailsController extends GetxController
     isPostsLoaded.value = true;
   }
 
+  //TODO: IMPLEMENT IT
   //==========GET POST BY ID - AFTER UPDATE========
   Future<void> getPostById({required String postId}) async{
     final post = postsHelper.items.firstWhereOrNull((p) => p.id == postId);
@@ -233,7 +234,8 @@ class GroupsDetailsController extends GetxController
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.waveBack(userId: userId)
+        endPoint: ApiEndpoints.waveBack(userId: userId),
+      shouldPrint: true
     );
 
     member.isWaveLoading.value = false;
@@ -244,7 +246,8 @@ class GroupsDetailsController extends GetxController
       member.isMatched = true;
     }else{
       showApiSnackBar(
-          statusCode: response.statusCode
+          statusCode: response.statusCode,
+        data: response.data
       );
     }
   }

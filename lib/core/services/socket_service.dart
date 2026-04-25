@@ -38,10 +38,6 @@ class SocketService {
           .enableReconnection()
           .setReconnectionAttempts(5)
           .setReconnectionDelay(2000)
-          //.setAuth({'token': accessToken})
-      //     .setExtraHeaders({
-      //   'Authorization': 'Bearer $accessToken',
-      // })
           .build(),
     );
 
@@ -67,6 +63,21 @@ class SocketService {
     _emit('send_message', {
       'conversationId': conversationId,
       'message': message,
+    });
+  }
+
+  /// Send a message with one or more image URLs (already uploaded to server/CDN).
+  /// [imageUrls] is the list of remote URLs returned after uploading.
+  void sendImageMessage({
+    required String conversationId,
+    required List<String> imageUrls,
+    String message = '',
+  }) {
+    _emit('send_message', {
+      'conversationId': conversationId,
+      'message': message,
+      'images': imageUrls,   // <-- backend must handle this field
+      'messageType': 'image',
     });
   }
 
