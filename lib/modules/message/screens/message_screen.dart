@@ -258,43 +258,47 @@ class _MessageScreenState extends State<MessageScreen> {
   // ─── Input bar with image button ──────────────────────────────────────────
 
   Widget _buildInputBar() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // Image picker button
-        Padding(
-          padding: const EdgeInsets.only(left: 8, bottom: 8),
-          child: Obx(() => IconButton(
-            onPressed: _controller.isUploadingImages.value ? null : _controller.pickImages,
-            icon: _controller.isUploadingImages.value
-                ? const SizedBox(
-              width: 22,
-              height: 22,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-                : Icon(
-              Icons.image_outlined,
-              color: AppColors.navy,
-              size: 26,
-            ),
-          )),
-        ),
-
-        // Original input bar
-        Expanded(
-          child: MessageInputBar(
-            textController: _controller.textController,
-            onTextChanged: (value) {
-              if (value.isNotEmpty) {
-                _controller.notifyTyping();
-              }
-            },
-            onSend: () {
-              _controller.handleSend();
-            },
+    return Container(
+      color: Colors.white,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Image picker button
+          Padding(
+            padding: const EdgeInsets.only(left: 8, bottom: 8),
+            child: Obx(() => IconButton(
+              onPressed: _controller.isUploadingImages.value ? null : _controller.pickImages,
+              icon: _controller.isUploadingImages.value
+                  ? const SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  )
+                  : Icon(
+                Icons.image_outlined,
+                color: AppColors.navy,
+                size: 26,
+              ),
+            )),
           ),
-        ),
-      ],
+
+          // Original input bar
+          Expanded(
+            child: MessageInputBar(
+              textController: _controller.textController,
+              onTextChanged: (value) {
+                if (value.isNotEmpty) {
+                  _controller.notifyTyping();
+                }
+              },
+              onSend: () {
+                print("Handle send in send button");
+                _controller.handleSend();
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 

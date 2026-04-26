@@ -84,9 +84,13 @@ class NotificationScreen extends StatelessWidget {
                   type: model.type,
                   model: model,
                 onViewProfile: (){
-                    // Get.toNamed(AppRoutes.memberProfile,
-                    //   arguments: model.
-                    // );
+                    Get.toNamed(
+                        AppRoutes.memberProfile,
+                      arguments: model.asWave?.sender
+                    );
+                },
+                onWaveBack: (){
+                    controller.waveBack(userId: model.asWave?.sender ?? "");
                 },
               );
             },

@@ -11,6 +11,7 @@ import 'package:pcs_village/core/services/api_service.dart';
 import 'package:pcs_village/core/utils/api_endpoints.dart';
 import 'package:pcs_village/core/utils/api_response.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
+import 'package:pcs_village/core/utils/show_snackbar.dart';
 import 'package:pcs_village/data/models/message/participant_model.dart';
 
 import '../../../core/services/socket_service.dart';
@@ -80,7 +81,16 @@ class MessageController extends GetxController {
   }
 
   void handleSend() {
+    print("Handling send");
     final text = textController.text.trim();
+
+    if( selectedImages.isNotEmpty ){
+      print("Images found");
+      _handleImageSend(captionText: text);
+      return;
+    }
+
+
     if (text.isEmpty) return;
     sendMessage(text);
     textController.clear();
@@ -141,6 +151,7 @@ class MessageController extends GetxController {
   }
 
   void sendMessage(String text) {
+
     final trimmed = text.trim();
     if (trimmed.isEmpty || _conversationId == null) return;
 
@@ -212,6 +223,8 @@ class MessageController extends GetxController {
   Future<void> _handleImageSend({String captionText = ''}) async {
     if (selectedImages.isEmpty) return;
 
+    print("Handling image send");
+
     final imagesToSend = List<File>.from(selectedImages);
     clearSelectedImages();
 
@@ -229,8 +242,12 @@ class MessageController extends GetxController {
     isUploadingImages.value = true;
     try {
       // ── Replace this with your real upload API call ──────────────────────
-      final List<String> uploadedUrls = await _uploadImagesToServer(imagesToSend);
+      final List<String> uploadedUrls = await _uploadImagesToServer(imagesToSend, tempId);
       // ─────────────────────────────────────────────────────────────────────
+
+      if( uploadedUrls.isEmpty ){
+        return;
+      }
 
       _socketService.sendImageMessage(
         conversationId: _conversationId,
@@ -238,17 +255,19 @@ class MessageController extends GetxController {
         message: captionText,
       );
     } catch (e) {
+      print("Image upload error $e");
       Get.snackbar('Upload failed', 'Could not send images. Please try again.');
       // Remove the optimistic message on failure
       messages.removeWhere((m) => m.id == tempId);
     } finally {
+      print("Image upload process finish");
       isUploadingImages.value = false;
     }
   }
 
   /// Stub — replace with your real multipart upload logic.
   /// Should return the list of remote image URLs after a successful upload.
-  Future<List<String>> _uploadImagesToServer(List<File> files) async {
+  Future<List<String>> _uploadImagesToServer(List<File> files, String tempId) async {
 
     ApiResponse response = await apiService.multipartRequest(
         method: "POST",
@@ -258,6 +277,17 @@ class MessageController extends GetxController {
       images: files,
       imageKey: "attachments"
     );
+
+    print("Image upload response code: ${response.statusCode}");
+    print("Image upload response data: ${response.data}");
+
+    if( response.statusCode != 200 ){
+      messages.removeWhere((m){
+        return m.id == tempId;
+      });
+      showApiSnackBar(statusCode: response.statusCode, data: response.data);
+      return [];
+    }
 
     return response.data?['data'] as List<String>? ?? [];
 

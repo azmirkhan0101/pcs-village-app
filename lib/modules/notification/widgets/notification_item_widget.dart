@@ -59,7 +59,7 @@ class NotificationItemWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
+                  //_buildHeader(),
                   _buildMessageBody(),
                   if (type == NotificationType.waveReceived) _buildActionButtons(),
                   const SizedBox(height: 4),
@@ -82,9 +82,11 @@ class NotificationItemWidget extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(50),
           child: Container(
+            height: 50,
+            width: 50,
             color: Colors.white,
             child: CachedImageWidget(
-                imageUrl: model.id,
+                imageUrl: model.senderImage ?? "",
               borderRadius: 100,
               iconSize: 38,
 
@@ -109,9 +111,8 @@ class NotificationItemWidget extends StatelessWidget {
       text: TextSpan(
         style: const TextStyle(color: Colors.black, fontSize: 14),
         children: [
-          //TODO: Replace with actual name
-          TextSpan(text: model.id, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const TextSpan(text: ' '),
+          //TextSpan(text: model.senderName ?? "Someone", style: const TextStyle(fontWeight: FontWeight.bold)),
+          //const TextSpan(text: ' '),
           TextSpan(text: _getActionText(), style: TextStyle(color: Colors.grey.shade700)),
         ],
       ),
@@ -124,9 +125,8 @@ class NotificationItemWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Text(
-        //'"${data.content}"',
-        "Content here",
-        style: TextStyle(color: Colors.grey.shade600, fontStyle: FontStyle.italic),
+        model.message,
+        style: TextStyle(color: Colors.grey.shade600, fontStyle: FontStyle.normal),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
       ),

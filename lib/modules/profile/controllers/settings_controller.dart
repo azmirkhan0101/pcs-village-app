@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
@@ -12,6 +13,8 @@ import '../../../core/utils/show_snackbar.dart';
 import '../../../routes/app_pages.dart';
 
 class SettingsController extends GetxController {
+
+  final ProfileController controller = Get.find<ProfileController>();
 
   @override
   void onInit() {
@@ -149,7 +152,7 @@ class SettingsController extends GetxController {
     ApiResponse response = await apiService.networkRequest(
         method: "DELETE",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.deleteAccount
+        endPoint: ApiEndpoints.deleteAccount(userId: controller.profileModel.value?.id ?? "")
     );
     if( response.statusCode == 200 ){
       await storage.erase();
@@ -162,7 +165,7 @@ class SettingsController extends GetxController {
       if( Get.isDialogOpen ?? false ){
         Get.back();
       }
-      errorSnackBar();
+      showApiSnackBar(statusCode: response.statusCode, data: response.data);
     }
   }
 
@@ -227,7 +230,7 @@ class SettingsController extends GetxController {
                   child: Container(
                     height: 42,
                     decoration: BoxDecoration(
-                      color: AppColors.greenPrimary,
+                      color: AppColors.primaryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextButton(
@@ -257,7 +260,7 @@ class SettingsController extends GetxController {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Center(child: CircularProgressIndicator(color: AppColors.greenPrimary,),),
+            const Center(child: CircularProgressIndicator(color: AppColors.primaryColor,),),
             SizedBox(
               height: 15.h,
             ),
@@ -286,7 +289,7 @@ class SettingsController extends GetxController {
               Container(
                 height: 42,
                 decoration: BoxDecoration(
-                  color: AppColors.greenPrimary,
+                  color: AppColors.primaryColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextButton(

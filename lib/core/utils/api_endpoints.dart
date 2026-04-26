@@ -4,11 +4,9 @@ class ApiEndpoints {
 
   //=======================BASE====================================
   //LOCAL HOST
-  static const baseUrl = "http://10.10.20.19:5000/api/v1";
   //LIVE API
-  //static const baseUrl = "http://16.171.204.102:5000/api/v1";
-  //static const socketBaseUrl = "http://16.171.204.102:5000";
-  static const socketBaseUrl = "http://10.10.20.19:5000";
+  static const baseUrl = "http://16.171.204.102:5000/api/v1";
+  static const socketBaseUrl = "http://16.171.204.102:5000";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
   static const login = "/auth/login";
@@ -108,7 +106,11 @@ class ApiEndpoints {
     return "/group/posts/$postId";
   }
   static String getGroupMembers({required String groupId, required int page, required String searchQuery}){
-    return "/group/member/$groupId?page=$page&limit=10&searchTerm=$searchQuery";
+    if( searchQuery.isEmpty ){
+      return "/group/member/$groupId?page=$page&limit=10";
+    }else{
+      return "/group/member/$groupId?page=$page&limit=10&searchTerm=$searchQuery";
+    }
   }
 
   //REPORT POST
@@ -136,7 +138,9 @@ class ApiEndpoints {
   //CHANGE PASSWORD - UPDATE PASSWORD
   static const changePassword = "/auth/changed-password";
   //DELETE ACCOUNT
-  static const deleteAccount = "/user/delete-profile";
+  static String deleteAccount({required String userId}){
+    return "/users/$userId";
+  }
   //UPDATE PROFILE
   static const updateProfile = "/auth/update-profile";
   //FAQ
@@ -159,11 +163,11 @@ class ApiEndpoints {
   static const activeSubscription = "/subscription/my-subscription";
   static const subscriptionHistory = "/subscription/histories?page=1&limit=10";
 
-  //=========================ABOUT US===========================
+  //=========================ABOUT US==============================
   static const String aboutUs = "/about/retrive";
   //=========================PRIVACY POLICY========================
   static const String privacyPolicy = "/privacy/retrive";
-//=========================TERMS AND CONDITIONS====================
+  //=========================TERMS AND CONDITIONS==================
   static const String termsAndConditions = "/terms/retrive";
   static const String baseReq = "/base-request";
 }

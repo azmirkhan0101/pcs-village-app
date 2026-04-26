@@ -76,8 +76,7 @@ class SocketService {
     _emit('send_message', {
       'conversationId': conversationId,
       'message': message,
-      'images': imageUrls,   // <-- backend must handle this field
-      'messageType': 'image',
+      'attachments': imageUrls
     });
   }
 

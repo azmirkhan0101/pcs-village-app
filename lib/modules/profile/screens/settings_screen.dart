@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pcs_village/core/widgets/custom_button.dart';
-import 'package:pcs_village/core/widgets/custom_text.dart';
+import 'package:pcs_village/modules/profile/controllers/settings_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  SettingsScreen({super.key});
+
+  final SettingsController controller = Get.find<SettingsController>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,7 @@ class SettingsScreen extends StatelessWidget {
                   title: 'Delete Account',
                   textColor: Colors.red,
                   onTap: () {
-                    showDeleteDialog();
+                    controller.showDeleteDialog();
                   },
                 ),
               ],
@@ -117,71 +117,6 @@ class SettingsScreen extends StatelessWidget {
         size: 20,
       ),
       onTap: onTap,
-    );
-  }
-
-  Future<void> showDeleteDialog() async{
-    Get.dialog(
-        AlertDialog(
-          backgroundColor: AppColors.greyB2,
-          content: Column(
-            spacing: 5,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: CupertinoColors.destructiveRed,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.exit_to_app, color: AppColors.white, fontWeight: FontWeight.bold, size: 28,),
-                ),
-              ),
-              const CustomText(
-                text: "Delete account",
-                fontColor: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-              const CustomText(
-                text: "Do you want to delete your account?",
-                fontColor: AppColors.grey4E,
-                fontSize: 14,
-              )
-            ],
-          ),
-          actionsAlignment: MainAxisAlignment.spaceBetween,
-          actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          actions: [
-            Row(
-              spacing: 4,
-              children: [
-                Expanded(
-                  child: CustomButton(
-                    buttonHeight: 40,
-                    label: "Cancel",
-                    fontSize: 14,
-                    backgroundColor: Colors.blue.shade700,
-                    onPressed: (){
-                      Get.back();
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CustomButton(
-                    buttonHeight: 40,
-                    label: "Delete",
-                    fontSize: 14,
-                    backgroundColor: Colors.red.shade700,
-                    onPressed: (){
-                      //controller.deleteAccount();
-                    },
-                  ),
-                ),
-              ],
-            )
-          ],
-        )
     );
   }
 }
