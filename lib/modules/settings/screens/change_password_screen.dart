@@ -8,7 +8,7 @@ import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/utils/app_validator.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
-import 'package:pcs_village/modules/profile/controllers/settings_controller.dart';
+import 'package:pcs_village/modules/settings/controllers/settings_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/widgets/custom_text_field.dart';

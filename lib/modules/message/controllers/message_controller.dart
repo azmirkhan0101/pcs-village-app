@@ -86,7 +86,7 @@ class MessageController extends GetxController {
 
     if( selectedImages.isNotEmpty ){
       print("Images found");
-      _handleImageSend(captionText: text);
+      _handleImageSend(captionText: text.isEmpty ? "image" : text);
       return;
     }
 
@@ -210,7 +210,7 @@ class MessageController extends GetxController {
       file.absolute.path,
       targetPath,
       quality: 50,
-      format: CompressFormat.jpeg,
+      format: CompressFormat.jpeg
     );
 
     return result != null ? File(result.path) : null;
@@ -220,7 +220,7 @@ class MessageController extends GetxController {
 
   /// Uploads all [selectedImages] to your server, then sends the image message via socket.
   /// Replace [_uploadImagesToServer] with your actual API call.
-  Future<void> _handleImageSend({String captionText = ''}) async {
+  Future<void> _handleImageSend({String captionText = 'image'}) async {
     if (selectedImages.isEmpty) return;
 
     print("Handling image send");
@@ -255,7 +255,7 @@ class MessageController extends GetxController {
         message: captionText,
       );
     } catch (e) {
-      print("Image upload error $e");
+      print("Image upload errorrrrrrrrrrrrrrrrrrrrr $e");
       Get.snackbar('Upload failed', 'Could not send images. Please try again.');
       // Remove the optimistic message on failure
       messages.removeWhere((m) => m.id == tempId);
@@ -285,22 +285,22 @@ class MessageController extends GetxController {
       messages.removeWhere((m){
         return m.id == tempId;
       });
+
+      if( response.statusCode == 402 ){
+        showApiSnackBar(
+            statusCode: response.statusCode,
+            data: response.data,
+          msg: "Subscription required to send media"
+        );
+        return [];
+      }
+
       showApiSnackBar(statusCode: response.statusCode, data: response.data);
       return [];
     }
 
-    return response.data?['data'] as List<String>? ?? [];
-
-    // Example (replace with your Dio/http multipart call):
-    //
-    // final formData = FormData();
-    // for (final file in files) {
-    //   formData.files.add(MapEntry('images', await MultipartFile.fromFile(file.path)));
-    // }
-    // final response = await _dio.post(ApiEndpoints.uploadImages, data: formData);
-    // return List<String>.from(response.data['urls']);
-
-    throw UnimplementedError('Replace _uploadImagesToServer with your real upload logic');
+    final fetchedImageUrls = response.data?['data'] as List<dynamic>? ?? [];
+    return fetchedImageUrls.map((url) => url.toString()).toList();
   }
 
 

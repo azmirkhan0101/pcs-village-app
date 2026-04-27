@@ -71,7 +71,7 @@ class SocketService {
   void sendImageMessage({
     required String conversationId,
     required List<String> imageUrls,
-    String message = '',
+    String message = 'image',
   }) {
     _emit('send_message', {
       'conversationId': conversationId,

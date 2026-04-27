@@ -19,6 +19,12 @@ class SignupFourScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      stationsController.searchStation(query: "", isCurrent: true);
+      stationsController.searchStation(query: "", isCurrent: false);
+    });
+
     const Color primaryColor = Color(0xFF1D3557);
 
     return Scaffold(
@@ -129,6 +135,7 @@ class SignupFourScreen extends StatelessWidget {
 
   Widget searchResults(List<DutyStationModel> results, bool isCurrent) {
     return Container(
+      height: 250,
       margin: const EdgeInsets.only(top: 4),
       decoration: BoxDecoration(
         color: Colors.white,

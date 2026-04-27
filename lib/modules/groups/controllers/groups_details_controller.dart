@@ -9,10 +9,12 @@ import 'package:pcs_village/core/utils/api_response.dart';
 import 'package:pcs_village/core/utils/show_snackbar.dart';
 import 'package:pcs_village/data/models/groups/group_model.dart';
 import 'package:pcs_village/data/models/groups/member_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
 import '../../../core/utils/app_colors.dart';
+import '../../../data/models/blast_post/blast_post_model.dart';
 import '../../../data/models/post/post.dart';
 
 class GroupsDetailsController extends GetxController
@@ -45,6 +47,9 @@ class GroupsDetailsController extends GetxController
 
   Timer? _debounce;
 
+
+  final bannerHelper = PaginationHelper<BlastPostModel>();
+
   @override
   void onInit() {
     super.onInit();
@@ -53,15 +58,31 @@ class GroupsDetailsController extends GetxController
     groupModel = Get.arguments as GroupModel;
     isJoined.value = groupModel.isAlreadyJoined;
 
+    initBannerHelper();
     initPostsHelper();
     initMembersHelper(searchQuery: "");
     setupSearchListener();
 
     tabController.addListener( onTabChanged );
 
+    getAllBanners();
     if ( isJoined.value && postsHelper.items.isEmpty ) {
       getPosts();
     }
+  }
+
+  void initBannerHelper(){
+    bannerHelper.init(
+        endPoint: (page) => ApiEndpoints.getAllBanners,
+        fromJson: (json) => BlastPostModel.fromJson(json),
+        listExtractor: (data) => data['data'] as List<dynamic>?,
+        //scrollController: postScrollController,
+        //showMessageOnError: true
+    );
+  }
+
+  Future<void> getAllBanners() async{
+    await bannerHelper.fetch(isRefresh: true, shouldPrint: true);
   }
 
   void setupSearchListener() {
@@ -122,7 +143,6 @@ class GroupsDetailsController extends GetxController
     isPostsLoaded.value = true;
   }
 
-  //TODO: IMPLEMENT IT
   //==========GET POST BY ID - AFTER UPDATE========
   Future<void> getPostById({required String postId}) async{
     final post = postsHelper.items.firstWhereOrNull((p) => p.id == postId);
@@ -189,6 +209,9 @@ class GroupsDetailsController extends GetxController
       tabController.index = 0;
     }
   }
+
+
+
 
   // ====== SEND WAVE ======
   Future<void> sendWave({required String userId}) async {
@@ -296,6 +319,29 @@ class GroupsDetailsController extends GetxController
     if( response.statusCode == 200 ){
       postsHelper.items.removeWhere((p) => p.id == postId);
       postsHelper.items.refresh();
+    }
+  }
+
+  //OPEN website LINK IN BROWSER
+  Future<void> openLinkInBrowser({required String websiteLink}) async {
+    final Uri? url = Uri.tryParse(websiteLink);
+
+    if (url == null || !url.hasScheme) {
+      //showSnackBar(title: "Cannot open", message: "Invalid URL format", backgroundColor: AppColors.errorRed);
+      return;
+    }
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      } else {
+        //showSnackBar(title: "Failed", message: "No application found to handle this link.", backgroundColor: AppColors.errorRed);
+      }
+    } catch (e) {
+      //showSnackBar(title: "Cannot open link", message: "Error launching URL", backgroundColor: AppColors.errorRed);
     }
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
-import 'package:pcs_village/modules/profile/controllers/base_request_controller.dart';
+import 'package:pcs_village/modules/settings/controllers/base_request_controller.dart';
 
 class BaseRequestScreen extends StatelessWidget {
   BaseRequestScreen({super.key});

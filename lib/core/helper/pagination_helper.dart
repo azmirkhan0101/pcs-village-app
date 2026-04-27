@@ -27,6 +27,7 @@ class PaginationHelper<T> {
   late List<dynamic>? Function(dynamic data) _listExtractor;
   int _pageSize = 10;
   bool _showMessage = false;
+  bool _showMessageOnError = false;
   bool _isChat = false;
 
   void init({
@@ -37,6 +38,7 @@ class PaginationHelper<T> {
     required List<dynamic>? Function(dynamic data) listExtractor,
     int pageSize = 10,
     bool showMessage = false,
+    bool showMessageOnError = false,
     ScrollController? scrollController,
     bool isChat = false
   }) {
@@ -47,6 +49,7 @@ class PaginationHelper<T> {
     _listExtractor = listExtractor;
     _pageSize = pageSize;
     _showMessage = showMessage;
+    _showMessageOnError = showMessageOnError;
     _isChat = isChat;
 
     //==============Attach scroll listener==================
@@ -109,6 +112,10 @@ class PaginationHelper<T> {
         } else {
           currentPage++;
         }
+      }
+    }else{
+      if( _showMessageOnError ){
+        showApiSnackBar(statusCode: response.statusCode, data: response.data);
       }
     }
   }

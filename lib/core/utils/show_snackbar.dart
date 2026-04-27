@@ -19,13 +19,14 @@ void showSnackBar({required String title, required String message, required Colo
 void showApiSnackBar({
   required int? statusCode,
   dynamic data,
+  String? msg
 }) {
   String title;
   Color backgroundColor;
 
-  String message = data?['message']?.toString().trim().isNotEmpty == true
+  String message = msg ?? (data?['message']?.toString().trim().isNotEmpty == true
       ? data['message']
-      : "Something went wrong. Please try again.";
+      : "Something went wrong. Please try again.");
 
   if (statusCode == null) {
     title = "Error";

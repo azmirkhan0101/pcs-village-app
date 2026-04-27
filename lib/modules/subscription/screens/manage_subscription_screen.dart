@@ -121,14 +121,15 @@ class ManageSubscriptionScreen extends StatelessWidget {
                     return Center(child: Text("No history found"),);
                   }else{
                     return ListView.builder(
+                      shrinkWrap: true,
                         itemCount: controller.historyList.length,
                         itemBuilder: (context, index){
 
                           final HistoryModel history = controller.historyList[index];
 
                           return HistoryCard(
-                              title: DateFormat("dd MM YYYY").format(history.createdAt.toLocal()),
-                              subtitle: "Paid on ${DateFormat("dd MM YYYY").format(history.createdAt.toLocal())}",
+                              title: DateFormat("dd MM yyyy").format(history.createdAt.toLocal()),
+                              subtitle: "Paid on ${DateFormat("dd MM yyyy").format(history.createdAt.toLocal())}",
                               amount: history.planPrice.toString()
                           );
                         }

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:pcs_village/modules/profile/controllers/faq_controller.dart';
+import 'package:pcs_village/modules/settings/controllers/faq_controller.dart';
 
 class FaqBinding extends Bindings{
   @override

@@ -15,6 +15,7 @@ import '../../../routes/app_pages.dart';
 class SettingsController extends GetxController {
 
   final ProfileController controller = Get.find<ProfileController>();
+  final RxBool isArrived = false.obs;
 
   @override
   void onInit() {
@@ -22,6 +23,8 @@ class SettingsController extends GetxController {
     currentPassword.addListener( _onTextChanged );
     newPassword.addListener( _onTextChanged );
     confirmPassword.addListener( _onTextChanged );
+
+    //isArrived.value = controller.profileModel.value
 
     super.onInit();
   }
@@ -58,6 +61,23 @@ class SettingsController extends GetxController {
   void _onTextChanged(){
     if( _formKey != null && _hasSubmitted ){
       _formKey!.currentState!.validate();
+    }
+  }
+
+  //MARK AS ARRIVED
+  Future<void> markAsArrived() async{
+    ApiResponse response = await apiService.networkRequest(
+        method: "POST",
+        isAuthRequired: true,
+        endPoint: ApiEndpoints.markAsArrived,
+      shouldPrint: true
+    );
+
+    if( response.statusCode == 200 ){
+      isArrived.value = !isArrived.value;
+      controller.getProfile();
+    }else{
+      showApiSnackBar(statusCode: response.statusCode, data: response.data);
     }
   }
 

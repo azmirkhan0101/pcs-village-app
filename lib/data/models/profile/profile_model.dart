@@ -15,7 +15,7 @@ class ProfileModel {
   final String affiliation;
   final List<String> interestTags;
   final List<String> kidsAgeRanges;
-  final DateTime estimatedPcsDate;
+  final DateTime? estimatedPcsDate;
   final StationModel? futureStation;
   final StationModel? currentStation;
   final DateTime createdAt;
@@ -53,7 +53,7 @@ class ProfileModel {
       affiliation: json['affiliation'] ?? '',
       interestTags: List<String>.from(json['interestTags'] ?? []),
       kidsAgeRanges: List<String>.from(json['kidsAgeRanges'] ?? []),
-      estimatedPcsDate: DateTime.parse(json['estimatedPcsDate']),
+      estimatedPcsDate: json['estimatedPcsDate'] != null ? DateTime.parse(json['estimatedPcsDate']) : null,
       futureStation: json['futureStation'] != null ? StationModel.fromJson(json['futureStation']) : null,
       currentStation: json['currentStation'] != null ? StationModel.fromJson(json['currentStation']) : null,
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
@@ -74,7 +74,7 @@ class ProfileModel {
       'affiliation': affiliation,
       'interestTags': interestTags.map((tag) => tag.toString()).toList(),
       'kidsAgeRanges': kidsAgeRanges.map((range) => range.toString()).toList(),
-      'estimatedPcsDate': estimatedPcsDate.toIso8601String(),
+      'estimatedPcsDate': estimatedPcsDate?.toIso8601String(),
       'futureStation': futureStation?.toJson(),
       'currentStation': currentStation?.toJson(),
       'createdAt': createdAt.toIso8601String()

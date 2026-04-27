@@ -5,7 +5,10 @@ class ApiEndpoints {
   //=======================BASE====================================
   //LOCAL HOST
   //LIVE API
+  //static const baseUrl = "http://10.10.20.42:5000/api/v1";
   static const baseUrl = "http://16.171.204.102:5000/api/v1";
+  //static const baseUrl = "http://10.10.20.42:5000/api/v1";
+  //static const socketBaseUrl = "http://10.10.20.42:5000";
   static const socketBaseUrl = "http://16.171.204.102:5000";
   //=======================AUTH====================================
   //LOGIN/SIGNIN
@@ -14,7 +17,7 @@ class ApiEndpoints {
   static const signup = "/auth/sign-up";
   static const getAllBranches = "/branches/all";
   static String getDutyStations({required String search}){
-    return "/dutystations/all?searchTerm=$search";
+    return "/dutystations/all?searchTerm=$search&sort=-isDeletable";
   }
   //SEND FORGOT PASSWORD OTP
   static const otpForgotPassword = "/auth/forgot-password";
@@ -118,6 +121,16 @@ class ApiEndpoints {
     return "/reports";
   }
   //##############################################################
+  //=======================BLAST POST=============================
+  static String getMyBlastPosts({required int page}){
+    return "/ads/my";
+  }
+  static const createBlastPost = "/ads";
+  static const getAllBanners = "/ads/all";
+  static String deleteBlastPost({required String id}){
+    return "/ads/$id";
+  }
+  //##############################################################
   //=======================MEMBERS================================
   static const sendWave = "/wave";
   static String waveBack({required String userId}){
@@ -170,4 +183,5 @@ class ApiEndpoints {
   //=========================TERMS AND CONDITIONS==================
   static const String termsAndConditions = "/terms/retrive";
   static const String baseReq = "/base-request";
+  static const String markAsArrived = "/group/mark-as-arrived";
 }

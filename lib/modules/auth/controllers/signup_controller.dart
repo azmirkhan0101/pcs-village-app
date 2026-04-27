@@ -163,6 +163,7 @@ Future<void> getBranches() async{
       method: "GET",
       isAuthRequired: false,
       endPoint: ApiEndpoints.getDutyStations(search: search),
+      shouldPrint: true
     );
     if( response.statusCode == 200 ){
       final fetchedBranches = response.data['data'] as List<dynamic>?;

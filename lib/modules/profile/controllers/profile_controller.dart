@@ -79,7 +79,7 @@ class ProfileController extends GetxController{
     profileImageUrl.value = profileModel.value?.profileImage ?? "";
     selectedBranch.value = profileModel.value?.branch?.name ?? "";
     selectedBranchId.value = profileModel.value?.branch?.id ?? "";
-    pcsTimeline = profileModel.value?.estimatedPcsDate.toLocal();
+    pcsTimeline = profileModel.value?.estimatedPcsDate?.toLocal();
     currentStationId = profileModel.value?.currentStation?.id;
     futureStationId = profileModel.value?.futureStation?.id;
     String affiliation = Affiliation.values.firstWhereOrNull((element) => element.value == profileModel.value?.affiliation)?.displayName ?? Affiliation.activeDuty.displayName;

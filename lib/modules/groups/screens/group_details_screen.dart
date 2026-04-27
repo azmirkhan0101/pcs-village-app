@@ -101,6 +101,10 @@ class GroupDetailsScreen extends StatelessWidget {
               children: [
                 PostsTab(
                   posts: controller.postsHelper.items,
+                  banners: controller.bannerHelper.items,
+                  onAdTap: (adUrl){
+                    controller.openLinkInBrowser(websiteLink: adUrl);
+                  },
                   isLoading: controller.postsHelper.isLoading,
                   scrollController: controller.postScrollController,
                   onRefresh: () async{

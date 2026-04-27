@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pcs_village/modules/profile/controllers/settings_controller.dart';
+import 'package:pcs_village/modules/settings/controllers/settings_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
@@ -20,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(top: 50, left: 16, bottom: 40),
             width: double.infinity,
-            color: const Color(0xFF1A365D), // Dark navy blue color
+            color: const Color(0xFF1A365D),
             child: Row(
               children: [
                 IconButton(
@@ -46,6 +46,24 @@ class SettingsScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               children: [
+                Obx(() => SwitchListTile(
+                  title: const Text("Mark as arrived"),
+                  value: controller.isArrived.value,
+                  activeColor: const Color(0xFF000040),
+                  onChanged: (bool value) {
+                    controller.markAsArrived();
+                    controller.isArrived.value = value;
+                  },
+                )),
+                const SizedBox(height: 20,),
+                _buildSettingsTile(
+                  icon: Icons.campaign,
+                  title: 'Blast Post',
+                  textColor: AppColors.primaryColor,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.blastPost);
+                  },
+                ),
                 _buildSettingsTile(
                   icon: Icons.military_tech,
                   title: 'Base Request',

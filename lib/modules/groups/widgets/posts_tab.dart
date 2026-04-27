@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/data/models/blast_post/blast_post_model.dart';
 import 'package:pcs_village/data/models/post/post.dart';
+import 'package:pcs_village/modules/groups/widgets/banner_slider.dart';
+import 'package:pcs_village/modules/settings/widgets/blast_post_card.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 import '../../post/widgets/post_card.dart';
 
 class PostsTab extends StatelessWidget {
   final RxList<Post> posts;
+  final RxList<BlastPostModel> banners;
+  final Function(String adUrl) onAdTap;
   final RxBool isLoading;
   final ScrollController scrollController;
   final Future<void> Function() onRefresh;
@@ -17,12 +22,14 @@ class PostsTab extends StatelessWidget {
   const PostsTab({
     super.key,
     required this.posts,
+    required this.banners,
+    required this.onAdTap,
     required this.isLoading,
     required this.scrollController,
     required this.onRefresh,
     required this.onFavouriteTap,
     required this.onDelete,
-    required this.userId
+    required this.userId,
   });
 
   @override
@@ -31,88 +38,99 @@ class PostsTab extends StatelessWidget {
       backgroundColor: Colors.white,
       color: AppColors.primaryColor,
       onRefresh: onRefresh,
-      child: Obx(() {
-        //Initial Loading State
-        if (isLoading.value && posts.isEmpty) {
-          return _buildSkeletonList();
-        }
-
-        //Empty State
-        if (posts.isEmpty) {
-          return _buildEmptyState();
-        }
-
-        //List View with Pagination support
-        return ListView.builder(
-          controller: scrollController,
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          itemCount: posts.length + 2, // +1 for Header, +1 for Bottom Loader
-          itemBuilder: (context, index) {
-            // Section Title Header
-            if (index == 0) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text(
-                  'Group Discussion',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A365D),
-                  ),
-                ),
-              );
+      child: Column(
+        children: [
+          Obx(() {
+            if (banners.isEmpty) {
+              return const SizedBox.shrink();
             }
-
-            // Pagination Loader at the bottom
-            if (index == posts.length + 1) {
-              return isLoading.value
-                  ? const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Center(child: CircularProgressIndicator()),
-              )
-                  : const SizedBox(height: 80);
-            }
-
-            // Post Card Item
-            final post = posts[index - 1];
-            return PostCard(
-              post: post,
-              onTap: () => Get.toNamed(
-                  AppRoutes.postDetails,
-                  arguments: {
-                    'isGroup': true,
-                    'postId' : post.id
-                  }
-              ),
-              onFavouriteTap: (){
-                onFavouriteTap(post.id);
+            return BannerSlider(
+              onTap: (adUrl){
+                onAdTap(adUrl);
               },
-              isMyPost: post.authorId == userId,
-              onEdit: (){
-                Get.toNamed(
-                    AppRoutes.editPost,
-                    arguments: {
-                      "isGroup" : true,
-                      "post" : post
-                    }
-                );
-              },
-              onDelete: (){
-                onDelete(post.id);
-              },
-              onReport: (){
-                Get.toNamed(
-                  AppRoutes.reportPost,
-                  arguments: {
-                    "isGroup" : true,
-                    "postId" : post.id
-                  }
-                );
-              },
+              bannerModels: banners.value,
             );
-          },
-        );
-      }),
+          }),
+          Expanded(
+            child: Obx(() {
+              //Initial Loading State
+              if (isLoading.value && posts.isEmpty) {
+                return _buildSkeletonList();
+              }
+
+              //Empty State
+              if (posts.isEmpty) {
+                return _buildEmptyState();
+              }
+
+              //List View with Pagination support
+              return ListView.builder(
+                controller: scrollController,
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                itemCount: posts.length + 2,
+                // +1 for Header, +1 for Bottom Loader
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                      child: Text(
+                        'Group Discussion',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1A365D),
+                        ),
+                      ),
+                    );
+                  }
+
+                  // Pagination Loader at the bottom
+                  if (index == posts.length + 1) {
+                    return isLoading.value
+                        ? const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          )
+                        : const SizedBox(height: 80);
+                  }
+
+                  // Post Card Item
+                  final post = posts[index - 1];
+                  return PostCard(
+                    post: post,
+                    onTap: () => Get.toNamed(
+                      AppRoutes.postDetails,
+                      arguments: {'isGroup': true, 'postId': post.id},
+                    ),
+                    onFavouriteTap: () {
+                      onFavouriteTap(post.id);
+                    },
+                    isMyPost: post.authorId == userId,
+                    onEdit: () {
+                      Get.toNamed(
+                        AppRoutes.editPost,
+                        arguments: {"isGroup": true, "post": post},
+                      );
+                    },
+                    onDelete: () {
+                      onDelete(post.id);
+                    },
+                    onReport: () {
+                      Get.toNamed(
+                        AppRoutes.reportPost,
+                        arguments: {"isGroup": true, "postId": post.id},
+                      );
+                    },
+                  );
+                },
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 
@@ -127,9 +145,10 @@ class PostsTab extends StatelessWidget {
 
   //Empty State
   Widget _buildEmptyState() {
-    return ListView( // Wrap in ListView so RefreshIndicator still works
+    return ListView(
+      // Wrap in ListView so RefreshIndicator still works
       children: [
-        SizedBox(height: Get.height * 0.15),
+        SizedBox(height: Get.height * 0.03),
         const Center(
           child: Column(
             children: [
@@ -170,11 +189,19 @@ class SkeletonPostCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Container(width: double.infinity, height: 12, color: Colors.grey[300]),
+          Container(
+            width: double.infinity,
+            height: 12,
+            color: Colors.grey[300],
+          ),
           const SizedBox(height: 8),
           Container(width: 200, height: 12, color: Colors.grey[300]),
           const SizedBox(height: 16),
-          Container(width: double.infinity, height: 150, color: Colors.grey[200]),
+          Container(
+            width: double.infinity,
+            height: 150,
+            color: Colors.grey[200],
+          ),
         ],
       ),
     );
