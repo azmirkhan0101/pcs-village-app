@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/utils/app_validator.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
@@ -20,6 +22,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
 
     controller.setFormKey(formKey);
 
@@ -87,36 +91,38 @@ class LoginScreen extends StatelessWidget {
                   onPressed: () {
                     Get.toNamed(AppRoutes.forgotPasswordScreen);
                   },
-                  child: const Text(
+                  child:  Text(
                     'Forgot password?',
-                    style: TextStyle(color: AppColors.primaryColor),
+                    style: TextStyle(color: AppColors.primaryColor, fontSize: isTab ? 12.sp :null),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+               SizedBox(height: isTab ? 30 : 10),
               //==================Sign In Button=======================
-              Obx(() {
-                return CustomButton(
-                  isLoading: controller.isLoginLoading.value,
-                  label: AppStrings.signIn,
-                  onPressed: () {
-                    controller.markSubmitted();
-                    if (formKey.currentState!.validate()) {
-                      controller.login();
-                    }
-                  },
-                );
-              }),
-              const SizedBox(height: 20),
+              Center(
+                child: Obx(() {
+                  return CustomButton(
+                    isLoading: controller.isLoginLoading.value,
+                    label: AppStrings.signIn,
+                    onPressed: () {
+                      controller.markSubmitted();
+                      if (formKey.currentState!.validate()) {
+                        controller.login();
+                      }
+                    },
+                  );
+                }),
+              ),
+               SizedBox(height: isTab ? 40 : 20),
               // Divider
               Row(
-                children: const [
+                children:  [
                   Expanded(child: Divider()),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'or continue with',
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null),
                     ),
                   ),
                   Expanded(child: Divider()),
@@ -125,30 +131,35 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 30),
 
               // Social Buttons
-              SocialButton(
-                label: 'Google',
-                iconPath: Assets.icons.google,
-                onPressed: () {},
+              Center(
+                child: SocialButton(
+                  label: 'Google',
+                  iconPath: Assets.icons.google,
+                  onPressed: () {},
+                ),
               ),
-              const SizedBox(height: 10),
-              SocialButton(
-                label: 'Apple',
-                iconPath: Assets.icons.apple,
-                onPressed: () {},
+               SizedBox(height: isTab ? 30 : 10),
+              Center(
+                child: SocialButton(
+                  label: 'Apple',
+                  iconPath: Assets.icons.apple,
+                  onPressed: () {},
+                ),
               ),
               const SizedBox(height: 20),
               //===================Footer==========================
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have an account? "),
+                   Text("Don't have an account? ", style: TextStyle(fontSize: isTab ? 12.sp : null),),
                   GestureDetector(
                     onTap: () {
                       Get.toNamed(AppRoutes.signupScreen);
                     },
-                    child: const Text(
+                    child: Text(
                       'Sign Up',
                       style: TextStyle(
+                        fontSize: isTab ? 12.sp : null,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF1E3A5F),
                       ),

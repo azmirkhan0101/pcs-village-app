@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 
 import '../utils/app_colors.dart';
@@ -67,14 +68,17 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     // Logic to determine the background color based on state
     final Color effectiveBackgroundColor = isEnabled
         ? backgroundColor
         : disabledColor;
 
     return Container(
-      height: buttonHeight.h,
-      width: buttonWidth?.w,
+      height: isTab ? buttonHeight.h * 0.8 : buttonHeight.h,
+      width: isTab ? context.fullWidth * 0.4 : buttonWidth?.w,
       decoration: BoxDecoration(
         // We only show the gradient if enabled and provided
         gradient: isEnabled ? gradient : null,
@@ -140,7 +144,7 @@ class CustomButton extends StatelessWidget {
                     fontColor: isEnabled
                         ? textColor
                         : textColor.withValues(alpha: 0.6),
-                    fontSize: fontSize.sp,
+                    fontSize: isTab ? fontSize : fontSize.sp,
                     fontWeight: fontWeight,
                   ),
                   if (icon != null) const SizedBox(width: 12),

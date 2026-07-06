@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 
 import '../../../core/utils/app_colors.dart';
 import '../../../core/widgets/custom_text.dart';
@@ -14,8 +15,11 @@ class SocialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return SizedBox(
-        width: double.infinity,
+        width: isTab ? context.fullWidth * 0.4 : double.infinity,
         height: 56,
         child: OutlinedButton.icon(
           onPressed: onPressed,

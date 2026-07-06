@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+
+import '../utils/extensions.dart';
 
 class PinFieldWidget extends StatelessWidget {
 
@@ -18,7 +21,11 @@ class PinFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return PinCodeTextField(
+      textStyle: TextStyle(fontSize: isTab ? 12.sp : null),
       appContext: context,
       controller: controller,
       length: length,
@@ -34,8 +41,8 @@ class PinFieldWidget extends StatelessWidget {
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
         borderRadius: BorderRadius.circular(8),
-        fieldHeight: 45,
-        fieldWidth: 45,
+        fieldHeight: isTab ? 70 : 45,
+        fieldWidth: isTab ? 70 : 45,
 
         activeFillColor: Colors.white,
         inactiveFillColor: Colors.white,

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 extension DoubleFormatter on double {
   String toSmartString() {
     // If it's a whole number (e.g., 100.0), return as integer string
@@ -9,4 +11,13 @@ extension DoubleFormatter on double {
     RegExp regex = RegExp(r"([.]*0+)(?!.*\d)");
     return toStringAsFixed(2).replaceAll(regex, "");
   }
+}
+
+
+extension ContextExtension on BuildContext {
+  double get fullHeight => MediaQuery.sizeOf(this).height;
+  double get fullWidth => MediaQuery.sizeOf(this).width;
+
+  bool get isMobileDevice => fullWidth < 600;
+  bool get isTab => fullWidth >= 600;
 }

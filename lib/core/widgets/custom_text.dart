@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 
 import '../assets_gen/fonts.gen.dart';
 import '../utils/app_colors.dart';
@@ -68,6 +70,9 @@ class CustomText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Text(
       text,
       overflow: overflow,
@@ -75,7 +80,7 @@ class CustomText extends StatelessWidget {
       textAlign: textAlignment,
       style: TextStyle(
         fontWeight: fontWeight,
-        fontSize: fontSize,
+        fontSize: isTab ? (fontSize * 0.75).sp : fontSize,
         fontStyle: fontStyle,
         color: fontColor,
         fontFamily: fontFamily,

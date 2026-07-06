@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pcs_village/core/assets_gen/assets.gen.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/modules/auth/controllers/otp_verify_controller.dart';
@@ -20,6 +21,9 @@ class OtpVerifyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -37,6 +41,7 @@ class OtpVerifyScreen extends StatelessWidget {
               CustomText(text: "OTP Verify").s24.bold,
               const SizedBox(height: 50,),
               Center(child: SvgPicture.asset(Assets.icons.otpGraphics)),
+              const SizedBox(height: 20,),
               // OTP Input
               PinFieldWidget(
                   controller: controller.otpController, length: 6
@@ -58,9 +63,9 @@ class OtpVerifyScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                   Text(
                     "Didn't get the code?",
-                    style: TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null),
                   ),
                   TextButton(
                     onPressed: () {
@@ -68,9 +73,10 @@ class OtpVerifyScreen extends StatelessWidget {
                         controller.resendOtp();
                       }
                     },
-                    child: const Text(
+                    child:  Text(
                       "Resend",
                       style: TextStyle(
+                        fontSize: isTab ? 10.sp : null,
                         color: Color(0xFF3B566E),
                         fontWeight: FontWeight.bold,
                       ),
@@ -80,19 +86,21 @@ class OtpVerifyScreen extends StatelessWidget {
               ),
               const Spacer(),
               //==============Continue Button================
-              Obx((){
-                return CustomButton(
-                  label: AppStrings.cContinue,
-                  isLoading: controller.isOtpVerifying.value,
-                  onPressed: (){
-                    if( controller.isSignup || controller.isLogin ){
-                      controller.verifySignupOtp();
-                    }else{
-                      controller.verifyForgotPasswordOtp();
-                    }
-                  },
-                );
-              }),
+              Center(
+                child: Obx((){
+                  return CustomButton(
+                    label: AppStrings.cContinue,
+                    isLoading: controller.isOtpVerifying.value,
+                    onPressed: (){
+                      if( controller.isSignup || controller.isLogin ){
+                        controller.verifySignupOtp();
+                      }else{
+                        controller.verifyForgotPasswordOtp();
+                      }
+                    },
+                  );
+                }),
+              ),
               const SizedBox(height: 40),
             ],
           ),

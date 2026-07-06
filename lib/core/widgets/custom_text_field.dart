@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 
 import '../utils/app_colors.dart';
 
@@ -13,7 +14,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
   final Color cursorColor;
-  final TextStyle? inputTextStyle;
+  TextStyle? inputTextStyle;
   final TextAlignVertical? textAlignVertical;
   final TextAlign textAlign;
   final int? maxLines;
@@ -22,7 +23,7 @@ class CustomTextField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final String? label;
   final String? hintText;
-  final TextStyle? hintStyle;
+  TextStyle? hintStyle;
   final Color? fillColor;
   final double borderRadius;
   final Color borderColor;
@@ -39,7 +40,7 @@ class CustomTextField extends StatefulWidget {
   final String? suffixIcon;
   final bool isBackgroundTransparent;
 
-  const CustomTextField({
+   CustomTextField({
     super.key,
     this.inputFormatters,
     this.onFieldSubmitted,
@@ -56,7 +57,7 @@ class CustomTextField extends StatefulWidget {
     this.validator,
     this.label,
     this.hintText,
-    this.hintStyle = const TextStyle(color: Colors.grey, fontSize: 14),
+    this.hintStyle,
     this.fillColor = AppColors.greyF9,
     this.borderRadius = 16,
     this.borderColor = Colors.transparent,
@@ -80,13 +81,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
+    widget.inputTextStyle = widget.inputTextStyle ?? TextStyle(color: Colors.black, fontSize: isTab ? 10.sp : 14);
+    widget.hintStyle = widget.hintStyle ?? TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : 14);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if( widget.label != null )
         Text(
           widget.label!,
-          style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryColor),
+          style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.primaryColor, fontSize: isTab ? 10.sp :null),
         ),
         if( widget.label != null )
         const SizedBox(height: 8),
