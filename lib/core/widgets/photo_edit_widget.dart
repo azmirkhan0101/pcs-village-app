@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../core/utils/app_colors.dart';
+import '../utils/extensions.dart';
 import 'cached_image_widget.dart';
 
 class PhotoEditWidget extends StatelessWidget {
@@ -20,6 +21,9 @@ class PhotoEditWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Center(
       child: Stack(
         alignment: Alignment.bottomRight,
@@ -27,7 +31,7 @@ class PhotoEditWidget extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(2),
             height: 80.h,
-            width: 80.w,
+            width: isTab ? 80.h : 80.w,
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(100),

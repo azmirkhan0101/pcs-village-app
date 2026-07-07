@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
@@ -42,15 +44,18 @@ class _SignupTwoScreenState extends State<SignupTwoScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         forceMaterialTransparency: true,
         leading: const BackButton(),
-        actions: const [
+        actions:  [
           Padding(
             padding: EdgeInsets.only(right: 20, top: 20),
-            child: Text("Step 2 of 5", style: TextStyle(color: Colors.grey)),
+            child: Text("Step 2 of 5", style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null)),
           )
         ],
       ),
@@ -84,7 +89,7 @@ class _SignupTwoScreenState extends State<SignupTwoScreen> {
                   children: _interests.map((interest) {
                     final isSelected = _selectedInterests.contains(interest);
                     return ChoiceChip(
-                      label: Text(interest),
+                      label: Text(interest, style: TextStyle(fontSize: isTab ? 10.sp : null ),),
                       selected: isSelected,
                       onSelected: (_) => _toggleInterest(interest),
                       selectedColor: const Color(0xFF203A5B),
@@ -106,25 +111,27 @@ class _SignupTwoScreenState extends State<SignupTwoScreen> {
               ),
             ),
             // Bottom Action Buttons
-            Column(
-              children: [
-                CustomButton(
-                    label: AppStrings.cContinue,
-                  onPressed: (){
-                    Get.toNamed(AppRoutes.signupStepThreeScreen);
-                  },
-                ),
-                TextButton(
-                  onPressed: () {
-                    Get.toNamed(AppRoutes.signupStepThreeScreen);
-                  },
-                  child: const Text(
-                    'Skip for now',
-                    style: TextStyle(color: Colors.grey),
+            Center(
+              child: Column(
+                children: [
+                  CustomButton(
+                      label: AppStrings.cContinue,
+                    onPressed: (){
+                      Get.toNamed(AppRoutes.signupStepThreeScreen);
+                    },
                   ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                  TextButton(
+                    onPressed: () {
+                      Get.toNamed(AppRoutes.signupStepThreeScreen);
+                    },
+                    child:  Text(
+                      'Skip for now',
+                      style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ],
         ),

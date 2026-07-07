@@ -11,6 +11,7 @@ import 'package:pcs_village/data/models/message/participant_model.dart';
 import 'package:pcs_village/modules/groups/controllers/groups_details_controller.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../../../routes/app_pages.dart';
 import '../widgets/members_tab.dart';
 import '../widgets/posts_tab.dart';
@@ -23,6 +24,9 @@ class GroupDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
@@ -66,7 +70,7 @@ class GroupDetailsScreen extends StatelessWidget {
                       if (!controller.isJoined.value) return const SizedBox.shrink();
 
                       return Container(
-                        height: 45,
+                        height: isTab ? 55 : 45,
                         decoration: BoxDecoration(
                           color: const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(12),
@@ -80,7 +84,7 @@ class GroupDetailsScreen extends StatelessWidget {
                           ),
                           labelColor: Colors.white,
                           unselectedLabelColor: Colors.grey,
-                          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                          labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: isTab ? 12.sp : null),
                           tabs: const [
                             Tab(text: "Posts"),
                             Tab(text: "Members"),
@@ -148,10 +152,10 @@ class GroupDetailsScreen extends StatelessWidget {
                 children: [
                   Icon(Icons.lock_outline, size: 64, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
-                  const Text(
+                   Text(
                     'Join group to see content',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: isTab ? 12.sp : 18,
                       fontWeight: FontWeight.w500,
                       color: Colors.grey,
                     ),
@@ -167,6 +171,7 @@ class GroupDetailsScreen extends StatelessWidget {
         return controller.isJoined.value
             && controller.currentTabIndex.value == 0
             ? FloatingActionButton(
+
           onPressed: () {
             Get.toNamed(
                 AppRoutes.createPost,

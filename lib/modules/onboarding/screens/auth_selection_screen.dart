@@ -19,66 +19,69 @@ class AuthSelectionScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
-          child: Column(
-            children: [
-              const Spacer(flex: 2),
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(flex: 2),
 
-              //===================Logo and Title Section=================
-              Column(
-                children: [
-                  // Logo Placeholder (Using an Icon for now)
-                  SvgPicture.asset(
-                    Assets.icons.appLogoZoomed,
-                    height: 100.h,
-                    width: 100.w,
-                  ),
-                  const SizedBox(height: 32),
-                  CustomText(
-                      text: AppStrings.welcomeToPcsVillage
-                  ).s24.bold,
-                  const SizedBox(height: 12),
-                  CustomText(
-                      text: AppStrings.yourVillageAtEveryDutyStation,
-                    fontColor: AppColors.subtitleTextColor,
-                  ).s14,
-                ],
-              ),
+                //===================Logo and Title Section=================
+                Column(
+                  children: [
+                    // Logo Placeholder (Using an Icon for now)
+                    SvgPicture.asset(
+                      Assets.icons.appLogoZoomed,
+                      height: 100.h,
+                      width: 100.w,
+                    ),
+                    const SizedBox(height: 32),
+                    CustomText(
+                        text: AppStrings.welcomeToPcsVillage
+                    ).s24.bold,
+                    const SizedBox(height: 12),
+                    CustomText(
+                        text: AppStrings.yourVillageAtEveryDutyStation,
+                      fontColor: AppColors.subtitleTextColor,
+                    ).s14,
+                  ],
+                ),
 
-              const Spacer(flex: 1),
+                const Spacer(flex: 1),
 
-              //===================Buttons Section===============
-              Column(
-                children: [
-                  //==============Get Started Button================
-                  CustomButton(
-                      label: AppStrings.getStarted,
-                    onPressed: (){
-                        Get.toNamed(AppRoutes.signupScreen);
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  //===============Sign In Button===================
-                  CustomButton(
-                      label: AppStrings.signIn,
-                    backgroundColor: Colors.white,
-                    borderWidth: 2,
-                    textColor: AppColors.primaryColor,
-                    onPressed: (){
-                        Get.toNamed(AppRoutes.loginScreen);
-                    },
-                  )
-                ],
-              ),
+                //===================Buttons Section===============
+                Column(
+                  children: [
+                    //==============Get Started Button================
+                    CustomButton(
+                        label: AppStrings.getStarted,
+                      onPressed: (){
+                          Get.toNamed(AppRoutes.signupScreen);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    //===============Sign In Button===================
+                    CustomButton(
+                        label: AppStrings.signIn,
+                      backgroundColor: Colors.white,
+                      borderWidth: 2,
+                      textColor: AppColors.primaryColor,
+                      onPressed: (){
+                          Get.toNamed(AppRoutes.loginScreen);
+                      },
+                    )
+                  ],
+                ),
 
-              const Spacer(flex: 2),
+                const Spacer(flex: 2),
 
-              //=================Footer Section================
-              CustomText(
-                  text: AppStrings.yourVillageAtEveryDutyStation,
-                fontColor: AppColors.subtitleTextColor,
-              ).s14,
-              const SizedBox(height: 20),
-            ],
+                //=================Footer Section================
+                CustomText(
+                    text: AppStrings.yourVillageAtEveryDutyStation,
+                  fontColor: AppColors.subtitleTextColor,
+                ).s14,
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

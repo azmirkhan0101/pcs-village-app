@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 
 class CommunityGuidelinesScreen extends StatelessWidget {
   const CommunityGuidelinesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     // Custom theme colors based on the image
     const navyBlue = Color(0xFF1A3358);
     const lightBackground = Color(0xFFF8F9FA);
@@ -20,13 +25,13 @@ class CommunityGuidelinesScreen extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               'Community Guidelines',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold, fontSize: isTab ? 12.sp : 20),
             ),
             Text(
               'Help us maintain a safe, supportive community for all military families',
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12),
+              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: isTab ? 10.sp : 12),
             ),
           ],
         ),
@@ -86,8 +91,8 @@ class CommunityGuidelinesScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('The following types of content are not allowed on PCS Village:',
-                      style: TextStyle(color: Colors.black54, fontSize: 13)),
+                   Text('The following types of content are not allowed on PCS Village:',
+                      style: TextStyle(color: Colors.black54, fontSize: isTab ? 10.sp : 13)),
                   const SizedBox(height: 12),
                   ...[
                     'Personal attacks, harassment, or bullying',
@@ -106,9 +111,9 @@ class CommunityGuidelinesScreen extends StatelessWidget {
             _SectionCard(
               title: 'Reporting Violations',
               color: warningBackground,
-              child: const Text(
+              child: Text(
                 'If you encounter content or behavior that violates these guidelines, please report it immediately. Our team reviews all reports and takes appropriate action.\n\nRepeated violations may result in temporary suspension or permanent removal from the community.',
-                style: TextStyle(color: navyBlue, fontSize: 13, height: 1.4),
+                style: TextStyle(color: navyBlue, fontSize: isTab ? 10.sp : 13, height: 1.4),
               ),
             ),
             const SizedBox(height: 16),
@@ -117,8 +122,8 @@ class CommunityGuidelinesScreen extends StatelessWidget {
             _SectionCard(
               title: 'Questions?',
               child: RichText(
-                text: const TextSpan(
-                  style: TextStyle(color: Colors.black54, fontSize: 13, height: 1.4),
+                text: TextSpan(
+                  style: TextStyle(color: Colors.black54, fontSize: isTab ? 10.sp : 13, height: 1.4),
                   children: [
                     TextSpan(text: 'If you have questions about these guidelines or need clarification on what\'s allowed, please contact our support team at '),
                     TextSpan(
@@ -148,6 +153,9 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -158,7 +166,7 @@ class _SectionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1A3358))),
+          Text(title, style: TextStyle(fontSize: isTab ? 12.sp : 18, fontWeight: FontWeight.bold, color: Color(0xFF1A3358))),
           const SizedBox(height: 16),
           child,
         ],
@@ -176,6 +184,9 @@ class _ValueTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
@@ -190,9 +201,9 @@ class _ValueTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF1A3358))),
+                Text(title, style:  TextStyle(fontWeight: FontWeight.bold, fontSize: isTab ? 11.sp : 16, color: Color(0xFF1A3358))),
                 const SizedBox(height: 4),
-                Text(subtitle, style: const TextStyle(color: Colors.black54, fontSize: 13, height: 1.3)),
+                Text(subtitle, style: TextStyle(color: Colors.black54, fontSize: isTab ? 10.sp : 13, height: 1.3)),
               ],
             ),
           ),
@@ -208,13 +219,16 @@ class _BulletPoint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text("• ", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-          Expanded(child: Text(text, style: const TextStyle(color: Colors.black87, fontSize: 13))),
+           Text("• ", style: TextStyle( fontSize: isTab ? 14.sp : null, color: Colors.red, fontWeight: FontWeight.bold)),
+          Expanded(child: Text(text, style: TextStyle(color: Colors.black87, fontSize: isTab ? 10.sp : 13))),
         ],
       ),
     );

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/data/models/groups/group_model.dart';
 import 'package:pcs_village/modules/groups/controllers/groups_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
@@ -14,6 +16,9 @@ class GroupsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -28,45 +33,26 @@ class GroupsScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                 Text(
                   'Groups',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 28,
+                    fontSize: isTab ? 13.sp : 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Text(
+                 Text(
                   'Community Feed',
                   style:
-                  TextStyle(color: Colors.white70, fontSize: 16),
+                  TextStyle(color: Colors.white70, fontSize: isTab ? 10.sp : 16),
                 ),
                 const SizedBox(height: 20),
-                // TextField(
-                //   onChanged: controller.onSearch,
-                //   decoration: InputDecoration(
-                //     hintText: 'Search groups.....',
-                //     hintStyle:
-                //     const TextStyle(color: Colors.white54),
-                //     prefixIcon: const Icon(Icons.search,
-                //         color: Colors.white54),
-                //     filled: true,
-                //     fillColor:
-                //     Colors.white.withValues(alpha: 0.1),
-                //     contentPadding:
-                //     const EdgeInsets.symmetric(vertical: 0),
-                //     border: OutlineInputBorder(
-                //       borderRadius: BorderRadius.circular(12),
-                //       borderSide: BorderSide.none,
-                //     ),
-                //   ),
-                // ),
-                const SizedBox(height: 15),
                 TabBar(
                   controller: controller.tabController,
                   indicatorColor: Colors.white,
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.white60,
+                  labelStyle: TextStyle(fontSize: isTab ? 12.sp : null),
                   tabs: const [
                     Tab(text: "Active"),
                     Tab(text: "Suggested"),
@@ -84,19 +70,22 @@ class GroupsScreen extends StatelessWidget {
                   groups: controller.activePagination.items,
                   onRefresh: controller.fetchActiveGroups,
                   scrollController: controller.activeScrollController,
-                  isLoadingMore: controller.activePagination.isMoreLoading
+                  isLoadingMore: controller.activePagination.isMoreLoading,
+                  isTab: isTab
                 ),
                 groupsList(
                   groups: controller.suggestedPagination.items,
                   onRefresh: controller.fetchSuggestedGroups,
                   scrollController: controller.suggestedScrollController,
-                  isLoadingMore: controller.suggestedPagination.isMoreLoading
+                  isLoadingMore: controller.suggestedPagination.isMoreLoading,
+                  isTab: isTab
                 ),
                 groupsList(
                   groups: controller.archivedPagination.items,
                   onRefresh: controller.fetchArchivedGroups,
                   scrollController: controller.archivedScrollController,
-                  isLoadingMore: controller.archivedPagination.isMoreLoading
+                  isLoadingMore: controller.archivedPagination.isMoreLoading,
+                  isTab: isTab
                 ),
               ],
             ),
@@ -111,6 +100,7 @@ class GroupsScreen extends StatelessWidget {
     required Future<void> Function() onRefresh,
     required ScrollController scrollController,
     required RxBool isLoadingMore,
+    required bool isTab
   }) {
     return Obx(() {
       if (controller.isLoading.value && groups.isEmpty) {
@@ -127,10 +117,10 @@ class GroupsScreen extends StatelessWidget {
           child: ListView(
             children: [
               SizedBox(height: Get.height * 0.2),
-              const Center(
+               Center(
                 child: Text(
                   "No groups found",
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
+                  style: TextStyle(color: Colors.grey, fontSize: isTab ? 12.sp : 16),
                 ),
               ),
             ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/pagination_loader.dart';
 import 'package:pcs_village/data/models/groups/member_model.dart';
 import 'package:pcs_village/modules/groups/widgets/member_card.dart';
@@ -34,6 +36,9 @@ class MembersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return RefreshIndicator(
       backgroundColor: Colors.white,
       color: AppColors.primaryColor,
@@ -42,10 +47,6 @@ class MembersTab extends StatelessWidget {
         if (isLoading.value && members.isEmpty) {
           return MembersSkeletonList();
         }
-
-        // if (members.isEmpty) {
-        //   return NoMembersState();
-        // }
 
         return ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -57,13 +58,13 @@ class MembersTab extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Group Members",
+                   Text("Group Members",
                       style: TextStyle(
-                          fontSize: 18,
+                          fontSize: isTab ? 12.sp : 18,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF1A365D))),
                   const SizedBox(height: 12),
-                  searchBar(),
+                  searchBar(isTab: isTab),
                   const SizedBox(height: 16),
                 ],
               );
@@ -97,8 +98,9 @@ class MembersTab extends StatelessWidget {
     );
   }
 
-  Widget searchBar() {
+  Widget searchBar({required bool isTab}) {
     return TextField(
+      style: TextStyle(fontSize: isTab ? 11.sp : null),
       controller: searchController,
       decoration: InputDecoration(
         hintText: "Search members...",

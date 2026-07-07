@@ -1,7 +1,9 @@
 // ... existing imports ...
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
 
 import '../../../core/utils/app_colors.dart';
@@ -20,17 +22,21 @@ class EditPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const BackButton(),
-        title: const Text(
+        title: Text(
           'Edit Post',
           style: TextStyle(
             color: Color(0xFF2D4369),
             fontWeight: FontWeight.bold,
+            fontSize: isTab ? 12.sp : null
           ),
         ),
         centerTitle: true,
@@ -40,6 +46,7 @@ class EditPostScreen extends StatelessWidget {
             child: Obx(() {
               return CustomButton(
                 buttonRadius: 100,
+                buttonWidth: isTab ? 160 : null,
                 label: "Update",
                 textColor: Colors.white,
                 backgroundColor: const Color(0xFF8E9AAF),
@@ -68,7 +75,7 @@ class EditPostScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // User Profile Section (Kept as is)
-              _buildUserHeader(),
+              _buildUserHeader(isTab: isTab),
               const SizedBox(height: 20),
 
               // Text Input Field
@@ -151,15 +158,17 @@ class EditPostScreen extends StatelessWidget {
               const SizedBox(height: 15),
 
               // Add Photos Button
-              CustomButton(
-                label: AppStrings.addPhotos,
-                textColor: AppColors.primaryColor,
-                prefixIcon: Icons.image,
-                prefixIconColor: AppColors.primaryColor,
-                borderWidth: 0,
-                borderColor: Colors.transparent,
-                backgroundColor: const Color(0xFFF5F5F2),
-                onPressed: () => controller.pickImages(),
+              Center(
+                child: CustomButton(
+                  label: AppStrings.addPhotos,
+                  textColor: AppColors.primaryColor,
+                  prefixIcon: Icons.image,
+                  prefixIconColor: AppColors.primaryColor,
+                  borderWidth: 0,
+                  borderColor: Colors.transparent,
+                  backgroundColor: const Color(0xFFF5F5F2),
+                  onPressed: () => controller.pickImages(),
+                ),
               ),
             ],
           ),
@@ -206,13 +215,13 @@ class EditPostScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildUserHeader() {
+  Widget _buildUserHeader({required bool isTab}) {
     return Row(
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(100),
           child: Container(
-            height: 40, width: 40,
+            height: isTab ? 60 : 40, width: isTab ? 60 : 40,
             color: Colors.grey.shade200,
             child: Obx(() => CachedImageWidget(
               imageUrl: profileController.profileModel.value?.profileImage ?? "",
@@ -226,11 +235,11 @@ class EditPostScreen extends StatelessWidget {
           children: [
             Obx(() => Text(
               profileController.profileModel.value?.name ?? "",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2D4369)),
+              style: TextStyle(fontSize: isTab ? 12.sp : 18, fontWeight: FontWeight.bold, color: Color(0xFF2D4369)),
             )),
             Obx(() => Text(
               profileController.profileModel.value?.currentStation?.name ?? "",
-              style: const TextStyle(color: Colors.grey, fontSize: 13),
+              style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : 13),
             )),
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/data/models/blast_post/blast_post_model.dart';
@@ -6,6 +7,8 @@ import 'package:pcs_village/modules/profile/controllers/profile_controller.dart'
 import 'package:pcs_village/modules/settings/controllers/blast_post_controller.dart';
 import 'package:pcs_village/modules/settings/widgets/blast_post_card.dart';
 import 'package:pcs_village/routes/app_pages.dart';
+
+import '../../../core/utils/extensions.dart';
 
 class BlastPostScreen extends StatelessWidget {
   BlastPostScreen({super.key});
@@ -15,6 +18,9 @@ class BlastPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1B365D),
       appBar: AppBar(
@@ -53,13 +59,13 @@ class BlastPostScreen extends StatelessWidget {
                     return ListView(
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-                        const Center(
+                         Center(
                           child: Column(
                             children: [
                               Icon(Icons.post_add, size: 64, color: Colors.grey),
                               SizedBox(height: 16),
                               Text("No blast posts found",
-                                  style: TextStyle(color: Colors.grey, fontSize: 16)),
+                                  style: TextStyle(color: Colors.grey, fontSize: isTab ? 12.sp : 16)),
                             ],
                           ),
                         ),
@@ -103,13 +109,17 @@ class BlastPostScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.toNamed(AppRoutes.createBlastPost);
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        backgroundColor: const Color(0xFF6B8E23),
-        child: const Icon(Icons.add, color: Colors.white),
+      floatingActionButton: SizedBox(
+        width: isTab ? 72.0 : 56.0,
+        height: isTab ? 72.0 : 56.0,
+        child: FloatingActionButton(
+          onPressed: () {
+            Get.toNamed(AppRoutes.createBlastPost);
+          },
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+          backgroundColor: const Color(0xFF6B8E23),
+          child: Icon(Icons.add, color: Colors.white, size: isTab ? 36 : 22,),
+        ),
       ),
     );
   }

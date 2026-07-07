@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+
+import '../../../core/utils/extensions.dart';
 
 class GroupCard extends StatelessWidget {
   final String title;
@@ -15,6 +18,9 @@ class GroupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -44,7 +50,7 @@ class GroupCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   title.isNotEmpty ? title[0].toUpperCase() : '?',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -59,9 +65,9 @@ class GroupCard extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: isTab ? 11.sp : 16,
                       color: Color(0xFF213A5E),
                     ),
                   ),
@@ -69,19 +75,19 @@ class GroupCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(Icons.people_outline,
-                          size: 16, color: Colors.grey.shade500),
+                          size: isTab ? 30 : 16, color: Colors.grey.shade500),
                       const SizedBox(width: 5),
                       Text(
                         members,
                         style:
-                        TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                        TextStyle(color: Colors.grey.shade500, fontSize: isTab ? 10.sp : 12),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Colors.grey),
+            Icon(Icons.chevron_right, color: Colors.grey, size: isTab ? 30 : null,),
           ],
         ),
       ),

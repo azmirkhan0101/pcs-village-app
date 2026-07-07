@@ -11,6 +11,7 @@ import 'package:pcs_village/modules/post/widgets/comment_skeleton_loader.dart';
 import 'package:pcs_village/modules/post/widgets/post_menu_button.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
+import '../../../core/utils/extensions.dart';
 import '../../../routes/app_pages.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../widgets/comment_card.dart';
@@ -23,14 +24,18 @@ class PostDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         forceMaterialTransparency: true,
         leading: const BackButton(),
-        title: const Text(
+        title: Text(
           'Post',
           style: TextStyle(
+            fontSize: isTab ? 12.sp : null,
             color: Color(0xFF1A365D),
             fontWeight: FontWeight.bold,
           ),
@@ -62,8 +67,8 @@ class PostDetailsScreen extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: Container(
-                          height: 30.h,
-                          width: 30.w,
+                          height: isTab ? 65 : 30.h,
+                          width: isTab ? 65 : 30.w,
                           color: Colors.grey.shade200,
                           child: CachedImageWidget(
                             imageUrl: post.authorImage,
@@ -79,38 +84,38 @@ class PostDetailsScreen extends StatelessWidget {
                             children: [
                               Text(
                                 post.authorName,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: isTab ? 12.sp : 16,
                                 ),
                               ),
                               const SizedBox(width: 4),
-                              const Icon(
-                                Icons.check_circle,
-                                size: 16,
+                               Icon(
+                                Icons.verified,
+                                size: isTab ? 30 : 16,
                                 color: Colors.blueGrey,
                               ),
                             ],
                           ),
                           Text(
                             '$affiliation • ${timeAgo(post.createdAt)}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 12,
+                              fontSize: isTab ? 10.sp : 12,
                             ),
                           ),
                           Row(
                             children: [
-                              const Icon(
+                               Icon(
                                 Icons.location_on_outlined,
-                                size: 14,
+                                size: isTab ? 25 :  14,
                                 color: Colors.grey,
                               ),
                               Text(
                                 ' ${post.stationName}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 12,
+                                  fontSize: isTab ? 10.sp : 12,
                                 ),
                               ),
                             ],
@@ -149,8 +154,8 @@ class PostDetailsScreen extends StatelessWidget {
                   // --- Post Content ---
                   Text(
                     post.content,
-                    style: const TextStyle(
-                      fontSize: 15,
+                    style: TextStyle(
+                      fontSize: isTab ? 12.sp : 15,
                       height: 1.4,
                       color: Color(0xFF2D3748),
                     ),
@@ -190,6 +195,8 @@ class PostDetailsScreen extends StatelessWidget {
                       IconButton(
                         onPressed: () => controller.likeUnlikePost(),
                         icon: SvgPicture.asset(
+                          height: isTab ? 30 : null,
+                          width: isTab ? 30 : null,
                           post.isLikedByMe ? Assets.icons.favouriteFill : Assets.icons.favouriteOutlined,
                           colorFilter:  post.isLikedByMe ? ColorFilter.mode(Colors.red.shade400, BlendMode.srcIn) : null,
                         ),
@@ -197,32 +204,38 @@ class PostDetailsScreen extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         '${post.likesCount}',
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey, fontSize: isTab ? 12.sp : null),
                       ),
                       const SizedBox(width: 20),
-                      SvgPicture.asset(Assets.icons.chat),
+                      SvgPicture.asset(
+                          height: isTab ? 30 : null,
+                          width: isTab ? 30 : null,
+                          Assets.icons.chat),
                       const SizedBox(width: 4),
                       Text(
                         '${post.commentsCount}',
-                        style: const TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.grey,
+                        fontSize: isTab ? 12.sp : null,
+                          fontWeight: FontWeight.w600
+                        ),
                       ),
                     ],
                   ),
 
                   const Divider(height: 32),
 
-                  const Text(
+                   Text(
                     'Comments',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: isTab ? 12.sp : 18,
                       color: Color(0xFF1A365D),
                     ),
                   ),
                   const SizedBox(height: 16),
 
                   // --- Comments Helper Section ---
-                  commentsSection(),
+                  commentsSection(isTab: isTab),
                 ],
               ),
             ),
@@ -243,7 +256,8 @@ class PostDetailsScreen extends StatelessWidget {
                   controller.addComment(comment: controller.commentController.text);
                 }
               },
-            )),
+            )
+            ),
           ],
         );
       }),
@@ -251,14 +265,14 @@ class PostDetailsScreen extends StatelessWidget {
   }
 
   //===============COMMENT SECTION===================
-  Widget commentsSection() {
+  Widget commentsSection({required bool isTab}) {
     return Obx(() {
       if (controller.commentsHelper.isLoading.value) {
         return CommentSkeletonLoader();
       }
 
       if (controller.commentsHelper.items.isEmpty) {
-        return noComments();
+        return noComments(isTab: isTab);
       }
 
       return Column(
@@ -301,7 +315,7 @@ class PostDetailsScreen extends StatelessWidget {
   }
 
   //=================NO COMMENTS===================
-  Widget noComments() {
+  Widget noComments({required bool isTab}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 40),
@@ -309,7 +323,7 @@ class PostDetailsScreen extends StatelessWidget {
           children: [
             Icon(Icons.chat_bubble_outline, size: 50, color: Colors.grey.shade300),
             const SizedBox(height: 12),
-            Text("No Comments Yet", style: TextStyle(color: Colors.grey.shade500, fontSize: 16)),
+            Text("No Comments Yet", style: TextStyle(color: Colors.grey.shade500, fontSize: isTab ? 12.sp : 16)),
           ],
         ),
       ),

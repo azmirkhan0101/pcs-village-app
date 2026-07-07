@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/modules/notification/widgets/notification_item_widget.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
@@ -14,17 +16,20 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F7F9),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1E3A5F),
         elevation: 0,
         toolbarHeight: 100,
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Notifications', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
-            Text('Community Feed', style: TextStyle(fontSize: 14, color: Colors.white70)),
+            Text('Notifications', style: TextStyle(fontSize: isTab ? 12.sp : 24, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text('Community Feed', style: TextStyle(fontSize: isTab ? 10.sp : 14, color: Colors.white70)),
           ],
         ),
       ),
@@ -44,12 +49,12 @@ class NotificationScreen extends StatelessWidget {
             child: ListView(
               children: [
                 SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-                const Center(
+                Center(
                   child: Column(
                     children: [
-                      Icon(Icons.notifications_off_outlined, size: 60, color: Colors.grey),
-                      SizedBox(height: 10),
-                      Text('No notifications yet', style: TextStyle(color: Colors.grey)),
+                      const Icon(Icons.notifications_off_outlined, size: 60, color: Colors.grey),
+                      const SizedBox(height: 10),
+                      Text('No notifications yet', style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null)),
                     ],
                   ),
                 ),

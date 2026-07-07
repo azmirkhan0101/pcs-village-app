@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/modules/post/controllers/create_post_controller.dart';
@@ -15,17 +17,21 @@ class CreatePostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const BackButton(),
-        title: const Text(
+        title: Text(
           'Create Post',
           style: TextStyle(
             color: Color(0xFF2D4369),
             fontWeight: FontWeight.bold,
+            fontSize: isTab ? 12.sp : null
           ),
         ),
         centerTitle: true,
@@ -35,6 +41,7 @@ class CreatePostScreen extends StatelessWidget {
             child: Obx((){
               return CustomButton(
                 buttonRadius: 100,
+                buttonWidth: isTab ? 150 : 100,
                 label: "Post",
                 textColor: Colors.white,
                 backgroundColor: const Color(0xFF8E9AAF),
@@ -62,8 +69,8 @@ class CreatePostScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: Container(
-                    height: 40,
-                    width: 40,
+                    height: isTab ? 60 : 40,
+                    width: isTab ? 60 : 40,
                     color: Colors.grey.shade200,
                     child: Obx((){
                       return CachedImageWidget(
@@ -81,7 +88,7 @@ class CreatePostScreen extends StatelessWidget {
                       return Text(
                         profileController.profileModel.value?.name ?? "",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: isTab ? 12.sp : 18,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF2D4369),
                         ),
@@ -89,11 +96,11 @@ class CreatePostScreen extends StatelessWidget {
                     }),
                     Row(
                       children: [
-                        Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
+                        Icon(Icons.location_on_outlined, size: isTab ? 30 : 14, color: Colors.grey),
                         Obx((){
                           return Text(
                             ' ${profileController.profileModel.value?.currentStation?.name ?? ""}',
-                            style: TextStyle(color: Colors.grey, fontSize: 13),
+                            style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : 13),
                           );
                         }),
                       ],
@@ -108,9 +115,10 @@ class CreatePostScreen extends StatelessWidget {
             TextField(
               controller: controller.contentController,
               maxLines: 10,
+              style: TextStyle(fontSize: isTab ? 12.sp : 14),
               decoration: InputDecoration(
                 hintText: "What's on your mind? Ask a question...",
-                hintStyle: TextStyle(color: Colors.grey.shade400),
+                hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: isTab ? 12.sp : 14),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(15),
                   borderSide: BorderSide(color: Colors.grey.shade200),
@@ -172,17 +180,19 @@ class CreatePostScreen extends StatelessWidget {
             }),
             const SizedBox(height: 15,),
             // Add Photos Button
-            CustomButton(
-                label: AppStrings.addPhotos,
-              textColor: AppColors.primaryColor,
-              prefixIcon: Icons.image,
-              prefixIconColor: AppColors.primaryColor,
-              borderWidth: 0,
-              borderColor: Colors.transparent,
-              backgroundColor: const Color(0xFFF5F5F2),
-              onPressed: (){
-                  controller.pickImages();
-              },
+            Center(
+              child: CustomButton(
+                  label: AppStrings.addPhotos,
+                textColor: AppColors.primaryColor,
+                prefixIcon: Icons.image,
+                prefixIconColor: AppColors.primaryColor,
+                borderWidth: 0,
+                borderColor: Colors.transparent,
+                backgroundColor: const Color(0xFFF5F5F2),
+                onPressed: (){
+                    controller.pickImages();
+                },
+              ),
             ),
             const SizedBox(height: 15),
 
@@ -197,19 +207,19 @@ class CreatePostScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                   Text(
                     'Community Guidelines',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: isTab ? 12.sp : 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF2D4369),
                     ),
                   ),
                   const SizedBox(height: 12),
-                  _buildGuidelineItem('Be respectful and supportive'),
-                  _buildGuidelineItem('No personal attacks or harassment'),
-                  _buildGuidelineItem('Keep content family-friendly'),
-                  _buildGuidelineItem("Protect OPSEC - don't share sensitive info"),
+                  _buildGuidelineItem('Be respectful and supportive', isTab: isTab),
+                  _buildGuidelineItem('No personal attacks or harassment', isTab: isTab),
+                  _buildGuidelineItem('Keep content family-friendly', isTab: isTab),
+                  _buildGuidelineItem("Protect OPSEC - don't share sensitive info", isTab: isTab),
                 ],
               ),
             ),
@@ -220,17 +230,17 @@ class CreatePostScreen extends StatelessWidget {
   }
 
   // Helper widget for guidelines list
-  Widget _buildGuidelineItem(String text) {
+  Widget _buildGuidelineItem(String text, {required bool isTab}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text('• ', style: TextStyle(color: Colors.grey, fontSize: 18)),
+           Text('• ', style: TextStyle(color: Colors.grey, fontSize: isTab ? 14.sp : 18)),
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(color: Color(0xFF6C7A92), fontSize: 14),
+              style:  TextStyle(color: Color(0xFF6C7A92), fontSize: isTab ? 10.sp : 14),
             ),
           ),
         ],

@@ -7,6 +7,7 @@ import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/modules/message/controllers/message_controller.dart';
 import 'package:pcs_village/modules/message/widgets/message_input_bar.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../widgets/message_item.dart';
 import '../widgets/skeleton_message_loader.dart';
 import '../widgets/typing_indicator.dart';
@@ -29,6 +30,9 @@ class _MessageScreenState extends State<MessageScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: AppColors.beige,
       appBar: _buildAppBar(),

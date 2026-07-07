@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
+import '../../../core/utils/extensions.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -21,6 +23,9 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -36,15 +41,15 @@ class CustomBottomNavBar extends StatelessWidget {
         selectedItemColor: _selectedColor,
         unselectedItemColor: _unselectedColor,
         elevation: 0,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
+        selectedFontSize: isTab ? 11.sp : 12,
+        unselectedFontSize: isTab ? 11.sp : 12,
         selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600),
         items: [
-          bottomNavItem(iconAsset: Assets.icons.home, label: 'Home'),
-          bottomNavItem(iconAsset: Assets.icons.group, label: 'Groups'),
-          bottomNavItem(iconAsset: Assets.icons.chat, label: 'Messages'),
-          bottomNavItem(iconAsset: Assets.icons.notification, label: 'Notifications'),
-          bottomNavItem(iconAsset: Assets.icons.profile, label: 'Profile'),
+          bottomNavItem(iconAsset: Assets.icons.home, label: 'Home', isTab: isTab),
+          bottomNavItem(iconAsset: Assets.icons.group, label: 'Groups', isTab: isTab),
+          bottomNavItem(iconAsset: Assets.icons.chat, label: 'Messages', isTab: isTab),
+          bottomNavItem(iconAsset: Assets.icons.notification, label: 'Notifications', isTab: isTab),
+          bottomNavItem(iconAsset: Assets.icons.profile, label: 'Profile', isTab: isTab),
         ],
       ),
     );
@@ -52,14 +57,19 @@ class CustomBottomNavBar extends StatelessWidget {
 
   BottomNavigationBarItem bottomNavItem({
     required String label,
-    required String iconAsset
+    required String iconAsset,
+    required bool isTab
   }) {
     return BottomNavigationBarItem(
       activeIcon: SvgPicture.asset(
+        height: isTab ? 30 : null,
+        width: isTab ? 30 : null,
         iconAsset,
         colorFilter: ColorFilter.mode(AppColors.primaryColor, BlendMode.srcIn),
       ),
       icon: SvgPicture.asset(
+        height: isTab ? 30 : null,
+        width: isTab ? 30 : null,
         iconAsset,
         colorFilter: ColorFilter.mode(AppColors.subtitleTextColor, BlendMode.srcIn),
       ),

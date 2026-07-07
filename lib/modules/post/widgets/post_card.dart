@@ -6,6 +6,7 @@ import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/modules/post/widgets/post_menu_button.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
+import '../../../core/utils/extensions.dart';
 import '../../../core/utils/time_ago_calculator.dart';
 import '../../../data/models/post/post.dart';
 
@@ -30,6 +31,9 @@ class PostCard extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     String affiliation = Affiliation.values
         .firstWhere((element) => element.value == post.affiliation)
         .displayName;
@@ -57,7 +61,7 @@ class PostCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(100),
                     child: Container(
                       height: 40.h,
-                      width: 40.w,
+                      width: isTab ? 40.h : 40.w,
                       color: Colors.grey.shade200,
                       child: CachedImageWidget(
                         imageUrl: post.authorImage,
@@ -74,34 +78,39 @@ class PostCard extends StatelessWidget {
                           children: [
                             Text(
                               post.authorName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: isTab ? 12.sp : 16,
                               ),
                             ),
                             const SizedBox(width: 4),
-                            SvgPicture.asset(Assets.icons.verified),
+                            Icon(
+                              Icons.verified,
+                              size: isTab ? 30 : 16,
+                              color: Colors.blueGrey,
+                            ),
+                            //SvgPicture.asset(Assets.icons.verified, height: isTab ? 20 : null, width: isTab ? 20 : null,),
                           ],
                         ),
                         Text(
                           "$affiliation • ${timeAgo(post.createdAt)}",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.grey,
-                            fontSize: 12,
+                            fontSize: isTab ? 10.sp : 12,
                           ),
                         ),
                         Row(
                           children: [
-                            const Icon(
+                             Icon(
                               Icons.location_pin,
-                              size: 12,
+                              size: isTab ? 20 : 12,
                               color: Colors.grey,
                             ),
                             Text(
                               post.stationName,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 12
+                                  fontSize: isTab ? 10.sp : 12
                               ),
                             ),
                           ],
@@ -123,7 +132,7 @@ class PostCard extends StatelessWidget {
               // Post Content
               Text(
                   post.content,
-                  style: const TextStyle(fontSize: 14, height: 1.4)
+                  style: TextStyle(fontSize: isTab ? 12.sp : 14, height: 1.4)
               ),
 
               // --- Attachments Section ---
@@ -145,24 +154,26 @@ class PostCard extends StatelessWidget {
                       child: Row(
                         children: [
                           SvgPicture.asset(
+                            height: isTab ? 30 : null,
+                            width: isTab ? 30 : null,
                             post.isLikedByMe ? Assets.icons.favouriteFill : Assets.icons.favouriteOutlined,
                             colorFilter:  post.isLikedByMe ? ColorFilter.mode(Colors.red.shade400, BlendMode.srcIn) : null,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             "${post.likesCount}",
-                            style: const TextStyle(color: Colors.grey),
+                            style: TextStyle(color: Colors.grey, fontSize:  isTab ? 12.sp : null),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(width: 24),
-                  SvgPicture.asset(Assets.icons.chat),
+                  SvgPicture.asset(Assets.icons.chat, height: isTab ? 30 : null, width: isTab ? 30 : null,),
                   const SizedBox(width: 4),
                   Text(
                     "${post.commentsCount}",
-                    style: const TextStyle(color: Colors.grey),
+                    style: TextStyle(color: Colors.grey, fontSize:  isTab ? 12.sp : null),
                   ),
                 ],
               ),

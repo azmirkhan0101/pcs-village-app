@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 
+import '../../../core/utils/extensions.dart';
 import '../../../data/models/faq/faq_model.dart';
 import '../controllers/faq_controller.dart';
 
@@ -14,12 +16,14 @@ class FaqScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: Column(
         children: [
-          Expanded(child: _buildBody()),
+          Expanded(child: _buildBody(isTab: isTab)),
         ],
       ),
     );
@@ -35,10 +39,10 @@ class FaqScreen extends StatelessWidget {
   }
 
   // ── Body ───────────────────────────────────────────────────────────────
-  Widget _buildBody() {
+  Widget _buildBody({required bool isTab}) {
     return Obx(() {
       if (controller.faqHelper.items.isEmpty) {
-        return _buildEmpty();
+        return _buildEmpty(isTab: isTab);
       }
 
       if (controller.faqHelper.isLoading.value) {
@@ -57,7 +61,7 @@ class FaqScreen extends StatelessWidget {
             if (index == controller.faqHelper.items.length) {
               return _buildBottomLoader();
             }
-            return _buildFaqCard(controller.faqHelper.items[index]);
+            return _buildFaqCard(controller.faqHelper.items[index], isTab: isTab);
           },
         ),
       );
@@ -65,7 +69,7 @@ class FaqScreen extends StatelessWidget {
   }
 
   // ── FAQ card ───────────────────────────────────────────────────────────
-  Widget _buildFaqCard(FaqModel faq) {
+  Widget _buildFaqCard(FaqModel faq, {required bool isTab}) {
     return Card(
       color: Colors.white,
       margin: const EdgeInsets.only(bottom: 12),
@@ -86,9 +90,9 @@ class FaqScreen extends StatelessWidget {
         ),
         title: Text(
           faq.question,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 15,
+            fontSize: isTab ? 10.sp : 15,
           ),
         ),
         children: [
@@ -97,18 +101,18 @@ class FaqScreen extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 'A: ',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.green,
-                  fontSize: 14,
+                  fontSize: isTab ? 10.sp : 14,
                 ),
               ),
               Expanded(
                 child: Text(
                   faq.answer,
-                  style: const TextStyle(fontSize: 14, height: 1.5),
+                  style:  TextStyle(fontSize: isTab ? 10.sp : 14, height: 1.5),
                 ),
               ),
             ],
@@ -132,8 +136,8 @@ class FaqScreen extends StatelessWidget {
   }
 
   // ── Empty widget ───────────────────────────────────────────────────────
-  Widget _buildEmpty() {
-    return const Center(
+  Widget _buildEmpty({required bool isTab}) {
+    return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -141,7 +145,7 @@ class FaqScreen extends StatelessWidget {
           SizedBox(height: 16),
           Text(
             'No FAQs found.',
-            style: TextStyle(color: Colors.grey, fontSize: 16),
+            style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : 16),
           ),
         ],
       ),

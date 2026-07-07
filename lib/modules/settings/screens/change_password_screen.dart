@@ -82,18 +82,20 @@ class ChangePasswordScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 //==============Continue Button================
-                Obx((){
-                  return CustomButton(
-                    label: AppStrings.cContinue,
-                    isLoading: controller.isChangePasswordLoading.value,
-                    onPressed: (){
-                      controller.markSubmitted();
-                      if( formKey.currentState!.validate() ){
-                        controller.changePassword();
-                      }
-                    },
-                  );
-                }),
+                Center(
+                  child: Obx((){
+                    return CustomButton(
+                      label: AppStrings.cContinue,
+                      isLoading: controller.isChangePasswordLoading.value,
+                      onPressed: (){
+                        controller.markSubmitted();
+                        if( formKey.currentState!.validate() ){
+                          controller.changePassword();
+                        }
+                      },
+                    );
+                  }),
+                ),
                 const SizedBox(height: 40),
               ],
             ),

@@ -78,7 +78,7 @@ class CustomButton extends StatelessWidget {
 
     return Container(
       height: isTab ? buttonHeight.h * 0.8 : buttonHeight.h,
-      width: isTab ? context.fullWidth * 0.4 : buttonWidth?.w,
+      width: buttonWidth ?? (isTab ? context.fullWidth * 0.4 : buttonWidth?.w),
       decoration: BoxDecoration(
         // We only show the gradient if enabled and provided
         gradient: isEnabled ? gradient : null,

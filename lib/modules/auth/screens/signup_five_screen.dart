@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_date_picker.dart';
 import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
@@ -16,16 +18,19 @@ class SignupFiveScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const BackButton(),
-        actions: const [
+        actions:  [
           Padding(
             padding: EdgeInsets.only(right: 16.0, top: 20),
-            child: Text("Step 5 of 5", style: TextStyle(color: Colors.grey)),
+            child: Text("Step 5 of 5", style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null)),
           )
         ],
       ),
@@ -59,7 +64,7 @@ class SignupFiveScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 'When are you planning to PCS to your new duty station?',
-                style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                style: TextStyle(fontSize: isTab ? 12.sp : 16, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 32),
               CustomDatePicker(
@@ -84,18 +89,20 @@ class SignupFiveScreen extends StatelessWidget {
               ),
               const Spacer(),
               // Bottom Action Button
-              Obx((){
-                return CustomButton(
-                  isLoading: controller.isSignupLoading.value,
-                  label: AppStrings.completeSetup,
-                  onPressed: (){
-                    if( _formKey.currentState!.validate() ){
-                      //Get.toNamed(AppRoutes.mainNav);
-                      controller.signup();
-                    }
-                  },
-                );
-              }),
+              Center(
+                child: Obx((){
+                  return CustomButton(
+                    isLoading: controller.isSignupLoading.value,
+                    label: AppStrings.completeSetup,
+                    onPressed: (){
+                      if( _formKey.currentState!.validate() ){
+                        //Get.toNamed(AppRoutes.mainNav);
+                        controller.signup();
+                      }
+                    },
+                  );
+                }),
+              ),
               const SizedBox( height: 40,)
             ],
           ),

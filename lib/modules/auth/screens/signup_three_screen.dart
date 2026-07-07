@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
@@ -46,6 +48,8 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
     const primaryColor = Color(0xFF1E3A5F); // Dark blue from the image
 
     return Scaffold(
@@ -53,10 +57,10 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
       appBar: AppBar(
         forceMaterialTransparency: true,
         leading: const BackButton(),
-        actions: const [
+        actions:  [
           Padding(
             padding: EdgeInsets.only(right: 16.0, top: 20),
-            child: Text("Step 3 of 5", style: TextStyle(color: Colors.grey)),
+            child: Text("Step 3 of 5", style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null)),
           )
         ],
       ),
@@ -82,23 +86,26 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
           // Header Text
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Kids Age Range',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Kids Age Range',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Select the age ranges of your\nchildren (optional)',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    'Select the age ranges of your\nchildren (optional)',
+                    style: TextStyle(fontSize: isTab ? 12.sp : 16, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -129,7 +136,7 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
                         child: Text(
                           option,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: isTab ? 12.sp : 16,
                             color: primaryColor,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                           ),
@@ -157,7 +164,7 @@ class _SingupThreeScreenState extends State<SingupThreeScreen> {
                   onPressed: () {
                     Get.toNamed(AppRoutes.signupStepFourScreen);
                   },
-                  child: const Text('Skip for now', style: TextStyle(color: Colors.grey)),
+                  child:  Text('Skip for now', style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : null)),
                 ),
               ],
             ),

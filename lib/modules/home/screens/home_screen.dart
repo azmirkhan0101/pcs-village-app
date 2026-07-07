@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
@@ -16,6 +18,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: const Color(0xFF1B365D),
       appBar: AppBar(
@@ -27,9 +32,9 @@ class HomeScreen extends StatelessWidget {
             Obx(() {
               return Text(
                   profileController.profileModel.value?.currentStation?.name ?? "",
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white));
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: isTab ? 12.sp : null));
             }),
-            const Text('Community Feed', style: TextStyle(fontSize: 14, color: Colors.white70)),
+             Text('Community Feed', style: TextStyle(fontSize: isTab ? 10.sp : 14, color: Colors.white70)),
           ],
         ),
       ),
@@ -46,11 +51,11 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: TextField(
                 cursorColor: Colors.white,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white, fontSize: isTab ? 10.sp : null),
                 controller: controller.searchController,
                 decoration: InputDecoration(
                   hintText: "Search posts...",
-                  hintStyle: const TextStyle(color: Colors.white60),
+                  hintStyle: TextStyle(color: Colors.white60, fontSize: isTab ? 10.sp : null),
                   prefixIcon: const Icon(Icons.search, color: Colors.white60),
                   filled: true,
                   fillColor: Colors.white.withValues(alpha: 0.1),
@@ -83,13 +88,13 @@ class HomeScreen extends StatelessWidget {
                     return ListView( // Using ListView so RefreshIndicator still works
                       children: [
                         SizedBox(height: MediaQuery.of(context).size.height * 0.2),
-                        const Center(
+                         Center(
                           child: Column(
                             children: [
                               Icon(Icons.post_add, size: 64, color: Colors.grey),
                               SizedBox(height: 16),
                               Text("No posts found",
-                                  style: TextStyle(color: Colors.grey, fontSize: 16)),
+                                  style: TextStyle(color: Colors.grey, fontSize: isTab ? 12.sp : 16)),
                             ],
                           ),
                         ),
@@ -145,15 +150,25 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.toNamed(AppRoutes.createPost,
-              arguments: {"isGroup": false, "groupId": null});
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
-        backgroundColor: const Color(0xFF6B8E23),
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+        floatingActionButton: SizedBox(
+          width: isTab ? 72.0 : 56.0,
+          height: isTab ? 72.0 : 56.0,
+          child: FloatingActionButton(
+            onPressed: () {
+              Get.toNamed(
+                AppRoutes.createPost,
+                arguments: {"isGroup": false, "groupId": null},
+              );
+            },
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+            backgroundColor: const Color(0xFF6B8E23),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: isTab ? 36 : 22,
+            ),
+          ),
+        ),
     );
   }
 }

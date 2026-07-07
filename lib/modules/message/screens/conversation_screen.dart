@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/data/models/message/conversation_model.dart';
 import 'package:pcs_village/data/models/message/participant_model.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,6 +16,9 @@ class ContactListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -36,11 +41,11 @@ class ContactListScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 TextField(
                   cursorColor: Colors.white,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: isTab ? 10.sp : null),
                   controller: controller.searchController,
                   decoration: InputDecoration(
                     hintText: 'Search your connection...',
-                    hintStyle: const TextStyle(color: Colors.white54),
+                    hintStyle: TextStyle(color: Colors.white54, fontSize: isTab ? 10.sp : null),
                     prefixIcon: const Icon(Icons.search, color: Colors.white54),
                     filled: true,
                     fillColor: Colors.white.withValues(alpha: 0.1),
@@ -68,7 +73,7 @@ class ContactListScreen extends StatelessWidget {
                 }
 
                 if (controller.conversationHelper.items.isEmpty) {
-                  return _buildEmptyState();
+                  return _buildEmptyState(isTab: isTab);
                 }
 
                 return ListView.separated(
@@ -95,7 +100,7 @@ class ContactListScreen extends StatelessWidget {
                             radius: 28,
                             backgroundColor: Colors.grey[200],
                             backgroundImage: NetworkImage(
-                              conversation.opponentProfileImg ?? "",
+                              conversation.opponentProfileImg,
                             ),
                           ),
                           // if (item.isOnline ?? false)
@@ -194,19 +199,19 @@ class ContactListScreen extends StatelessWidget {
 
   // --- UI Sub-Widgets ---
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState({required bool isTab}) {
     return ListView(
       // ListView allows Pull-to-refresh to work even when empty
       children: [
         SizedBox(height: Get.height * 0.2),
-        const Center(
+        Center(
           child: Column(
             children: [
-              Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey),
-              SizedBox(height: 16),
+              const Icon(Icons.chat_bubble_outline, size: 80, color: Colors.grey),
+              const SizedBox(height: 16),
               Text(
                 "No conversations found",
-                style: TextStyle(color: Colors.grey, fontSize: 16),
+                style: TextStyle(color: Colors.grey, fontSize: isTab ? 12.sp :16),
               ),
             ],
           ),

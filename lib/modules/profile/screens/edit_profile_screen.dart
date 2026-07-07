@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text_field.dart';
 import 'package:pcs_village/modules/profile/controllers/profile_controller.dart';
@@ -69,6 +71,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -83,6 +88,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               return CustomButton(
                 label: AppStrings.save,
                 buttonRadius: 100,
+                buttonWidth: isTab ? 100 : 150,
                 fontSize: 14,
                 isLoading: controller.isEditProfileLoading.value,
                 onPressed: (){
@@ -120,9 +126,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 return null;
               },
             ),
-            _buildLabel("Military Branch"),
+            _buildLabel("Military Branch", isTab: isTab),
             Obx((){
               return _buildDropdownField(
+                isTab: isTab,
                   hint: "Select Branch",
                   value: controller.selectedBranch.value,
                   errorText: branchError,
@@ -140,8 +147,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               );
             }),
 
-            _buildLabel("Military Affiliation"),
+            _buildLabel("Military Affiliation", isTab: isTab),
             _buildDropdownField(
+              isTab: isTab,
                 hint: "Select Affiliation",
                 value: controller.selectedAffiliation.value,
                 items: affiliations,
@@ -157,23 +165,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
 
             //Interest Section
-            _buildLabel("Interests"),
+            _buildLabel("Interests", isTab: isTab),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: controller.availableInterests.map((interest) {
-                return _buildChip(interest,isAgeRangeChip: false );
+                return _buildChip(interest,isAgeRangeChip: false, isTab: isTab );
               }).toList(),
             ),
             const SizedBox(height: 24),
 
             // Age Range Section
-            _buildLabel("Kids Age Range"),
+            _buildLabel("Kids Age Range", isTab: isTab),
             Wrap(
               spacing: 8,
               runSpacing: 8,
               children: _options.map((ageRange) {
-                return _buildChip(ageRange, isAgeRangeChip: true);
+                return _buildChip(ageRange, isAgeRangeChip: true, isTab: isTab);
               }).toList(),
             ),
             const SizedBox(height: 20,),
@@ -271,15 +279,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   // Helper widget for Labels
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(String text, {required bool isTab}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, top: 16),
-      child: Text(text, style: TextStyle(color: primaryNavy.withValues(alpha: 0.8), fontWeight: FontWeight.w600)),
+      child: Text(text, style: TextStyle(fontSize: isTab ? 10.sp : null, color: primaryNavy.withValues(alpha: 0.8), fontWeight: FontWeight.w600)),
     );
   }
 
   // Custom Chip Widget
-  Widget _buildChip(String label, {required bool isAgeRangeChip}) {
+  Widget _buildChip(String label, {required bool isAgeRangeChip, required bool isTab}) {
     return Obx(() {
       final bool isSelected = isAgeRangeChip
           ? controller.kidsAgeRange.contains(KidsAgeRange.values.firstWhere((e) => e.displayName == label).value)
@@ -294,7 +302,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         : controller.toggleInterestSelection(label),
         labelStyle: TextStyle(
             color: isSelected ? Colors.white : primaryNavy,
-            fontSize: 14
+            fontSize: isTab ? 10.sp : 14
         ),
         backgroundColor: Colors.white,
         selectedColor: primaryNavy,
@@ -313,6 +321,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildDropdownField({
+    required bool isTab,
     required String hint,
     required String? value,
     required List<String> items,
@@ -325,20 +334,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       items: items.map((String val) {
         return DropdownMenuItem<String>(
           value: val,
-          child: Text(val),
+          child: Text(val, style: TextStyle(fontSize: isTab ? 10.sp : null),),
         );
       }).toList(),
       onChanged: onChanged,
       // Styling the dropdown to match your previous design
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: isTab ? 20 : 14, // Increased from 12
+        ),
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey[400]),
         filled: true,
         fillColor: Colors.grey[50],
         errorText: errorText,
         // The error message shows here
-        contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16, vertical: 12),
+        // contentPadding: const EdgeInsets.symmetric(
+        //     horizontal: 16, vertical: 12),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey[200]!),

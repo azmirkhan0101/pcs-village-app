@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/data/models/blast_post/blast_post_model.dart';
 
+import '../../../core/utils/extensions.dart';
+
 class BlastPostCard extends StatelessWidget {
   final BlastPostModel post;
   final bool isMyAd;
@@ -19,6 +21,9 @@ class BlastPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
       decoration: BoxDecoration(
@@ -42,7 +47,7 @@ class BlastPostCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.link, color: Colors.blue, size: 20),
+                Icon(Icons.link, color: Colors.blue, size: isTab ? 40 : 20),
                 SizedBox(width: 8.w),
                 Expanded(
                   child: GestureDetector(
@@ -52,7 +57,7 @@ class BlastPostCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: isTab ? 12.sp : 14.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.blue.shade700,
                         letterSpacing: 0.3,
@@ -61,7 +66,7 @@ class BlastPostCard extends StatelessWidget {
                   ),
                 ),
                 if( isMyAd )
-                _buildAdMenu(),
+                _buildAdMenu(isTab: isTab),
               ],
             ),
           ),
@@ -100,7 +105,7 @@ class BlastPostCard extends StatelessWidget {
     );
   }
 
-  Widget _buildAdMenu() {
+  Widget _buildAdMenu({required bool isTab}) {
     return PopupMenuButton<String>(
       padding: EdgeInsets.zero,
       icon: Icon(Icons.more_horiz, color: Colors.grey.shade600), // More modern icon
@@ -113,9 +118,9 @@ class BlastPostCard extends StatelessWidget {
           value: 'delete',
           child: Row(
             children: [
-              const Icon(Icons.delete_outline, color: Colors.red, size: 20),
+              Icon(Icons.delete_outline, color: Colors.red, size: isTab ? 40 : 20),
               SizedBox(width: 8.w),
-              const Text('Delete Post', style: TextStyle(color: Colors.red)),
+              Text('Delete Post', style: TextStyle(color: Colors.red, fontSize: isTab ? 10.sp : null)),
             ],
           ),
         ),

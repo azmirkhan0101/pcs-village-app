@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
@@ -10,6 +11,7 @@ import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/assets_gen/assets.gen.dart';
 import '../../../core/utils/app_constants.dart';
+import '../../../core/utils/extensions.dart';
 import '../../../core/widgets/custom_text.dart';
 
 class MemberCard extends StatelessWidget {
@@ -29,6 +31,9 @@ class MemberCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
@@ -65,10 +70,10 @@ class MemberCard extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(member.name ?? "Member",
-                              style: const TextStyle(
+                          Text(member.name,
+                              style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 17,
+                                  fontSize: isTab ? 12.sp : 17,
                                   color: Color(0xFF1A365D))),
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -83,16 +88,10 @@ class MemberCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      // Text(
-                      //     "📅 ${member.name ?? 'N/A'}",
-                      //     style: const TextStyle(
-                      //         fontSize: 12, color: Colors.grey
-                      //     )
-                      // ),
                       Text(
                           "📍 ${member.movement ?? ''}",
-                          style: const TextStyle(
-                              fontSize: 11, color: Colors.grey)),
+                          style: TextStyle(
+                              fontSize: isTab ? 10.sp : 11, color: Colors.grey)),
                     ],
                   ),
                 ),
@@ -112,7 +111,7 @@ class MemberCard extends StatelessWidget {
                           : member.isIncomingWave
                           ? "Wave back"
                           : "Send wave",
-                      buttonHeight: 35,
+                      buttonHeight: isTab ? 40 : 35,
                       isLoading: member.isWaveLoading.value,
                       isEnabled: member.isWavePending ? false : true,
                       fontSize: 14,
@@ -136,7 +135,7 @@ class MemberCard extends StatelessWidget {
                 Expanded(
                   child: CustomButton(
                       label: AppStrings.viewProfile,
-                    buttonHeight: 35,
+                    buttonHeight: isTab ? 40 : 35,
                     fontSize: 14,
                     prefixSvgIcon: Assets.icons.profile,
                     iconHeight: 20,

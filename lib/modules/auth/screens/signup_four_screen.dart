@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
@@ -9,6 +10,7 @@ import 'package:pcs_village/modules/auth/controllers/signup_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/extensions.dart';
 
 class SignupFourScreen extends StatelessWidget {
   SignupFourScreen({super.key});
@@ -19,6 +21,8 @@ class SignupFourScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
 
     WidgetsBinding.instance.addPostFrameCallback((_){
       stationsController.searchStation(query: "", isCurrent: true);
@@ -32,12 +36,14 @@ class SignupFourScreen extends StatelessWidget {
       appBar: AppBar(
         forceMaterialTransparency: true,
         leading: const BackButton(),
-        title: const Text(
-          'Step 4 of 5',
-          style: TextStyle(color: Colors.grey, fontSize: 14),
-        ),
         centerTitle: false,
-        actions: const [SizedBox(width: 50)]
+        actions:  [
+          Text(
+            'Step 4 of 5',
+            style: TextStyle(color: Colors.grey, fontSize: isTab ? 10.sp : 14),
+          ),
+          SizedBox(width: 20),
+        ]
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -69,9 +75,9 @@ class SignupFourScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              const Text(
+               Text(
                 'Choose your current and future duty stations',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: TextStyle(fontSize: isTab ? 12.sp : 16, color: Colors.grey),
               ),
               const SizedBox(height: 32),
 
@@ -96,7 +102,7 @@ class SignupFourScreen extends StatelessWidget {
                 if( stationsController.currentStationResults.isEmpty && !stationsController.isCurrentLoading.value ){
                   return const SizedBox.shrink();
                 }
-                return searchResults(stationsController.currentStationResults, true);
+                return searchResults(stationsController.currentStationResults, true, isTab: isTab);
               }),
               const SizedBox( height: 20,),
               CustomTextField(
@@ -112,18 +118,20 @@ class SignupFourScreen extends StatelessWidget {
                 if( stationsController.futureStationResults.isEmpty && !stationsController.isFutureLoading.value ){
                   return const SizedBox.shrink();
                 }else{
-                  return searchResults(stationsController.futureStationResults, false);
+                  return searchResults(stationsController.futureStationResults, false, isTab: isTab);
               }}),
               const SizedBox( height: 20,),
               const Spacer(),
               // Continue Button
-              CustomButton(
-                label: AppStrings.cContinue,
-                onPressed: (){
-                    if( _formKey.currentState!.validate() ){
-                      Get.toNamed(AppRoutes.signupStepFiveScreen);
-                    }
-                },
+              Center(
+                child: CustomButton(
+                  label: AppStrings.cContinue,
+                  onPressed: (){
+                      if( _formKey.currentState!.validate() ){
+                        Get.toNamed(AppRoutes.signupStepFiveScreen);
+                      }
+                  },
+                ),
               ),
               const SizedBox(height: 32),
             ],
@@ -133,7 +141,8 @@ class SignupFourScreen extends StatelessWidget {
     );
   }
 
-  Widget searchResults(List<DutyStationModel> results, bool isCurrent) {
+  Widget searchResults(List<DutyStationModel> results, bool isCurrent, {required bool isTab}) {
+
     return Container(
       height: 250,
       margin: const EdgeInsets.only(top: 4),
@@ -148,7 +157,7 @@ class SignupFourScreen extends StatelessWidget {
         itemCount: results.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(results[index].name),
+            title: Text(results[index].name, style: TextStyle(fontSize: isTab ? 10.sp : null),),
             onTap: () {
               if (isCurrent) {
                 controller.currentStationId = results[index].id;

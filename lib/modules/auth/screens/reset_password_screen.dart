@@ -6,6 +6,7 @@ import 'package:pcs_village/core/assets_gen/assets.gen.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:pcs_village/core/utils/app_strings.dart';
 import 'package:pcs_village/core/utils/app_validator.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/core/widgets/custom_text.dart';
 import 'package:pcs_village/modules/auth/controllers/reset_password_controller.dart';
@@ -22,6 +23,8 @@ class ResetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
 
     controller.setFormKey( _formKey );
 
@@ -69,18 +72,20 @@ class ResetPasswordScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 //==============Continue Button================
-                Obx((){
-                  return CustomButton(
-                    label: AppStrings.cContinue,
-                    isLoading: controller.isPasswordChanging.value,
-                    onPressed: (){
-                      controller.markSubmitted();
-                      if( _formKey.currentState!.validate() ){
-                        controller.resetPassword();
-                      }
-                    },
-                  );
-                }),
+                Center(
+                  child: Obx((){
+                    return CustomButton(
+                      label: AppStrings.cContinue,
+                      isLoading: controller.isPasswordChanging.value,
+                      onPressed: (){
+                        controller.markSubmitted();
+                        if( _formKey.currentState!.validate() ){
+                          controller.resetPassword();
+                        }
+                      },
+                    );
+                  }),
+                ),
                 const SizedBox(height: 40),
               ],
             ),

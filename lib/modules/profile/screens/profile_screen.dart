@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
@@ -10,6 +11,7 @@ import 'package:pcs_village/modules/profile/controllers/profile_controller.dart'
 import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
+import '../../../core/utils/extensions.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -19,9 +21,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    bool isTab = context.isTab;
+
     // Primary Colors from the UI
     const Color primaryNavy = Color(0xFF1D3557);
-    const Color accentBlue = Color(0xFF457B9D);
     const Color backgroundGray = Color(0xFFF1F4F8);
 
     return Scaffold(
@@ -29,14 +32,15 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: primaryNavy,
         elevation: 0,
-        title: const Text('Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: Text('Profile', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: isTab ? 12.sp : null)),
         actions: [
           IconButton(
               onPressed: () {
             Get.toNamed(AppRoutes.settingsScreen);
           },
-              icon: const Icon(Icons.settings, color: Colors.white)
+              icon: Icon(Icons.settings, color: Colors.white, size: isTab ? 35 : null,)
           ),
+          const SizedBox(width: 20,)
         ],
       ),
       body: SingleChildScrollView(
@@ -56,6 +60,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   // --- Header Card ---
                   _buildCard(
+                    isTab: isTab,
                     child: Column(
                       children: [
                         ClipRRect(
@@ -78,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                         const SizedBox(height: 4),
                         Obx((){
                           String affiliation = Affiliation.values.firstWhereOrNull((element) => element.value == controller.profileModel.value?.affiliation)?.displayName ?? Affiliation.activeDuty.displayName;
-                          return Text( affiliation, style: TextStyle(fontSize: 14, color: primaryNavy));
+                          return Text( affiliation, style: TextStyle(fontSize: isTab ? 10.sp : 14, color: primaryNavy));
                         }),
                         const SizedBox(height: 10),
                         // const Row(
@@ -101,8 +106,8 @@ class ProfileScreen extends StatelessWidget {
                             onPressed: () {
                               Get.toNamed(AppRoutes.editProfile);
                             },
-                            icon: const Icon(Icons.edit_note, color: Colors.white),
-                            label: const Text('Edit Profile', style: TextStyle(color: Colors.white)),
+                            icon: Icon(Icons.edit_note, color: Colors.white, size: isTab ? 30 : null,),
+                            label: Text('Edit Profile', style: TextStyle(color: Colors.white, fontSize: isTab ? 10.sp : null)),
                           ),
                         )
                       ],
@@ -111,11 +116,13 @@ class ProfileScreen extends StatelessWidget {
 
                   // --- Military Information Card ---
                   _buildCard(
+                    isTab: isTab,
                     title: 'Military Information',
                     child: Column(
                       children: [
                         Obx((){
                           return _buildInfoRow(
+                            isTab: isTab,
                               Icons.location_on_outlined,
                               'Current Station',
                               controller.profileModel.value?.currentStation?.name ?? "Not found"
@@ -123,6 +130,7 @@ class ProfileScreen extends StatelessWidget {
                         }),
                         Obx((){
                           return _buildInfoRow(
+                            isTab: isTab,
                               Icons.location_on_outlined,
                               'Future Station',
                               controller.profileModel.value?.futureStation?.name ?? "Not found"
@@ -132,6 +140,7 @@ class ProfileScreen extends StatelessWidget {
                           final pcsDate = controller.profileModel.value?.estimatedPcsDate;
 
                           return _buildInfoRow(
+                            isTab: isTab,
                             Icons.date_range_outlined,
                             'PCS Timeline',
                             pcsDate != null
@@ -145,6 +154,7 @@ class ProfileScreen extends StatelessWidget {
 
                   // --- About Card ---
                   _buildCard(
+                    isTab: isTab,
                     title: 'About',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +163,7 @@ class ProfileScreen extends StatelessWidget {
                         Obx((){
                           return Text(
                               controller.profileModel.value?.branch?.name ?? "Not found",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: primaryNavy));
+                              style: TextStyle( fontSize: isTab ? 10.sp : null, fontWeight: FontWeight.bold, color: primaryNavy));
                         }),
                         const SizedBox(height: 16),
                         const _SectionLabel(label: 'Kids Age Range'),
@@ -168,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
                               String rangeName = KidsAgeRange.values
                                   .firstWhereOrNull((element) => element.value == range)
                                   ?.displayName ?? "Unidentified";
-                              return _buildChip(rangeName);
+                              return _buildChip(rangeName, isTab: isTab);
                             }).toList(),
                           );
                         }),
@@ -182,7 +192,7 @@ class ProfileScreen extends StatelessWidget {
                             children: interests.isEmpty
                                 ? [const Text("No age ranges specified")]
                                 : interests.map((range) {
-                              return _buildChip(range);
+                              return _buildChip(range, isTab: isTab);
                             }).toList(),
                           );
                         }),
@@ -194,7 +204,7 @@ class ProfileScreen extends StatelessWidget {
                            joinDate == null
                              ? "No date found"
                              : DateFormat("dd-MM-yyyy").format(joinDate.toLocal()),
-                             style: const TextStyle(fontWeight: FontWeight.bold, color: primaryNavy)
+                             style: TextStyle( fontSize: isTab ? 10.sp : null, fontWeight: FontWeight.bold, color: primaryNavy)
                          );
                        }),
                       ],
@@ -203,10 +213,12 @@ class ProfileScreen extends StatelessWidget {
 
                   // --- Footer Menu ---
                   _buildCard(
+                    isTab: isTab,
                     padding: EdgeInsets.zero,
                     child: Column(
                       children: [
                         _buildListTile(
+                          isTab: isTab,
                           onTap: (){
                             Get.toNamed(AppRoutes.upgradePremium);
                           },
@@ -214,6 +226,7 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const Divider(height: 1),
                         _buildListTile(
+                          isTab: isTab,
                           onTap: (){
                             Get.toNamed(AppRoutes.communityGuidelines);
                           },
@@ -228,6 +241,7 @@ class ProfileScreen extends StatelessWidget {
                         // ),
                         const Divider(height: 1),
                         _buildListTile(
+                          isTab: isTab,
                           onTap: (){
                             showLogOutDialog();
                           },
@@ -312,7 +326,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   // Helper to build a styled card
-  Widget _buildCard({required Widget child, String? title, EdgeInsets? padding}) {
+  Widget _buildCard({required Widget child, String? title, EdgeInsets? padding, required bool isTab}) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 16),
@@ -326,7 +340,7 @@ class ProfileScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (title != null) ...[
-            Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
+            Text(title, style: TextStyle(fontSize: isTab ? 12.sp : 18, fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
             const SizedBox(height: 16),
           ],
           child,
@@ -335,18 +349,18 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value, {required bool isTab}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, color: Colors.orangeAccent, size: 24),
+          Icon(icon, color: Colors.orangeAccent, size:isTab ? 30 : 24),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
+              Text(label, style: TextStyle(fontSize: isTab ? 10.sp : 12, color: Colors.grey)),
+              Text(value, style: TextStyle( fontSize: isTab ? 12.sp : null, fontWeight: FontWeight.bold, color: Color(0xFF1D3557))),
             ],
           ),
         ],
@@ -354,20 +368,20 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChip(String label) {
+  Widget _buildChip(String label, {required bool isTab}) {
     return Chip(
-      label: Text(label, style: const TextStyle(fontSize: 12, color: Color(0xFF457B9D))),
+      label: Text(label, style: TextStyle(fontSize: isTab ? 10.sp : 12, color: Color(0xFF457B9D))),
       backgroundColor: const Color(0xFFF1F4F8),
       side: BorderSide.none,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 
-  Widget _buildListTile(IconData icon, String title, Color color, {bool isLast = false, required VoidCallback onTap}) {
+  Widget _buildListTile(IconData icon, String title, Color color, {bool isLast = false, required VoidCallback onTap, required bool isTab}) {
     return ListTile(
       leading: Icon(icon, color: color),
-      title: Text(title, style: TextStyle(color: isLast ? Colors.red : const Color(0xFF1D3557), fontWeight: FontWeight.w500)),
-      trailing: const Icon(Icons.chevron_right, size: 20, color: Colors.grey),
+      title: Text(title, style: TextStyle( fontSize: isTab ? 12.sp : null, color: isLast ? Colors.red : const Color(0xFF1D3557), fontWeight: FontWeight.w500)),
+      trailing: Icon(Icons.chevron_right, size: isTab ? 30 : 20, color: Colors.grey),
       onTap: onTap,
     );
   }
@@ -396,9 +410,10 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isTab = context.isTab;
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
-      child: Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+      child: Text(label, style:  TextStyle(fontSize: isTab ? 10.sp : 12, color: Colors.grey)),
     );
   }
 }

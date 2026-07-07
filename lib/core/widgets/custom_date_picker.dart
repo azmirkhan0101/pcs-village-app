@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:pcs_village/core/utils/app_colors.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../utils/extensions.dart';
+
 class CustomDatePicker extends FormField<DateTime> {
   final String? label;
   final Function(DateTime?) onDateSelected;
@@ -75,6 +77,9 @@ class _CustomDatePickerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +87,10 @@ class _CustomDatePickerView extends StatelessWidget {
         if( label != null )
         Text(
           label!,
-          style: const TextStyle(
+          style:  TextStyle(
             fontWeight: FontWeight.w500,
             color: Colors.black87,
+            fontSize: isTab ? 10.sp : null,
           ),
         ),
         if( label != null )
@@ -101,7 +107,7 @@ class _CustomDatePickerView extends StatelessWidget {
           ),
           elevation: 0,
           child: Padding(
-            padding: EdgeInsets.only(left: 12.w),
+            padding: EdgeInsets.only(left: 12.w, top: 6, bottom: 6, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -111,11 +117,11 @@ class _CustomDatePickerView extends StatelessWidget {
                       : "MM-DD-YYYY",
                   style: TextStyle(
                     color: state.value == null ? Colors.grey : Colors.black,
-                    fontSize: 14,
+                    fontSize: isTab ? 10.sp : 14,
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.calendar_month, color: AppColors.grey92,),
+                  icon: Icon(Icons.calendar_month, color: AppColors.grey92, size: isTab ? 30 : null),
                   onPressed: () {
                     showCustomDatePicker(
                       context: context,

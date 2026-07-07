@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pcs_village/core/widgets/custom_button.dart';
 import 'package:pcs_village/modules/post/controllers/report_post_controller.dart';
+
+import '../../../core/utils/extensions.dart';
 
 class ReportPostScreen extends StatelessWidget {
   ReportPostScreen({super.key});
@@ -25,12 +28,15 @@ class ReportPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         forceMaterialTransparency: true,
-        title: const Text("Report Post"),
+        title: Text("Report Post", style: TextStyle(fontWeight: FontWeight.w600, fontSize: isTab ? 12.sp : null),),
       ),
       body: Column(
         children: [
@@ -63,7 +69,7 @@ class ReportPostScreen extends StatelessWidget {
                       child: Text(
                         reason,
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: isTab ? 12.sp : 15,
                           fontWeight:
                           isSelected ? FontWeight.w600 : FontWeight.normal,
                           color: isSelected

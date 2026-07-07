@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/modules/settings/controllers/settings_controller.dart';
 import 'package:pcs_village/routes/app_pages.dart';
 
@@ -12,6 +14,9 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -47,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 Obx(() => SwitchListTile(
-                  title: const Text("Mark as arrived"),
+                  title: Text("Mark as arrived", style: TextStyle(fontSize: isTab ? 12.sp : null),),
                   value: controller.isArrived.value,
                   activeColor: const Color(0xFF000040),
                   onChanged: (bool value) {
@@ -57,6 +62,7 @@ class SettingsScreen extends StatelessWidget {
                 )),
                 const SizedBox(height: 20,),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.campaign,
                   title: 'Blast Post',
                   textColor: AppColors.primaryColor,
@@ -65,6 +71,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.military_tech,
                   title: 'Base Request',
                   textColor: AppColors.primaryColor,
@@ -73,6 +80,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.workspace_premium,
                   title: 'Manage Subscription',
                   textColor: AppColors.primaryColor,
@@ -81,6 +89,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.question_answer_rounded,
                   title: 'FAQ',
                   textColor: AppColors.primaryColor,
@@ -89,6 +98,7 @@ class SettingsScreen extends StatelessWidget {
                   },
                 ),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.lock,
                   title: 'Change Password',
                   textColor: AppColors.primaryColor,
@@ -98,6 +108,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 _buildSettingsTile(
+                  isTab: isTab,
                   icon: Icons.delete_outline,
                   title: 'Delete Account',
                   textColor: Colors.red,
@@ -117,22 +128,23 @@ class SettingsScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required Color textColor,
-    required VoidCallback onTap
+    required VoidCallback onTap,
+    required bool isTab
   }) {
     return ListTile(
-      leading: Icon(icon, color: textColor, size: 28),
+      leading: Icon(icon, color: textColor, size: isTab ? 40 : 28),
       title: Text(
         title,
         style: TextStyle(
           color: textColor,
-          fontSize: 18,
+          fontSize: isTab ? 12.sp : 18,
           fontWeight: FontWeight.w500,
         ),
       ),
-      trailing: const Icon(
+      trailing: Icon(
         Icons.chevron_right,
         color: Colors.grey,
-        size: 20,
+        size: isTab ? 40 : 20,
       ),
       onTap: onTap,
     );

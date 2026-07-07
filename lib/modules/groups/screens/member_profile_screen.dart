@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pcs_village/core/utils/app_constants.dart';
+import 'package:pcs_village/core/utils/extensions.dart';
 import 'package:pcs_village/core/widgets/cached_image_widget.dart';
 import 'package:pcs_village/modules/groups/controllers/member_profile_controller.dart';
 
@@ -13,6 +15,9 @@ class MemberProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     const Color primaryNavy = Color(0xFF1D3557);
     const Color backgroundGray = Color(0xFFF1F4F8);
 
@@ -23,15 +28,15 @@ class MemberProfileScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: const BackButton(color: Colors.white),
-        title: const Text(
+        title: Text(
           'Profile',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: isTab ? 12.sp : null),
         ),
       ),
       // Use Obx here to switch between Skeleton and Content
       body: Obx(() {
         if (controller.isLoading.value) {
-          return _buildSkeleton(backgroundGray);
+          return _buildSkeleton(backgroundGray, isTab: isTab);
         }
 
         return SingleChildScrollView(
@@ -55,6 +60,7 @@ class MemberProfileScreen extends StatelessWidget {
                     // --- Header Card ---
                     sectionCard(
                       crossAxisAlignment: CrossAxisAlignment.center,
+                      isTab: isTab,
                       child: Column(
                         children: [
                           ClipRRect(
@@ -96,8 +102,8 @@ class MemberProfileScreen extends StatelessWidget {
                                     )
                                     ?.displayName ??
                                 Affiliation.activeDuty.displayName,
-                            style: const TextStyle(
-                              fontSize: 14,
+                            style: TextStyle(
+                              fontSize: isTab ? 10.sp : 14,
                               color: primaryNavy,
                             ),
                           ),
@@ -109,9 +115,11 @@ class MemberProfileScreen extends StatelessWidget {
                     // --- Military Information Card ---
                     sectionCard(
                       title: 'Military Information',
+                      isTab: isTab,
                       child: Column(
                         children: [
                           _buildInfoRow(
+                            isTab: isTab,
                             Icons.location_on_outlined,
                             'Current Station',
                             controller
@@ -122,6 +130,7 @@ class MemberProfileScreen extends StatelessWidget {
                                 "Not found",
                           ),
                           _buildInfoRow(
+                            isTab: isTab,
                             Icons.location_on_outlined,
                             'Future Station',
                             controller
@@ -132,6 +141,7 @@ class MemberProfileScreen extends StatelessWidget {
                                 "Not found",
                           ),
                           _buildInfoRow(
+                            isTab: isTab,
                             Icons.date_range_outlined,
                             'PCS Timeline',
                             controller.profileModel.value?.estimatedPcsDate !=
@@ -151,6 +161,7 @@ class MemberProfileScreen extends StatelessWidget {
                     // --- About Card ---
                     sectionCard(
                       title: 'About',
+                      isTab: isTab,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -158,9 +169,10 @@ class MemberProfileScreen extends StatelessWidget {
                           Text(
                             controller.profileModel.value?.branch?.name ??
                                 "Not found",
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: primaryNavy,
+                              fontSize: isTab ? 10.sp : null
                             ),
                           ),
                           const SizedBox(height: 16),
@@ -181,7 +193,7 @@ class MemberProfileScreen extends StatelessWidget {
                                                 )
                                                 ?.displayName ??
                                             "Unidentified";
-                                        return _buildChip(rangeName);
+                                        return _buildChip(rangeName, isTab: isTab);
                                       })
                                       .toList(),
                           ),
@@ -195,7 +207,7 @@ class MemberProfileScreen extends StatelessWidget {
                                     .isEmpty
                                 ? [const Text("No interests specified")]
                                 : controller.profileModel.value!.interestTags!
-                                      .map((tag) => _buildChip(tag))
+                                      .map((tag) => _buildChip(tag, isTab: isTab))
                                       .toList(),
                           ),
                           const SizedBox(height: 16),
@@ -213,7 +225,7 @@ class MemberProfileScreen extends StatelessWidget {
   }
 
   // --- Skeleton Loader UI ---
-  Widget _buildSkeleton(Color bgColor) {
+  Widget _buildSkeleton(Color bgColor, {required bool isTab}) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -227,6 +239,7 @@ class MemberProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           sectionCard(
+            isTab: isTab,
             crossAxisAlignment: CrossAxisAlignment.center,
             child: Column(
               children: [
@@ -239,6 +252,7 @@ class MemberProfileScreen extends StatelessWidget {
             ),
           ),
           sectionCard(
+            isTab: isTab,
             title: '...', // Placeholder title
             child: Column(
               children: List.generate(
@@ -271,6 +285,7 @@ class MemberProfileScreen extends StatelessWidget {
   //=========================SECTION CARD=========================
   Widget sectionCard({
     required Widget child,
+    required bool isTab,
     String? title,
     EdgeInsets? padding,
     CrossAxisAlignment crossAxisAlignment = CrossAxisAlignment.start,
@@ -297,8 +312,8 @@ class MemberProfileScreen extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontSize: 18,
+              style: TextStyle(
+                fontSize: isTab ? 12.sp : 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF1D3557),
               ),
@@ -311,24 +326,25 @@ class MemberProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value, {required bool isTab}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
-          Icon(icon, color: Colors.orangeAccent, size: 24),
+          Icon(icon, color: Colors.orangeAccent, size: isTab ? 30 : 24),
           const SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 label,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: isTab ? 10.sp : 12, color: Colors.grey),
               ),
               Text(
                 value,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: isTab ? 12.sp : 14,
                   color: Color(0xFF1D3557),
                 ),
               ),
@@ -339,11 +355,11 @@ class MemberProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildChip(String label) {
+  Widget _buildChip(String label, {required bool isTab}) {
     return Chip(
       label: Text(
         label,
-        style: const TextStyle(fontSize: 12, color: Color(0xFF457B9D)),
+        style: TextStyle(fontSize: isTab ? 10.sp : 12, color: Color(0xFF457B9D)),
       ),
       backgroundColor: const Color(0xFFF1F4F8),
       side: BorderSide.none,
@@ -359,11 +375,14 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTab = context.isTab;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 12, color: Colors.grey),
+        style: TextStyle(fontSize: isTab ? 10.sp : 12, color: Colors.grey),
       ),
     );
   }
