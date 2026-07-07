@@ -1,4 +1,4 @@
-package com.example.pcs_village
+package com.pcsapps.pcsvillageapp
 
 import io.flutter.embedding.android.FlutterActivity
 
