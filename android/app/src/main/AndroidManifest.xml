@@ -2,21 +2,10 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
-    <queries>
-        <!-- If your app needs to open URLs in a browser -->
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="https" />
-        </intent>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="http" />
-        </intent>
-    </queries>
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    
     <application
-        android:label="pcs_village"
+        android:label="Pcs Village"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
