@@ -15,7 +15,7 @@ lib/tool/
 # Keystore & signing files
 *.jks
 *.keystore
-key.properties
+android/key.properties
 android/key.properties
 
 ####################################
