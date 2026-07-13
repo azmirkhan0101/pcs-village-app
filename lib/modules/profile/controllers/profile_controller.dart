@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:pcs_village/core/services/subscription_service.dart';
 
 import '../../../core/services/api_service.dart';
 import '../../../core/utils/api_endpoints.dart';
@@ -75,6 +76,11 @@ class ProfileController extends GetxController{
 
   //INITIALIZE EDIT PROFILE CONTROLLERS
   void initializeEditProfileControllers(){
+
+    if( isClosed ){
+      return;
+    }
+
     nameController.text = profileModel.value?.name ?? "";
     profileImageUrl.value = profileModel.value?.profileImage ?? "";
     selectedBranch.value = profileModel.value?.branch?.name ?? "";
@@ -103,7 +109,6 @@ class ProfileController extends GetxController{
         method: "GET",
         isAuthRequired: true,
         endPoint: ApiEndpoints.getProfile,
-      shouldPrint: true
     );
 
     isProfileLoading.value = false;
@@ -116,6 +121,9 @@ class ProfileController extends GetxController{
       storage.write( userIdKey, model.id );
       profileModel.value = model;
       initializeEditProfileControllers();
+      if( profileModel.value?.id != null ){
+        SubscriptionService.to.loginUser(profileModel.value!.id);
+      }
     }
   }
 
@@ -124,8 +132,7 @@ class ProfileController extends GetxController{
     ApiResponse response = await apiService.networkRequest(
         method: "GET",
         isAuthRequired: false,
-        endPoint: ApiEndpoints.getAllBranches,
-        shouldPrint: true
+        endPoint: ApiEndpoints.getAllBranches
     );
     if( response.statusCode == 200 ){
       final fetchedBranches = response.data['data'] as List<dynamic>?;
@@ -159,8 +166,6 @@ class ProfileController extends GetxController{
         affiliation: affiliationValue
     );
 
-    print("Payloaddddddddddddddddddd: ${jsonEncode(payLoad)}");
-
     ApiResponse response = await apiService.multipartRequest(
         method: "PATCH",
         endPoint: ApiEndpoints.updateProfile,
@@ -189,6 +194,7 @@ class ProfileController extends GetxController{
 
   //LOGOUT
   Future<void> logOut() async{
+    SubscriptionService.to.logoutUser();
     await storage.erase();
     Get.back();
     Get.offAllNamed(AppRoutes.authSelection);
@@ -241,9 +247,9 @@ class ProfileController extends GetxController{
 
   @override
   void onClose() {
-
     nameController.dispose();
-
+    currentStationController.dispose();
+    futureStationController.dispose();
     super.onClose();
   }
 

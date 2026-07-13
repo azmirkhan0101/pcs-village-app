@@ -36,7 +36,7 @@ class NotificationController extends GetxController {
 
   //=========================GET NOTIFICATIONS=====================
   Future<void> getNotifications() async {
-    await notificationsHelper.fetch(isRefresh: true,shouldPrint: true);
+    await notificationsHelper.fetch(isRefresh: true);
   }
 
   Future<void> waveBack({required String userId}) async{
@@ -51,8 +51,7 @@ class NotificationController extends GetxController {
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.waveBack(userId: userId),
-        shouldPrint: true
+        endPoint: ApiEndpoints.waveBack(userId: userId)
     );
 
     showApiSnackBar(

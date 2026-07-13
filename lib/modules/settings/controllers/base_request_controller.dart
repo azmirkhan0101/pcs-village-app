@@ -40,7 +40,6 @@ class BaseRequestController extends GetxController {
         method: "POST",
         isAuthRequired: true,
         endPoint: ApiEndpoints.baseReq,
-      shouldPrint: true,
       body: payLoad
     );
     isLoading.value = false;

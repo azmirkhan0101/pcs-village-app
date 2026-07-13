@@ -98,7 +98,6 @@ class ApiService extends GetxService {
       }
       result = response.body;
       code = response.statusCode;
-      print("🟢 Code: ${response.statusCode}");
       if( response.statusCode == 401 && isAuthRequired ) {
         bool isRefreshed = await refreshTokenOnce();
 
@@ -123,13 +122,11 @@ class ApiService extends GetxService {
     } on TimeoutException {
       return ApiResponse(statusCode: 408);
     } catch (e) {
-      print("🛑 Error: $e");
       return ApiResponse(statusCode: 500);
     }finally{
-      print("🌐 Endpoint: $endPoint");
-      print("🟢 Code: $code");
-      //developer.log("✅ Result: $result");
       if( shouldPrint ){
+        print("🌐 Endpoint: $endPoint");
+        print("🟢 Code: $code");
         logPrettyJson(result.toString());
       }
     }
@@ -141,6 +138,7 @@ class ApiService extends GetxService {
     required String endPoint,
     required bool isAuthRequired,
     required Map<String, String> fields,
+    bool shouldPrint = false,
     File? image,
     int timeout = 20,
     String? imageKey,
@@ -200,7 +198,6 @@ class ApiService extends GetxService {
       var response = await request.send().timeout(Duration(seconds: timeout));
       var responseBody = await response.stream.bytesToString();
       result = responseBody;
-      print("🟢 Code: ${response.statusCode}");
       if( response.statusCode == 401 && isAuthRequired ) {
         bool isRefreshed = await refreshTokenOnce();
 
@@ -225,11 +222,12 @@ class ApiService extends GetxService {
     } on TimeoutException {
       return ApiResponse(statusCode: 408);
     } catch (e) {
-      print("🛑 Error: $e");
       return ApiResponse(statusCode: 500);
     }finally{
-      print("🌐 Endpoint: $endPoint");
-      print("✅ Result: $result");
+     if( shouldPrint ){
+       print("🌐 Endpoint: $endPoint");
+       print("✅ Result: $result");
+     }
 
     }
   }

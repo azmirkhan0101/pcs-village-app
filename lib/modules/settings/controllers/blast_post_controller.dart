@@ -91,8 +91,7 @@ Future<void> createBlastPost() async{
     ApiResponse response = await apiService.networkRequest(
         method: "DELETE",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.deleteBlastPost(id: id),
-      shouldPrint: true
+        endPoint: ApiEndpoints.deleteBlastPost(id: id)
     );
 
     if( response.statusCode == 200 || response.statusCode == 201 ){

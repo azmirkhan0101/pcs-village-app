@@ -61,8 +61,7 @@ Future<void> subscribe({required String planId}) async{
         method: "POST",
         isAuthRequired: true,
         endPoint: ApiEndpoints.subscribeToPlan,
-      body: payLoad,
-      shouldPrint: true
+      body: payLoad
     );
 
     isSubscribing.value = false;

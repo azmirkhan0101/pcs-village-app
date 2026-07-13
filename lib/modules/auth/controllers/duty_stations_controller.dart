@@ -41,8 +41,7 @@ class DutyStationsController extends GetxController{
       ApiResponse response = await apiService.networkRequest(
           method: "GET",
           isAuthRequired: false,
-          endPoint: ApiEndpoints.getDutyStations(search: query),
-        shouldPrint: true
+          endPoint: ApiEndpoints.getDutyStations(search: query)
       );
 
       isCurrentLoading.value = false;

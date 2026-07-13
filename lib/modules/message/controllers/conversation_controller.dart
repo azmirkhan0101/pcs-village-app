@@ -57,7 +57,7 @@ class ConversationController extends GetxController{
   }
 
   Future<void> getConversations({bool isSearch = false}) async {
-    await conversationHelper.fetch(isRefresh: true, shouldPrint: true);
+    await conversationHelper.fetch(isRefresh: true);
     displayPosts.assignAll(conversationHelper.items);
     if( !isSearch ){
       originalFeedBackup.assignAll(conversationHelper.items);

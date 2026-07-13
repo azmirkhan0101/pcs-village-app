@@ -33,8 +33,7 @@ class ManageSubscriptionController extends GetxController{
     ApiResponse response = await apiService.networkRequest(
         method: "GET",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.activeSubscription,
-      shouldPrint: true
+        endPoint: ApiEndpoints.activeSubscription
     );
     isActivePlanLoading.value = false;
 
@@ -56,8 +55,7 @@ Future<void> getSubscriptionHistory() async{
     ApiResponse response = await apiService.networkRequest(
         method: "GET",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.subscriptionHistory,
-      shouldPrint: true
+        endPoint: ApiEndpoints.subscriptionHistory
     );
     isPlanHistoryLoading.value = false;
 

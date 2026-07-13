@@ -12,6 +12,7 @@ import 'package:pcs_village/routes/app_pages.dart';
 
 import '../../../core/utils/app_colors.dart';
 import '../../../core/utils/extensions.dart';
+import '../../subscription/screens/paywall_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -220,7 +221,8 @@ class ProfileScreen extends StatelessWidget {
                         _buildListTile(
                           isTab: isTab,
                           onTap: (){
-                            Get.toNamed(AppRoutes.upgradePremium);
+                            //Get.toNamed(AppRoutes.upgradePremium);
+                            Get.to(const PaywallScreen());
                           },
                             Icons.workspace_premium_outlined, 'Upgrade to Premium', Colors.orange
                         ),

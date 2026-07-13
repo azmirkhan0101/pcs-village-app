@@ -69,8 +69,7 @@ class SettingsController extends GetxController {
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.markAsArrived,
-      shouldPrint: true
+        endPoint: ApiEndpoints.markAsArrived
     );
 
     if( response.statusCode == 200 ){

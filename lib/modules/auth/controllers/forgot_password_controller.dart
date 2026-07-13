@@ -29,8 +29,7 @@ class ForgotPasswordController extends GetxController {
         method: "POST",
         isAuthRequired: false,
         endPoint: ApiEndpoints.otpForgotPassword,
-      body: payLoad,
-      shouldPrint: true
+      body: payLoad
     );
     isForgotPasswordLoading.value = false;
 

@@ -7,12 +7,15 @@ import 'package:pcs_village/modules/main_nav/controllers/main_nav_controller.dar
 import 'package:pcs_village/modules/auth/screens/otp_verify_screen.dart';
 
 import 'core/services/api_service.dart';
+import 'core/services/subscription_service.dart';
 
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   await Get.putAsync(() => ApiService().init());
+
+  Get.putAsync(() => SubscriptionService().init());
 
   runApp(MainApp());
 }

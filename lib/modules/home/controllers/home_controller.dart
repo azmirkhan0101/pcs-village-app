@@ -67,7 +67,7 @@ class HomeController extends GetxController {
 
   //GET POSTS
   Future<void> getPosts({bool isSearch = false}) async {
-    await postsHelper.fetch(isRefresh: true, shouldPrint: true);
+    await postsHelper.fetch(isRefresh: true);
     displayPosts.assignAll(postsHelper.items);
     if( !isSearch ){
       originalFeedBackup.assignAll(postsHelper.items);

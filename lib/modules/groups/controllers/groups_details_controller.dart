@@ -257,8 +257,7 @@ class GroupsDetailsController extends GetxController
     ApiResponse response = await apiService.networkRequest(
         method: "POST",
         isAuthRequired: true,
-        endPoint: ApiEndpoints.waveBack(userId: userId),
-      shouldPrint: true
+        endPoint: ApiEndpoints.waveBack(userId: userId)
     );
 
     member.isWaveLoading.value = false;

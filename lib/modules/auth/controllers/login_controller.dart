@@ -68,8 +68,7 @@ class LoginController extends GetxController {
       method: 'POST',
       isAuthRequired: false,
       endPoint: ApiEndpoints.login,
-      body: credentials,
-      shouldPrint: true
+      body: credentials
     );
 
     String? message = response.data?['message'];
